@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Barzu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f2f2f2;
+            color: #333;
+            text-align: center;
+        }
+        header {
+            background: #222;
+            color: white;
+            padding: 20px 0;
+        }
+        img.avatar {
+            width: 200px;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        section {
+            padding: 40px 20px;
+        }
+        a {
+            color: #0077ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer {
+            background: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Barzu</h1>
+    <img src="C3EB1997-C636-42F3-9F86-A7EA2BDE6975.jpeg" alt="Barzu Rahmatov" class="avatar">
+    <p><a href="https://instagram.com/barzu_rahmatov" target="_blank">@barzu_rahmatov</a></p>
+</header>
+
+<section id="blog">
+    <h2>Блог</h2>
+    <p>Добро пожаловать в мой блог! Здесь я делюсь своими мыслями, проектами и вдохновением.</p>
+</section>
+
+<footer>
+    <p>© 2025 Barzu Rahmatov. Все права защищены.</p>
+</footer>
+
+</body>
+</html>
