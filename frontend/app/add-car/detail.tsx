@@ -140,7 +140,7 @@ export default function AddCarDetailScreen() {
       Alert.alert(
         t('messages.success'),
         'Объявление отправлено на модерацию',
-        [{ text: 'OK', onPress: () => router.back() }]
+        [{ text: 'OK', onPress: () => router.replace('/(tabs)/home') }]
       );
     } catch (error) {
       console.error('Error creating listing:', error);
