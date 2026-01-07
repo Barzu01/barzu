@@ -254,63 +254,116 @@ export default function AddCarDetailScreen() {
         {/* Engine Type */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.engineType')} *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.engineType}
-              onValueChange={(value) => setFormData({ ...formData, engineType: value })}
-              style={styles.picker}
+          <View style={styles.optionsGrid}>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.engineType === 'petrol' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, engineType: 'petrol' })}
             >
-              <Picker.Item label={t('car.petrol')} value="petrol" />
-              <Picker.Item label={t('car.diesel')} value="diesel" />
-              <Picker.Item label={t('car.electric')} value="electric" />
-              <Picker.Item label={t('car.hybrid')} value="hybrid" />
-            </Picker>
+              <Text style={[styles.optionText, formData.engineType === 'petrol' && styles.optionTextActive]}>
+                {t('car.petrol')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.engineType === 'diesel' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, engineType: 'diesel' })}
+            >
+              <Text style={[styles.optionText, formData.engineType === 'diesel' && styles.optionTextActive]}>
+                {t('car.diesel')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.engineType === 'electric' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, engineType: 'electric' })}
+            >
+              <Text style={[styles.optionText, formData.engineType === 'electric' && styles.optionTextActive]}>
+                {t('car.electric')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.engineType === 'hybrid' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, engineType: 'hybrid' })}
+            >
+              <Text style={[styles.optionText, formData.engineType === 'hybrid' && styles.optionTextActive]}>
+                {t('car.hybrid')}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Transmission */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.transmission')} *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.transmission}
-              onValueChange={(value) => setFormData({ ...formData, transmission: value })}
-              style={styles.picker}
+          <View style={styles.optionsRow}>
+            <TouchableOpacity
+              style={[styles.optionButtonLarge, formData.transmission === 'manual' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, transmission: 'manual' })}
             >
-              <Picker.Item label={t('car.manual')} value="manual" />
-              <Picker.Item label={t('car.automatic')} value="automatic" />
-            </Picker>
+              <Text style={[styles.optionText, formData.transmission === 'manual' && styles.optionTextActive]}>
+                {t('car.manual')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButtonLarge, formData.transmission === 'automatic' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, transmission: 'automatic' })}
+            >
+              <Text style={[styles.optionText, formData.transmission === 'automatic' && styles.optionTextActive]}>
+                {t('car.automatic')}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Drive Type */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.driveType')} *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.driveType}
-              onValueChange={(value) => setFormData({ ...formData, driveType: value })}
-              style={styles.picker}
+          <View style={styles.optionsRow}>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.driveType === 'front' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, driveType: 'front' })}
             >
-              <Picker.Item label={t('car.front')} value="front" />
-              <Picker.Item label={t('car.rear')} value="rear" />
-              <Picker.Item label={t('car.awd')} value="awd" />
-            </Picker>
+              <Text style={[styles.optionText, formData.driveType === 'front' && styles.optionTextActive]}>
+                {t('car.front')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.driveType === 'rear' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, driveType: 'rear' })}
+            >
+              <Text style={[styles.optionText, formData.driveType === 'rear' && styles.optionTextActive]}>
+                {t('car.rear')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButton, formData.driveType === 'awd' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, driveType: 'awd' })}
+            >
+              <Text style={[styles.optionText, formData.driveType === 'awd' && styles.optionTextActive]}>
+                {t('car.awd')}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Condition */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.condition')} *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.condition}
-              onValueChange={(value) => setFormData({ ...formData, condition: value })}
-              style={styles.picker}
+          <View style={styles.optionsRow}>
+            <TouchableOpacity
+              style={[styles.optionButtonLarge, formData.condition === 'new' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, condition: 'new' })}
             >
-              <Picker.Item label={t('car.new')} value="new" />
-              <Picker.Item label={t('car.used')} value="used" />
-            </Picker>
+              <Text style={[styles.optionText, formData.condition === 'new' && styles.optionTextActive]}>
+                {t('car.new')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionButtonLarge, formData.condition === 'used' && styles.optionButtonActive]}
+              onPress={() => setFormData({ ...formData, condition: 'used' })}
+            >
+              <Text style={[styles.optionText, formData.condition === 'used' && styles.optionTextActive]}>
+                {t('car.used')}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
