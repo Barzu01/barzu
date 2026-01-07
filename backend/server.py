@@ -75,6 +75,21 @@ class CarListingResponse(CarListing):
         populate_by_name = True
 
 
+class Notification(BaseModel):
+    userId: str
+    carId: str
+    type: Literal['approved', 'rejected']
+    message: str
+    isRead: bool = False
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+class NotificationResponse(Notification):
+    id: str = Field(alias="_id")
+
+    class Config:
+        populate_by_name = True
+
+
 class SearchFilters(BaseModel):
     brand: Optional[str] = None
     model: Optional[str] = None
@@ -297,10 +312,24 @@ async def get_pending_cars():
 async def approve_car(car_id: str):
     """Approve car listing"""
     try:
+        car = await db.cars.find_one({"_id": ObjectId(car_id)})
+        if not car:
+            raise HTTPException(status_code=404, detail="Car not found")
+            
         await db.cars.update_one(
             {"_id": ObjectId(car_id)},
             {"$set": {"status": "approved", "updatedAt": datetime.utcnow()}}
         )
+        
+        # Create notification
+        notification = Notification(
+            userId=car["sellerId"],
+            carId=car_id,
+            type="approved",
+            message=f"Ваше объявление {car['brand']} {car['model']} одобрено!"
+        )
+        await db.notifications.insert_one(notification.model_dump())
+        
         return {"message": "Car approved"}
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid car ID")
@@ -310,10 +339,24 @@ async def approve_car(car_id: str):
 async def reject_car(car_id: str):
     """Reject car listing"""
     try:
+        car = await db.cars.find_one({"_id": ObjectId(car_id)})
+        if not car:
+            raise HTTPException(status_code=404, detail="Car not found")
+            
         await db.cars.update_one(
             {"_id": ObjectId(car_id)},
             {"$set": {"status": "rejected", "updatedAt": datetime.utcnow()}}
         )
+        
+        # Create notification
+        notification = Notification(
+            userId=car["sellerId"],
+            carId=car_id,
+            type="rejected",
+            message=f"Ваше объявление {car['brand']} {car['model']} отклонено"
+        )
+        await db.notifications.insert_one(notification.model_dump())
+        
         return {"message": "Car rejected"}
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid car ID")
@@ -342,6 +385,44 @@ async def get_admin_stats():
         "pendingCars": pending_cars,
         "totalUsers": total_users
     }
+
+
+# ===== NOTIFICATIONS ENDPOINTS =====
+@api_router.get("/notifications/{user_id}", response_model=List[NotificationResponse])
+async def get_notifications(user_id: str):
+    """Get user notifications"""
+    notifications = await db.notifications.find({"userId": user_id}).sort("createdAt", -1).to_list(100)
+    return [serialize_doc(notif) for notif in notifications]
+
+
+@api_router.get("/notifications/{user_id}/unread-count")
+async def get_unread_count(user_id: str):
+    """Get unread notifications count"""
+    count = await db.notifications.count_documents({"userId": user_id, "isRead": False})
+    return {"count": count}
+
+
+@api_router.put("/notifications/{notification_id}/read")
+async def mark_as_read(notification_id: str):
+    """Mark notification as read"""
+    try:
+        await db.notifications.update_one(
+            {"_id": ObjectId(notification_id)},
+            {"$set": {"isRead": True}}
+        )
+        return {"message": "Marked as read"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid notification ID")
+
+
+@api_router.put("/notifications/{user_id}/read-all")
+async def mark_all_as_read(user_id: str):
+    """Mark all user notifications as read"""
+    await db.notifications.update_many(
+        {"userId": user_id},
+        {"$set": {"isRead": True}}
+    )
+    return {"message": "All notifications marked as read"}
 
 
 # Health check
