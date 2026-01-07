@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     borderColor: '#0066CC',
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#000000',
   },
