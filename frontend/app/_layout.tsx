@@ -11,7 +11,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="auth/login" />
-          <Stack.Screen name="car-details" />
+          <Stack.Screen name="car/[id]" />
         </Stack>
       </PaperProvider>
     </AuthProvider>

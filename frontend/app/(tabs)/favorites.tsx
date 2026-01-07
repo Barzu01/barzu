@@ -49,7 +49,7 @@ export default function FavoritesScreen() {
   const renderCarItem = ({ item }: { item: CarListing }) => (
     <TouchableOpacity
       style={styles.carCard}
-      onPress={() => router.push({ pathname: '/car-details', params: { id: item._id } })}
+      onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
     >
       {item.photos && item.photos.length > 0 ? (
         <Image
