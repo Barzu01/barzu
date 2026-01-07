@@ -1,16 +1,28 @@
-import { Text, View, StyleSheet, Image } from "react-native";
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
-  console.log(EXPO_PUBLIC_BACKEND_URL, "EXPO_PUBLIC_BACKEND_URL");
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated) {
+        router.replace('/(tabs)/home');
+      } else {
+        router.replace('/auth/login');
+      }
+    }
+  }, [isAuthenticated, isLoading]);
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/images/app-image.png")}
-        style={styles.image}
-      />
+      <ActivityIndicator size="large" color="#0066CC" />
+      <Text style={styles.text}>{t('app.name')}</Text>
     </View>
   );
 }
@@ -18,13 +30,14 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0c",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+  text: {
+    marginTop: 16,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0066CC',
   },
 });
