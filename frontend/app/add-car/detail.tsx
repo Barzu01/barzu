@@ -9,6 +9,8 @@ import {
   Alert,
   ActivityIndicator,
   Image,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +20,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../contexts/AuthContext';
 import { carAPI } from '../../services/api';
 import { CAR_BRANDS, REGIONS, ENGINE_TYPES, TRANSMISSIONS, DRIVE_TYPES, CONDITIONS, COLORS } from '../../constants/carData';
-import { Picker } from '@react-native-picker/picker';
 
 export default function AddCarDetailScreen() {
   const { user } = useAuth();
@@ -26,6 +27,7 @@ export default function AddCarDetailScreen() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [regionModalVisible, setRegionModalVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     brand: '',
@@ -381,18 +383,53 @@ export default function AddCarDetailScreen() {
         {/* Region */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.region')} *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.region}
-              onValueChange={(value) => setFormData({ ...formData, region: value })}
-              style={styles.picker}
-            >
-              {REGIONS.map((region) => (
-                <Picker.Item key={region.value} label={t(region.label)} value={region.value} />
-              ))}
-            </Picker>
-          </View>
+          <TouchableOpacity
+            style={styles.selectButton}
+            onPress={() => setRegionModalVisible(true)}
+          >
+            <Text style={styles.selectButtonText}>
+              {t(`regions.${formData.region}`)}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="#8E8E93" />
+          </TouchableOpacity>
         </View>
+
+        {/* Region Modal */}
+        <Modal
+          visible={regionModalVisible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setRegionModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('car.region')}</Text>
+                <TouchableOpacity onPress={() => setRegionModalVisible(false)}>
+                  <Ionicons name="close" size={28} color="#000000" />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={REGIONS}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.modalItem}
+                    onPress={() => {
+                      setFormData({ ...formData, region: item.value });
+                      setRegionModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.modalItemText}>{t(item.label)}</Text>
+                    {formData.region === item.value && (
+                      <Ionicons name="checkmark" size={24} color="#0066CC" />
+                    )}
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
 
         {/* Description */}
         <View style={styles.section}>
