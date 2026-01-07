@@ -523,15 +523,96 @@ const styles = StyleSheet.create({
   halfSection: {
     flex: 1,
   },
-  pickerContainer: {
+  optionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  optionButton: {
+    flex: 1,
+    minWidth: 80,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+  },
+  optionButtonLarge: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+  },
+  optionButtonActive: {
+    backgroundColor: '#E5F0FF',
+    borderColor: '#0066CC',
+  },
+  optionText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000000',
+  },
+  optionTextActive: {
+    color: '#0066CC',
+    fontWeight: 'bold',
+  },
+  selectButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E5E5EA',
-    overflow: 'hidden',
   },
-  picker: {
-    height: 50,
+  selectButtonText: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  modalItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F2F2F7',
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: '#000000',
   },
   photosContainer: {
     flexDirection: 'row',
