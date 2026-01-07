@@ -44,3 +44,13 @@ export interface SearchFilters {
   condition?: string;
   sortBy?: 'newest' | 'priceAsc' | 'priceDesc';
 }
+
+export interface Notification {
+  _id?: string;
+  userId: string;
+  carId: string;
+  type: 'approved' | 'rejected';
+  message: string;
+  isRead: boolean;
+  createdAt?: string;
+}
