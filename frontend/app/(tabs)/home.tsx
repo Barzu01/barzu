@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { carAPI, notificationAPI } from '../../services/api';
+import { carAPI, notificationAPI, favoritesAPI } from '../../services/api';
 import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +22,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -30,16 +31,39 @@ export default function HomeScreen() {
     loadCars();
     if (user) {
       loadUnreadCount();
+      loadFavorites();
     }
   }, [user]);
 
-  const loadUnreadCount = async () => {
+  const loadFavorites = async () => {
     if (!user) return;
     try {
-      const data = await notificationAPI.getUnreadCount(user.phone);
-      setUnreadCount(data.count);
+      const favorites = await favoritesAPI.getAll(user.phone);
+      const ids = new Set(favorites.map((car: CarListing) => car._id!));
+      setFavoriteIds(ids);
     } catch (error) {
-      console.error('Error loading unread count:', error);
+      console.error('Error loading favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async (carId: string, e: any) => {
+    e.stopPropagation();
+    if (!user) return;
+    
+    try {
+      if (favoriteIds.has(carId)) {
+        await favoritesAPI.remove(user.phone, carId);
+        setFavoriteIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(carId);
+          return newSet;
+        });
+      } else {
+        await favoritesAPI.add(user.phone, carId);
+        setFavoriteIds(prev => new Set(prev).add(carId));
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
     }
   };
 
@@ -84,6 +108,18 @@ export default function HomeScreen() {
           <Ionicons name="car-outline" size={60} color="#C7C7CC" />
         </View>
       )}
+      
+      <TouchableOpacity 
+        style={styles.favoriteButton}
+        onPress={(e) => toggleFavorite(item._id!, e)}
+      >
+        <Ionicons 
+          name={favoriteIds.has(item._id!) ? "heart" : "heart-outline"} 
+          size={24} 
+          color={favoriteIds.has(item._id!) ? "#FF3B30" : "#FFFFFF"} 
+        />
+      </TouchableOpacity>
+
       <View style={styles.carInfo}>
         <Text style={styles.carTitle}>
           {item.brand} {item.model}
@@ -208,6 +244,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    position: 'relative',
   },
   carImage: {
     width: '100%',
@@ -217,6 +254,18 @@ const styles = StyleSheet.create({
   noImage: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
   carInfo: {
     padding: 16,
