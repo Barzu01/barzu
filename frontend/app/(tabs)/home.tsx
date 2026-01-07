@@ -11,17 +11,37 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { carAPI } from '../../services/api';
+import { carAPI, notificationAPI } from '../../services/api';
 import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function HomeScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const router = useRouter();
   const { t } = useTranslation();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    loadCars();
+    if (user) {
+      loadUnreadCount();
+    }
+  }, [user]);
+
+  const loadUnreadCount = async () => {
+    if (!user) return;
+    try {
+      const data = await notificationAPI.getUnreadCount(user.phone);
+      setUnreadCount(data.count);
+    } catch (error) {
+      console.error('Error loading unread count:', error);
+    }
+  };
 
   useEffect(() => {
     loadCars();
@@ -98,6 +118,17 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('app.name')}</Text>
+        <TouchableOpacity 
+          style={styles.notificationButton}
+          onPress={() => router.push('/notifications')}
+        >
+          <Ionicons name="notifications-outline" size={26} color="#000000" />
+          {unreadCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
       <FlatList
         data={cars}
@@ -134,11 +165,35 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5EA',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#000000',
+  },
+  notificationButton: {
+    position: 'relative',
+    padding: 4,
+  },
+  badge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#FF3B30',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   listContainer: {
     padding: 16,
