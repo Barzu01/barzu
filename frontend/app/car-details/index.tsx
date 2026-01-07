@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { carAPI, favoritesAPI } from '../services/api';
-import { CarListing } from '../types';
+import { carAPI, favoritesAPI } from '../../services/api';
+import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function CarDetailsScreen() {
   const { id } = useLocalSearchParams();
