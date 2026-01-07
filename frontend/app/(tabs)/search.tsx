@@ -31,11 +31,36 @@ export default function SearchScreen() {
     setLoading(true);
     setHasSearched(true);
     try {
-      // Ищем по марке и модели
-      const results = await carAPI.search({
-        brand: searchText,
-        model: searchText,
-      });
+      // Разделяем текст на слова
+      const words = searchText.trim().split(' ');
+      
+      let results: CarListing[] = [];
+      
+      if (words.length === 1) {
+        // Одно слово - ищем по марке ИЛИ модели
+        const searchFilters = {
+          brand: searchText.trim(),
+        };
+        results = await carAPI.search(searchFilters);
+        
+        // Если не найдено по марке, ищем по модели
+        if (results.length === 0) {
+          const modelFilters = {
+            model: searchText.trim(),
+          };
+          results = await carAPI.search(modelFilters);
+        }
+      } else {
+        // Несколько слов - первое слово марка, остальное модель
+        const brand = words[0];
+        const model = words.slice(1).join(' ');
+        
+        results = await carAPI.search({
+          brand: brand,
+          model: model,
+        });
+      }
+      
       setSearchResults(results);
     } catch (error) {
       console.error('Search error:', error);
