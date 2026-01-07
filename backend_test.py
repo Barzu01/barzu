@@ -196,7 +196,7 @@ class SafedAutoAPITester:
             
             if success:
                 car_data = response.json()
-                success = car_data.get("id") == self.created_car_id
+                success = car_data.get("_id") == self.created_car_id
                 details = f"Retrieved car: {car_data.get('brand')} {car_data.get('model')}"
             else:
                 details = f"Status: {response.status_code}, Error: {response.text}"
