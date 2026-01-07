@@ -10,6 +10,7 @@ import base64
 from datetime import datetime
 import sys
 import os
+from urllib.parse import quote
 
 # Get backend URL from frontend .env file
 def get_backend_url():
