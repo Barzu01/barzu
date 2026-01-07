@@ -93,7 +93,7 @@ class SafedAutoAPITester:
             if success:
                 user_data = response.json()
                 success = user_data.get("phone") == TEST_PHONE
-                details = f"Created user: {user_data.get('phone')}"
+                details = f"Created user: {user_data.get('phone', 'N/A')}"
             else:
                 details = f"Status: {response.status_code}, Error: {response.text}"
                 
