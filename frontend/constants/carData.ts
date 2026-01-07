@@ -14,7 +14,19 @@ export const REGIONS = [
   { value: 'khorugh', label: 'regions.khorugh' },
   { value: 'istaravshan', label: 'regions.istaravshan' },
   { value: 'tursunzoda', label: 'regions.tursunzoda' },
-  { value: 'vahdat', label: 'regions.vahdat' }
+  { value: 'vahdat', label: 'regions.vahdat' },
+  { value: 'kanibadam', label: 'regions.kanibadam' },
+  { value: 'isfara', label: 'regions.isfara' },
+  { value: 'penjikent', label: 'regions.penjikent' },
+  { value: 'norak', label: 'regions.norak' },
+  { value: 'dangara', label: 'regions.dangara' },
+  { value: 'vose', label: 'regions.vose' },
+  { value: 'shahritus', label: 'regions.shahritus' },
+  { value: 'taboshar', label: 'regions.taboshar' },
+  { value: 'rogun', label: 'regions.rogun' },
+  { value: 'hisor', label: 'regions.hisor' },
+  { value: 'rasht', label: 'regions.rasht' },
+  { value: 'farkhor', label: 'regions.farkhor' }
 ];
 
 export const ENGINE_TYPES = [
