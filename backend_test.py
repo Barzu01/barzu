@@ -268,7 +268,8 @@ class SafedAutoAPITester:
     def test_get_favorites(self):
         """Test getting user's favorites"""
         try:
-            response = self.session.get(f"{API_BASE}/favorites/{TEST_PHONE}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            response = self.session.get(f"{API_BASE}/favorites/{encoded_phone}")
             success = response.status_code == 200
             
             if success:
@@ -291,7 +292,8 @@ class SafedAutoAPITester:
             return False
             
         try:
-            response = self.session.delete(f"{API_BASE}/favorites/{TEST_PHONE}/{self.created_car_id}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            response = self.session.delete(f"{API_BASE}/favorites/{encoded_phone}/{self.created_car_id}")
             success = response.status_code == 200
             
             if success:
@@ -309,7 +311,8 @@ class SafedAutoAPITester:
     def test_get_my_listings(self):
         """Test getting user's car listings"""
         try:
-            response = self.session.get(f"{API_BASE}/my-listings/{TEST_PHONE}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            response = self.session.get(f"{API_BASE}/my-listings/{encoded_phone}")
             success = response.status_code == 200
             
             if success:
