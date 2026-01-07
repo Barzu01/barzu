@@ -106,7 +106,8 @@ class SafedAutoAPITester:
     def test_get_user(self):
         """Test getting user by phone"""
         try:
-            response = self.session.get(f"{API_BASE}/users/{TEST_PHONE}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            response = self.session.get(f"{API_BASE}/users/{encoded_phone}")
             success = response.status_code == 200
             
             if success:
