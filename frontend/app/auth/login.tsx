@@ -16,16 +16,30 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 
+const TEST_CODE = '1234'; // Тестовый код для MVP
+
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
+  const [code, setCode] = useState('');
+  const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [loading, setLoading] = useState(false);
+  const [showCode, setShowCode] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
 
-  const handleLogin = async () => {
+  const handleSendCode = () => {
     if (!phone || phone.length < 9) {
       Alert.alert(t('messages.error'), 'Введите корректный номер телефона');
+      return;
+    }
+    setShowCode(true);
+    setStep('code');
+  };
+
+  const handleVerifyCode = async () => {
+    if (code !== TEST_CODE) {
+      Alert.alert(t('messages.error'), 'Неверный код. Попробуйте снова.');
       return;
     }
 
@@ -54,32 +68,81 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.formContainer}>
-            <Text style={styles.label}>{t('auth.phoneNumber')}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="+992 900 123 456"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              autoFocus
-              maxLength={20}
-            />
+            {step === 'phone' ? (
+              <>
+                <Text style={styles.label}>{t('auth.phoneNumber')}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="+992 900 123 456"
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  autoFocus
+                  maxLength={20}
+                />
 
-            <TouchableOpacity
-              style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleLogin}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text style={styles.buttonText}>{t('auth.login')}</Text>
-              )}
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleSendCode}
+                >
+                  <Text style={styles.buttonText}>{t('auth.sendCode')}</Text>
+                </TouchableOpacity>
 
-            <Text style={styles.infoText}>
-              Войдите с номером телефона для доступа ко всем функциям
-            </Text>
+                <Text style={styles.infoText}>
+                  Войдите с номером телефона для доступа ко всем функциям
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.label}>{t('auth.enterCode')}</Text>
+                
+                {showCode && (
+                  <View style={styles.codeDisplay}>
+                    <Ionicons name="mail-open" size={24} color="#0066CC" />
+                    <Text style={styles.codeText}>
+                      Ваш код: <Text style={styles.codeBold}>{TEST_CODE}</Text>
+                    </Text>
+                  </View>
+                )}
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Введите код"
+                  value={code}
+                  onChangeText={setCode}
+                  keyboardType="number-pad"
+                  maxLength={4}
+                  autoFocus
+                />
+
+                <TouchableOpacity
+                  style={[styles.button, loading && styles.buttonDisabled]}
+                  onPress={handleVerifyCode}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.buttonText}>{t('auth.verifyCode')}</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.backLink}
+                  onPress={() => {
+                    setStep('phone');
+                    setCode('');
+                    setShowCode(false);
+                  }}
+                >
+                  <Text style={styles.backLinkText}>← Изменить номер</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.infoText}>
+                  🧪 Тестовый режим: Код отображается на экране
+                </Text>
+              </>
+            )}
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -158,5 +221,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 24,
     lineHeight: 20,
+  },
+  codeDisplay: {
+    backgroundColor: '#E5F0FF',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  codeText: {
+    fontSize: 16,
+    color: '#000000',
+  },
+  codeBold: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#0066CC',
+    letterSpacing: 4,
+  },
+  backLink: {
+    marginTop: 16,
+    padding: 8,
+  },
+  backLinkText: {
+    fontSize: 16,
+    color: '#0066CC',
+    textAlign: 'center',
   },
 });
