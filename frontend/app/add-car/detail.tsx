@@ -28,6 +28,16 @@ export default function AddCarDetailScreen() {
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
   const [regionModalVisible, setRegionModalVisible] = useState(false);
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+
+  const categories = [
+    { value: 'cars', label: 'Автомобили' },
+    { value: 'electric', label: 'Электромобили' },
+    { value: 'motorcycles', label: 'Мотоциклы' },
+    { value: 'trucks', label: 'Грузовики' },
+    { value: 'parts', label: 'Запчасти' },
+    { value: 'rent', label: 'Аренда авто' },
+  ];
 
   const [formData, setFormData] = useState({
     brand: '',
@@ -41,6 +51,7 @@ export default function AddCarDetailScreen() {
     condition: 'used',
     color: 'Белый',
     region: 'dushanbe',
+    category: 'cars',
     description: '',
   });
 
@@ -195,6 +206,57 @@ export default function AddCarDetailScreen() {
           </View>
           <Text style={styles.hint}>Добавлено {photos.length} из 10 фото</Text>
         </View>
+
+        {/* Category */}
+        <View style={styles.section}>
+          <Text style={styles.label}>Категория *</Text>
+          <TouchableOpacity
+            style={styles.selectButton}
+            onPress={() => setCategoryModalVisible(true)}
+          >
+            <Text style={styles.selectButtonText}>
+              {categories.find(c => c.value === formData.category)?.label || 'Выберите категорию'}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="#8E8E93" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Category Modal */}
+        <Modal
+          visible={categoryModalVisible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setCategoryModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Категория</Text>
+                <TouchableOpacity onPress={() => setCategoryModalVisible(false)}>
+                  <Ionicons name="close" size={28} color="#000000" />
+                </TouchableOpacity>
+              </View>
+              <FlatList
+                data={categories}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.modalItem}
+                    onPress={() => {
+                      setFormData({ ...formData, category: item.value });
+                      setCategoryModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.modalItemText}>{item.label}</Text>
+                    {formData.category === item.value && (
+                      <Ionicons name="checkmark" size={24} color="#0066CC" />
+                    )}
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
 
         {/* Brand & Model */}
         <View style={styles.section}>
