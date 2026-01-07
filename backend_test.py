@@ -249,7 +249,8 @@ class SafedAutoAPITester:
             return False
             
         try:
-            response = self.session.post(f"{API_BASE}/favorites/{TEST_PHONE}/{self.created_car_id}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            response = self.session.post(f"{API_BASE}/favorites/{encoded_phone}/{self.created_car_id}")
             success = response.status_code == 200
             
             if success:
