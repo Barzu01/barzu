@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "SafedAuto",
+    "welcome": "Хуш омадед"
+  },
+  "auth": {
+    "phoneNumber": "Рақами телефон",
+    "enterPhone": "Рақами телефонро ворид кунед",
+    "sendCode": "Фиристодани рамз",
+    "verifyCode": "Тасдиқи рамз",
+    "enterCode": "Рамзро аз SMS ворид кунед",
+    "code": "Рамз",
+    "logout": "Баромад",
+    "login": "Даромад"
+  },
+  "tabs": {
+    "home": "Асосӣ",
+    "search": "Ҷустуҷӯ",
+    "addCar": "Илова кардан",
+    "favorites": "Интихобшуда",
+    "profile": "Профил"
+  },
+  "car": {
+    "brand": "Бренд",
+    "model": "Модел",
+    "year": "Сол",
+    "price": "Нарх",
+    "mileage": "Пробег",
+    "engineType": "Муҳаррик",
+    "transmission": "Коробка",
+    "driveType": "Ҳаракатдиҳӣ",
+    "condition": "Ҳолат",
+    "color": "Ранг",
+    "region": "Минтақа",
+    "description": "Тавсиф",
+    "photos": "Суратҳо",
+    "sellerPhone": "Телефони фурӯшанда",
+    "new": "Нав",
+    "used": "Истифодашуда",
+    "manual": "Механикӣ",
+    "automatic": "Автомат",
+    "front": "Пеш",
+    "rear": "Ақиб",
+    "awd": "Пурра",
+    "petrol": "Бензин",
+    "diesel": "Дизел",
+    "electric": "Электрӣ",
+    "hybrid": "Гибридӣ",
+    "km": "км",
+    "currency": "сом."
+  },
+  "actions": {
+    "save": "Сабт кардан",
+    "cancel": "Бекор кардан",
+    "delete": "Нест кардан",
+    "edit": "Таҳрир",
+    "publish": "Нашр кардан",
+    "addToFavorites": "Ба интихобшуда",
+    "removeFromFavorites": "Аз интихобшуда",
+    "call": "Занг задан",
+    "showPhone": "Намоиши телефон",
+    "takePhoto": "Акс гирифтан",
+    "chooseFromGallery": "Аз галерея интихоб"
+  },
+  "search": {
+    "searchCars": "Ҷустуҷӯи мошинҳо",
+    "filters": "Филтрҳо",
+    "priceFrom": "Нарх аз",
+    "priceTo": "Нарх то",
+    "yearFrom": "Сол аз",
+    "yearTo": "Сол то",
+    "mileageFrom": "Пробег аз",
+    "mileageTo": "Пробег то",
+    "sortBy": "Мураттабсозӣ",
+    "sortNewest": "Аввал навтарин",
+    "sortPriceAsc": "Нарх: афзоиш",
+    "sortPriceDesc": "Нарх: кам шудан",
+    "applyFilters": "Татбиқ кардан",
+    "resetFilters": "Аз нав"
+  },
+  "profile": {
+    "myProfile": "Профили ман",
+    "myListings": "Эълонҳои ман",
+    "settings": "Танзимот",
+    "language": "Забон",
+    "editProfile": "Таҳрири профил",
+    "name": "Ном"
+  },
+  "admin": {
+    "adminPanel": "Панели админ",
+    "moderation": "Модератсия",
+    "approve": "Тасдиқ кардан",
+    "reject": "Рад кардан",
+    "blockUser": "Блок кардани корбар",
+    "statistics": "Омор"
+  },
+  "messages": {
+    "success": "Муваффақ",
+    "error": "Хато",
+    "loading": "Боркунӣ...",
+    "noResults": "Чизе ёфт нашуд",
+    "carAdded": "Эълон илова шуд",
+    "carDeleted": "Эълон нест шуд",
+    "addedToFavorites": "Ба интихобшуда илова шуд",
+    "removedFromFavorites": "Аз интихобшуда нест шуд"
+  },
+  "regions": {
+    "dushanbe": "Душанбе",
+    "khujand": "Худжанд",
+    "kulob": "Кӯлоб",
+    "qurghonteppa": "Қурғонтеппа",
+    "khorugh": "Хоруғ",
+    "istaravshan": "Истаравшан",
+    "tursunzoda": "Турсунзода",
+    "vahdat": "Ваҳдат"
+  }
+}

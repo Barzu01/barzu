@@ -1,0 +1,117 @@
+{
+  "app": {
+    "name": "SafedAuto",
+    "welcome": "Добро пожаловать"
+  },
+  "auth": {
+    "phoneNumber": "Номер телефона",
+    "enterPhone": "Введите номер телефона",
+    "sendCode": "Отправить код",
+    "verifyCode": "Подтвердить код",
+    "enterCode": "Введите код из SMS",
+    "code": "Код",
+    "logout": "Выйти",
+    "login": "Войти"
+  },
+  "tabs": {
+    "home": "Главная",
+    "search": "Поиск",
+    "addCar": "Добавить",
+    "favorites": "Избранное",
+    "profile": "Профиль"
+  },
+  "car": {
+    "brand": "Марка",
+    "model": "Модель",
+    "year": "Год",
+    "price": "Цена",
+    "mileage": "Пробег",
+    "engineType": "Двигатель",
+    "transmission": "КПП",
+    "driveType": "Привод",
+    "condition": "Состояние",
+    "color": "Цвет",
+    "region": "Регион",
+    "description": "Описание",
+    "photos": "Фотографии",
+    "sellerPhone": "Телефон продавца",
+    "new": "Новый",
+    "used": "Б/У",
+    "manual": "Механика",
+    "automatic": "Автомат",
+    "front": "Передний",
+    "rear": "Задний",
+    "awd": "Полный",
+    "petrol": "Бензин",
+    "diesel": "Дизель",
+    "electric": "Электро",
+    "hybrid": "Гибрид",
+    "km": "км",
+    "currency": "сом."
+  },
+  "actions": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "publish": "Опубликовать",
+    "addToFavorites": "В избранное",
+    "removeFromFavorites": "Из избранного",
+    "call": "Позвонить",
+    "showPhone": "Показать телефон",
+    "takePhoto": "Сделать фото",
+    "chooseFromGallery": "Выбрать из галереи"
+  },
+  "search": {
+    "searchCars": "Поиск автомобилей",
+    "filters": "Фильтры",
+    "priceFrom": "Цена от",
+    "priceTo": "Цена до",
+    "yearFrom": "Год от",
+    "yearTo": "Год до",
+    "mileageFrom": "Пробег от",
+    "mileageTo": "Пробег до",
+    "sortBy": "Сортировка",
+    "sortNewest": "Сначала новые",
+    "sortPriceAsc": "Цена: по возрастанию",
+    "sortPriceDesc": "Цена: по убыванию",
+    "applyFilters": "Применить",
+    "resetFilters": "Сбросить"
+  },
+  "profile": {
+    "myProfile": "Мой профиль",
+    "myListings": "Мои объявления",
+    "settings": "Настройки",
+    "language": "Язык",
+    "editProfile": "Редактировать профиль",
+    "name": "Имя"
+  },
+  "admin": {
+    "adminPanel": "Админ панель",
+    "moderation": "Модерация",
+    "approve": "Одобрить",
+    "reject": "Отклонить",
+    "blockUser": "Заблокировать пользователя",
+    "statistics": "Статистика"
+  },
+  "messages": {
+    "success": "Успешно",
+    "error": "Ошибка",
+    "loading": "Загрузка...",
+    "noResults": "Ничего не найдено",
+    "carAdded": "Объявление добавлено",
+    "carDeleted": "Объявление удалено",
+    "addedToFavorites": "Добавлено в избранное",
+    "removedFromFavorites": "Удалено из избранного"
+  },
+  "regions": {
+    "dushanbe": "Душанбе",
+    "khujand": "Худжанд",
+    "kulob": "Куляб",
+    "qurghonteppa": "Курган-Тюбе",
+    "khorugh": "Хорог",
+    "istaravshan": "Истаравшан",
+    "tursunzoda": "Турсунзаде",
+    "vahdat": "Вахдат"
+  }
+}
