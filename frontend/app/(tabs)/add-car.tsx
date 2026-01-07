@@ -1,39 +1,14 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import React, { useEffect } from 'react';
 import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function AddCarScreen() {
   const router = useRouter();
-  const { t } = useTranslation();
 
-  return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('tabs.addCar')}</Text>
-      </View>
-      
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.comingSoon}>
-          <Ionicons name="add-circle" size={80} color="#0066CC" />
-          <Text style={styles.comingSoonText}>
-            {t('tabs.addCar')}
-          </Text>
-          <Text style={styles.subtitle}>
-            Функция добавления объявления в разработке
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  useEffect(() => {
+    router.replace('/add-car/detail');
+  }, []);
+
+  return null;
 }
 
 const styles = StyleSheet.create({
