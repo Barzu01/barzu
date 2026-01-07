@@ -8,6 +8,7 @@ import {
   Image,
   RefreshControl,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -102,6 +103,31 @@ export default function HomeScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
+  const categories = [
+    { id: '1', name: 'Автомобили', icon: '🚗', filter: null },
+    { id: '2', name: 'Электромобили', icon: '⚡', filter: { engineType: 'electric' } },
+    { id: '3', name: 'Мотоциклы', icon: '🏍️', filter: null },
+    { id: '4', name: 'Грузовики', icon: '🚚', filter: null },
+    { id: '5', name: 'Запчасти', icon: '🔧', filter: null },
+    { id: '6', name: 'Аренда авто', icon: '🔑', filter: null },
+  ];
+
+  const renderCategory = ({ item }: { item: any }) => (
+    <TouchableOpacity 
+      style={styles.categoryCard}
+      onPress={() => {
+        if (item.filter) {
+          // TODO: Фильтрация по категории
+        }
+      }}
+    >
+      <View style={styles.categoryIconContainer}>
+        <Text style={styles.categoryIcon}>{item.icon}</Text>
+      </View>
+      <Text style={styles.categoryName}>{item.name}</Text>
+    </TouchableOpacity>
+  );
+
   const renderCarItem = ({ item }: { item: CarListing }) => (
     <TouchableOpacity
       style={styles.carCard}
@@ -176,6 +202,19 @@ export default function HomeScreen() {
           )}
         </TouchableOpacity>
       </View>
+
+      {/* Categories */}
+      <View style={styles.categoriesSection}>
+        <FlatList
+          horizontal
+          data={categories}
+          renderItem={renderCategory}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoriesContainer}
+        />
+      </View>
+
       <FlatList
         data={cars}
         renderItem={renderCarItem}
@@ -240,6 +279,39 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  categoriesSection: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5EA',
+  },
+  categoriesContainer: {
+    paddingHorizontal: 12,
+    gap: 12,
+  },
+  categoryCard: {
+    alignItems: 'center',
+    marginHorizontal: 4,
+    width: 90,
+  },
+  categoryIconContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#E5F0FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  categoryIcon: {
+    fontSize: 32,
+  },
+  categoryName: {
+    fontSize: 12,
+    color: '#000000',
+    textAlign: 'center',
+    fontWeight: '500',
   },
   listContainer: {
     padding: 16,
