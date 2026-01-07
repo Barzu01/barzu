@@ -60,6 +60,7 @@ class CarListing(BaseModel):
     condition: Literal['new', 'used']
     color: str
     region: str
+    category: str = 'cars'  # Категория: cars, electric, motorcycles, trucks, parts, rent
     description: str
     photos: List[str] = Field(default_factory=list, max_length=10)  # base64 images
     sellerPhone: str
