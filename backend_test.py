@@ -126,7 +126,9 @@ class SafedAutoAPITester:
     def test_update_user(self):
         """Test updating user profile"""
         try:
-            response = self.session.put(f"{API_BASE}/users/{TEST_PHONE}?name={TEST_USER_NAME}")
+            encoded_phone = quote(TEST_PHONE, safe='')
+            encoded_name = quote(TEST_USER_NAME, safe='')
+            response = self.session.put(f"{API_BASE}/users/{encoded_phone}?name={encoded_name}")
             success = response.status_code == 200
             
             if success:
