@@ -152,7 +152,7 @@ class SafedAutoAPITester:
             
             if success:
                 car_data = response.json()
-                self.created_car_id = car_data.get("id")
+                self.created_car_id = car_data.get("_id")
                 success = car_data.get("brand") == TEST_CAR_DATA["brand"]
                 details = f"Created car: {car_data.get('brand')} {car_data.get('model')}, ID: {self.created_car_id}"
             else:
