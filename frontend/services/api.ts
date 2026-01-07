@@ -103,4 +103,24 @@ export const adminAPI = {
   },
 };
 
+// Notification APIs
+export const notificationAPI = {
+  getAll: async (userId: string) => {
+    const response = await api.get(`/notifications/${userId}`);
+    return response.data;
+  },
+  getUnreadCount: async (userId: string) => {
+    const response = await api.get(`/notifications/${userId}/unread-count`);
+    return response.data;
+  },
+  markAsRead: async (notificationId: string) => {
+    const response = await api.put(`/notifications/${notificationId}/read`);
+    return response.data;
+  },
+  markAllAsRead: async (userId: string) => {
+    const response = await api.put(`/notifications/${userId}/read-all`);
+    return response.data;
+  },
+};
+
 export default api;
