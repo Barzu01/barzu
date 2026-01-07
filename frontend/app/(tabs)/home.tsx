@@ -46,6 +46,16 @@ export default function HomeScreen() {
     }
   };
 
+  const loadUnreadCount = async () => {
+    if (!user) return;
+    try {
+      const data = await notificationAPI.getUnreadCount(user.phone);
+      setUnreadCount(data.count);
+    } catch (error) {
+      console.error('Error loading unread count:', error);
+    }
+  };
+
   const toggleFavorite = async (carId: string, e: any) => {
     e.stopPropagation();
     if (!user) return;
