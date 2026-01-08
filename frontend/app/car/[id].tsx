@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Alert,
   ActivityIndicator,
   Linking,
+  Dimensions,
+  Share,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +19,9 @@ import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 export default function CarDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -24,6 +29,8 @@ export default function CarDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -38,7 +45,6 @@ export default function CarDetailsScreen() {
       const data = await carAPI.getById(id as string);
       setCar(data);
       
-      // Check if in favorites
       if (user) {
         const favorites = await favoritesAPI.getAll(user.phone);
         setIsFavorite(favorites.some((fav: CarListing) => fav._id === id));
@@ -57,11 +63,9 @@ export default function CarDetailsScreen() {
       if (isFavorite) {
         await favoritesAPI.remove(user.phone, car._id!);
         setIsFavorite(false);
-        Alert.alert(t('messages.success'), t('messages.removedFromFavorites'));
       } else {
         await favoritesAPI.add(user.phone, car._id!);
         setIsFavorite(true);
-        Alert.alert(t('messages.success'), t('messages.addedToFavorites'));
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -74,10 +78,40 @@ export default function CarDetailsScreen() {
     }
   };
 
+  const openChat = () => {
+    if (!user || !car) return;
+    router.push({
+      pathname: '/chat/[id]',
+      params: { 
+        id: car._id,
+        sellerId: car.sellerId || car.sellerPhone,
+        sellerPhone: car.sellerPhone,
+        carTitle: `${car.brand} ${car.model}`
+      }
+    });
+  };
+
+  const shareCar = async () => {
+    if (!car) return;
+    try {
+      await Share.share({
+        message: `${car.brand} ${car.model} (${car.year}) - ${car.price.toLocaleString()} TJS\n\nSafedAuto`,
+        title: `${car.brand} ${car.model}`,
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
+  const handleImageScroll = (event: any) => {
+    const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+    setCurrentImageIndex(slideIndex);
+  };
+
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#0066FF" />
       </View>
     );
   }
@@ -85,259 +119,565 @@ export default function CarDetailsScreen() {
   if (!car) {
     return (
       <View style={styles.centerContainer}>
-        <Text>Объявление не найдено</Text>
+        <Ionicons name="car-sport-outline" size={64} color="#CBD5E1" />
+        <Text style={styles.notFoundText}>Объявление не найдено</Text>
+        <TouchableOpacity style={styles.backToHomeBtn} onPress={() => router.back()}>
+          <Text style={styles.backToHomeText}>Вернуться назад</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000000" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
-          <Ionicons
-            name={isFavorite ? 'heart' : 'heart-outline'}
-            size={24}
-            color={isFavorite ? '#FF3B30' : '#000000'}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView>
+    <View style={styles.container}>
+      {/* Image Gallery */}
+      <View style={styles.imageSection}>
         {car.photos && car.photos.length > 0 ? (
-          <ScrollView horizontal pagingEnabled style={styles.imageScroll}>
-            {car.photos.map((photo, index) => (
-              <Image
-                key={index}
-                source={{ uri: photo }}
-                style={styles.carImage}
-                resizeMode="cover"
-              />
-            ))}
-          </ScrollView>
+          <>
+            <ScrollView 
+              ref={scrollViewRef}
+              horizontal 
+              pagingEnabled 
+              showsHorizontalScrollIndicator={false}
+              onScroll={handleImageScroll}
+              scrollEventThrottle={16}
+            >
+              {car.photos.map((photo, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: photo }}
+                  style={styles.carImage}
+                  resizeMode="cover"
+                />
+              ))}
+            </ScrollView>
+            
+            {/* Image pagination */}
+            {car.photos.length > 1 && (
+              <View style={styles.pagination}>
+                {car.photos.map((_, index) => (
+                  <View 
+                    key={index} 
+                    style={[
+                      styles.paginationDot,
+                      currentImageIndex === index && styles.paginationDotActive
+                    ]} 
+                  />
+                ))}
+              </View>
+            )}
+            
+            {/* Image counter */}
+            <View style={styles.imageCounter}>
+              <Ionicons name="images" size={14} color="#FFFFFF" />
+              <Text style={styles.imageCounterText}>
+                {currentImageIndex + 1}/{car.photos.length}
+              </Text>
+            </View>
+          </>
         ) : (
           <View style={[styles.carImage, styles.noImage]}>
-            <Ionicons name="car-outline" size={100} color="#C7C7CC" />
+            <Ionicons name="car-sport" size={80} color="#CBD5E1" />
+          </View>
+        )}
+        
+        {/* Gradient overlay */}
+        <LinearGradient
+          colors={['rgba(0,0,0,0.4)', 'transparent', 'transparent']}
+          style={styles.topGradient}
+        />
+        
+        {/* Header buttons */}
+        <SafeAreaView style={styles.headerButtons} edges={['top']}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity onPress={shareCar} style={styles.headerBtn}>
+              <Ionicons name="share-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleFavorite} style={styles.headerBtn}>
+              <Ionicons
+                name={isFavorite ? 'heart' : 'heart-outline'}
+                size={24}
+                color={isFavorite ? '#EF4444' : '#FFFFFF'}
+              />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </View>
+
+      <ScrollView 
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+      >
+        {/* Title & Price */}
+        <View style={styles.titleSection}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>{car.brand} {car.model}</Text>
+            <View style={styles.yearBadge}>
+              <Text style={styles.yearText}>{car.year}</Text>
+            </View>
+          </View>
+          <Text style={styles.price}>
+            {car.price.toLocaleString()} <Text style={styles.currency}>TJS</Text>
+          </Text>
+        </View>
+
+        {/* Quick Stats */}
+        <View style={styles.quickStats}>
+          <View style={styles.statItem}>
+            <Ionicons name="speedometer" size={20} color="#0066FF" />
+            <Text style={styles.statValue}>{car.mileage.toLocaleString()}</Text>
+            <Text style={styles.statLabel}>км</Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Ionicons name="cog" size={20} color="#0066FF" />
+            <Text style={styles.statValue}>{t(`car.${car.transmission}`)}</Text>
+            <Text style={styles.statLabel}>КПП</Text>
+          </View>
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Ionicons name="flash" size={20} color="#0066FF" />
+            <Text style={styles.statValue}>{t(`car.${car.engineType}`)}</Text>
+            <Text style={styles.statLabel}>Двигатель</Text>
+          </View>
+        </View>
+
+        {/* Specifications */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Характеристики</Text>
+          <View style={styles.specGrid}>
+            <SpecItem 
+              icon="car" 
+              label="Привод" 
+              value={t(`car.${car.driveType}`)} 
+            />
+            <SpecItem 
+              icon="color-palette" 
+              label="Цвет" 
+              value={car.color} 
+            />
+            <SpecItem 
+              icon="checkbox" 
+              label="Состояние" 
+              value={t(`car.${car.condition}`)} 
+            />
+            <SpecItem 
+              icon="location" 
+              label="Регион" 
+              value={t(`regions.${car.region}`)} 
+            />
+          </View>
+        </View>
+
+        {/* Description */}
+        {car.description && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Описание</Text>
+            <Text style={styles.description}>{car.description}</Text>
           </View>
         )}
 
-        <View style={styles.content}>
-          <Text style={styles.title}>
-            {car.brand} {car.model}
-          </Text>
-          <Text style={styles.price}>
-            {car.price.toLocaleString()} {t('car.currency')}
-          </Text>
-
-          <View style={styles.detailsCard}>
-            <DetailRow icon="calendar" label={t('car.year')} value={car.year.toString()} />
-            <DetailRow
-              icon="speedometer"
-              label={t('car.mileage')}
-              value={`${car.mileage.toLocaleString()} ${t('car.km')}`}
-            />
-            <DetailRow icon="cog" label={t('car.transmission')} value={t(`car.${car.transmission}`)} />
-            <DetailRow icon="flash" label={t('car.engineType')} value={t(`car.${car.engineType}`)} />
-            <DetailRow icon="car" label={t('car.driveType')} value={t(`car.${car.driveType}`)} />
-            <DetailRow icon="color-palette" label={t('car.color')} value={car.color} />
-            <DetailRow
-              icon="location"
-              label={t('car.region')}
-              value={t(`regions.${car.region}`)}
-            />
-            <DetailRow
-              icon="checkbox"
-              label={t('car.condition')}
-              value={t(`car.${car.condition}`)}
-            />
-          </View>
-
-          {car.description && (
-            <View style={styles.descriptionCard}>
-              <Text style={styles.sectionTitle}>{t('car.description')}</Text>
-              <Text style={styles.description}>{car.description}</Text>
+        {/* Seller Info */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Продавец</Text>
+          <View style={styles.sellerInfo}>
+            <View style={styles.sellerAvatar}>
+              <Ionicons name="person" size={24} color="#64748B" />
             </View>
-          )}
-
-          <View style={styles.contactCard}>
-            <Text style={styles.sectionTitle}>{t('car.sellerPhone')}</Text>
-            {showPhone ? (
-              <TouchableOpacity onPress={callSeller} style={styles.phoneButton}>
-                <Ionicons name="call" size={20} color="#0066CC" />
-                <Text style={styles.phoneText}>{car.sellerPhone}</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => setShowPhone(true)}
-                style={styles.showPhoneButton}
-              >
-                <Text style={styles.showPhoneText}>{t('actions.showPhone')}</Text>
-              </TouchableOpacity>
-            )}
+            <View style={styles.sellerDetails}>
+              <Text style={styles.sellerName}>Частное лицо</Text>
+              <Text style={styles.sellerLocation}>
+                <Ionicons name="location" size={12} color="#64748B" /> {t(`regions.${car.region}`)}
+              </Text>
+            </View>
           </View>
         </View>
+
+        <View style={{ height: 120 }} />
       </ScrollView>
-    </SafeAreaView>
+
+      {/* Bottom Actions */}
+      <View style={styles.bottomActions}>
+        {showPhone ? (
+          <View style={styles.phoneRevealedContainer}>
+            <TouchableOpacity onPress={callSeller} style={styles.callButton}>
+              <Ionicons name="call" size={22} color="#FFFFFF" />
+              <Text style={styles.callButtonText}>{car.sellerPhone}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.actionsRow}>
+            <TouchableOpacity 
+              style={styles.chatButton}
+              onPress={openChat}
+            >
+              <Ionicons name="chatbubbles" size={22} color="#0066FF" />
+              <Text style={styles.chatButtonText}>Написать</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.phoneButton}
+              onPress={() => setShowPhone(true)}
+            >
+              <Ionicons name="call" size={22} color="#FFFFFF" />
+              <Text style={styles.phoneButtonText}>Показать номер</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </View>
   );
 }
 
-const DetailRow = ({
-  icon,
-  label,
-  value,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-}) => (
-  <View style={styles.detailRow}>
-    <View style={styles.detailLeft}>
-      <Ionicons name={icon as any} size={20} color="#8E8E93" />
-      <Text style={styles.detailLabel}>{label}</Text>
+const SpecItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
+  <View style={styles.specItem}>
+    <View style={styles.specIconWrapper}>
+      <Ionicons name={icon as any} size={18} color="#64748B" />
     </View>
-    <Text style={styles.detailValue}>{value}</Text>
+    <View>
+      <Text style={styles.specLabel}>{label}</Text>
+      <Text style={styles.specValue}>{value}</Text>
+    </View>
   </View>
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
+    gap: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-    paddingTop: 50,
+  notFoundText: {
+    fontSize: 18,
+    color: '#64748B',
+    fontWeight: '600',
+  },
+  backToHomeBtn: {
+    marginTop: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: '#0066FF',
+    borderRadius: 12,
+  },
+  backToHomeText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  imageSection: {
+    position: 'relative',
+    height: 320,
+  },
+  carImage: {
+    width: width,
+    height: 320,
+    backgroundColor: '#E2E8F0',
+  },
+  noImage: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topGradient: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 10,
+    height: 120,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  headerButtons: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  headerBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(15, 23, 42, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  favoriteButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  pagination: {
+    position: 'absolute',
+    bottom: 16,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
     justifyContent: 'center',
+    gap: 6,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  paginationDotActive: {
+    backgroundColor: '#FFFFFF',
+    width: 24,
+  },
+  imageCounter: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  imageScroll: {
-    height: 300,
-  },
-  carImage: {
-    width: 400,
-    height: 300,
-    backgroundColor: '#F2F2F7',
-  },
-  noImage: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+  imageCounterText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
   },
   content: {
-    padding: 16,
+    flex: 1,
+    marginTop: -20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    backgroundColor: '#F8FAFC',
+  },
+  contentContainer: {
+    paddingTop: 24,
+    paddingHorizontal: 20,
+  },
+  titleSection: {
+    marginBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 8,
+    flex: 1,
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#0F172A',
+    letterSpacing: -0.5,
+  },
+  yearBadge: {
+    backgroundColor: '#E8F1FF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  yearText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0066FF',
   },
   price: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#0066CC',
-    marginBottom: 24,
+    fontWeight: '800',
+    color: '#0066FF',
   },
-  detailsCard: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  detailLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  detailLabel: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  detailValue: {
-    fontSize: 16,
+  currency: {
+    fontSize: 20,
     fontWeight: '600',
-    color: '#000000',
+    color: '#64748B',
   },
-  descriptionCard: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
+  quickStats: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  sectionTitle: {
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginTop: 6,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: '#E2E8F0',
+    marginVertical: 4,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 8,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 16,
+  },
+  specGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  specItem: {
+    width: '47%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#F8FAFC',
+    padding: 12,
+    borderRadius: 12,
+  },
+  specIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  specLabel: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  specValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0F172A',
+    marginTop: 2,
   },
   description: {
-    fontSize: 16,
-    color: '#000000',
+    fontSize: 15,
+    color: '#475569',
     lineHeight: 24,
   },
-  contactCard: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 32,
-  },
-  phoneButton: {
+  sellerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    padding: 12,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    gap: 14,
   },
-  phoneText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#0066CC',
-  },
-  showPhoneButton: {
-    padding: 16,
-    backgroundColor: '#0066CC',
-    borderRadius: 8,
+  sellerAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  showPhoneText: {
+  sellerDetails: {
+    flex: 1,
+  },
+  sellerName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#0F172A',
+    marginBottom: 2,
+  },
+  sellerLocation: {
+    fontSize: 14,
+    color: '#64748B',
+  },
+  bottomActions: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 32,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  chatButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#E8F1FF',
+    paddingVertical: 16,
+    borderRadius: 14,
+  },
+  chatButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0066FF',
+  },
+  phoneButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#0066FF',
+    paddingVertical: 16,
+    borderRadius: 14,
+  },
+  phoneButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  phoneRevealedContainer: {
+    width: '100%',
+  },
+  callButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: '#10B981',
+    paddingVertical: 16,
+    borderRadius: 14,
+  },
+  callButtonText: {
+    fontSize: 18,
+    fontWeight: '700',
     color: '#FFFFFF',
   },
 });
