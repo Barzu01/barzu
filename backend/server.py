@@ -537,6 +537,162 @@ async def root():
     return {"message": "SafedAuto API", "version": "1.0.0"}
 
 
+# ===== CHAT MODELS =====
+class ChatMessage(BaseModel):
+    chatId: str
+    senderId: str
+    receiverId: str
+    message: str
+    carId: Optional[str] = None
+    carTitle: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    isRead: bool = False
+
+class ChatMessageResponse(ChatMessage):
+    id: Optional[str] = Field(alias='_id')
+
+class Chat(BaseModel):
+    participants: List[str]  # [senderId, receiverId]
+    carId: Optional[str] = None
+    carTitle: Optional[str] = None
+    lastMessage: Optional[str] = None
+    lastMessageAt: datetime = Field(default_factory=datetime.utcnow)
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+class ChatResponse(Chat):
+    id: Optional[str] = Field(alias='_id')
+
+
+# ===== CHAT ENDPOINTS =====
+@api_router.get("/chats/{user_id}")
+async def get_user_chats(user_id: str):
+    """Get all chats for a user"""
+    chats = await db.chats.find({
+        "participants": user_id
+    }).sort("lastMessageAt", -1).to_list(100)
+    
+    result = []
+    for chat in chats:
+        chat_data = serialize_doc(chat)
+        # Get other participant info
+        other_user_id = [p for p in chat['participants'] if p != user_id][0] if len(chat['participants']) > 1 else None
+        if other_user_id:
+            other_user = await db.users.find_one({"phone": other_user_id})
+            if other_user:
+                chat_data['otherUserName'] = other_user.get('name', 'Пользователь')
+                chat_data['otherUserPhone'] = other_user.get('phone')
+        
+        # Get unread count
+        unread_count = await db.chat_messages.count_documents({
+            "chatId": str(chat['_id']),
+            "receiverId": user_id,
+            "isRead": False
+        })
+        chat_data['unreadCount'] = unread_count
+        result.append(chat_data)
+    
+    return result
+
+
+@api_router.post("/chats")
+async def create_or_get_chat(
+    senderId: str,
+    receiverId: str,
+    carId: Optional[str] = None,
+    carTitle: Optional[str] = None
+):
+    """Create a new chat or get existing one"""
+    # Check if chat already exists
+    existing_chat = await db.chats.find_one({
+        "participants": {"$all": [senderId, receiverId]},
+        "carId": carId
+    })
+    
+    if existing_chat:
+        return serialize_doc(existing_chat)
+    
+    # Create new chat
+    chat = Chat(
+        participants=[senderId, receiverId],
+        carId=carId,
+        carTitle=carTitle
+    )
+    result = await db.chats.insert_one(chat.model_dump())
+    new_chat = await db.chats.find_one({"_id": result.inserted_id})
+    return serialize_doc(new_chat)
+
+
+@api_router.get("/chats/{chat_id}/messages")
+async def get_chat_messages(chat_id: str, limit: int = 50, skip: int = 0):
+    """Get messages for a chat"""
+    messages = await db.chat_messages.find({
+        "chatId": chat_id
+    }).sort("createdAt", 1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(msg) for msg in messages]
+
+
+@api_router.post("/chats/{chat_id}/messages")
+async def send_message(
+    chat_id: str,
+    senderId: str,
+    receiverId: str,
+    message: str,
+    carId: Optional[str] = None,
+    carTitle: Optional[str] = None
+):
+    """Send a message"""
+    chat_message = ChatMessage(
+        chatId=chat_id,
+        senderId=senderId,
+        receiverId=receiverId,
+        message=message,
+        carId=carId,
+        carTitle=carTitle
+    )
+    result = await db.chat_messages.insert_one(chat_message.model_dump())
+    
+    # Update chat's last message
+    await db.chats.update_one(
+        {"_id": ObjectId(chat_id)},
+        {
+            "$set": {
+                "lastMessage": message,
+                "lastMessageAt": datetime.utcnow()
+            }
+        }
+    )
+    
+    # Create notification for receiver
+    notification = Notification(
+        userId=receiverId,
+        message=f"Новое сообщение: {message[:50]}..."
+    )
+    await db.notifications.insert_one(notification.model_dump())
+    
+    new_message = await db.chat_messages.find_one({"_id": result.inserted_id})
+    return serialize_doc(new_message)
+
+
+@api_router.put("/chats/{chat_id}/read")
+async def mark_messages_as_read(chat_id: str, user_id: str):
+    """Mark all messages as read for a user in a chat"""
+    await db.chat_messages.update_many(
+        {"chatId": chat_id, "receiverId": user_id, "isRead": False},
+        {"$set": {"isRead": True}}
+    )
+    return {"message": "Messages marked as read"}
+
+
+@api_router.get("/chats/unread-count/{user_id}")
+async def get_unread_messages_count(user_id: str):
+    """Get total unread messages count for a user"""
+    count = await db.chat_messages.count_documents({
+        "receiverId": user_id,
+        "isRead": False
+    })
+    return {"count": count}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
