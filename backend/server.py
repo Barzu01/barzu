@@ -55,14 +55,17 @@ class CarListing(BaseModel):
     price: float
     mileage: int
     engineType: Literal['petrol', 'diesel', 'electric', 'hybrid']
+    engineVolume: Optional[float] = None  # Объем двигателя в литрах
     transmission: Literal['manual', 'automatic']
     driveType: Literal['front', 'rear', 'awd']
+    bodyType: Optional[str] = None  # Тип кузова
     condition: Literal['new', 'used']
     color: str
     region: str
-    category: str = 'cars'  # Категория: cars, electric, motorcycles, trucks, parts, rent
+    category: str = 'cars'
     description: str
-    photos: List[str] = Field(default_factory=list, max_length=10)  # base64 images
+    features: List[str] = Field(default_factory=list)  # Дополнительные опции
+    photos: List[str] = Field(default_factory=list, max_length=10)
     sellerPhone: str
     sellerId: str
     status: Literal['pending', 'approved', 'rejected'] = 'pending'
