@@ -357,21 +357,30 @@ export default function AddCarDetailScreen() {
         {/* Brand & Model */}
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.brand')} *</Text>
-          <TextInput
-            style={styles.input}
+          <SearchableSelect
+            title="Выберите марку"
+            placeholder="Выберите марку автомобиля"
             value={formData.brand}
-            onChangeText={(text) => setFormData({ ...formData, brand: text })}
-            placeholder="Toyota, Honda, Mercedes-Benz..."
+            options={brandOptions}
+            onSelect={handleBrandSelect}
+            onSearch={loadBrands}
+            loading={brandsLoading}
+            emptyText="Марки не найдены. Попробуйте другой запрос."
           />
         </View>
 
         <View style={styles.section}>
           <Text style={styles.label}>{t('car.model')} *</Text>
-          <TextInput
-            style={styles.input}
+          <SearchableSelect
+            title="Выберите модель"
+            placeholder="Выберите модель"
             value={formData.model}
-            onChangeText={(text) => setFormData({ ...formData, model: text })}
-            placeholder="Camry, Accord, E-Class..."
+            options={modelOptions}
+            onSelect={handleModelSelect}
+            loading={modelsLoading}
+            disabled={!selectedBrand}
+            disabledPlaceholder="Сначала выберите марку"
+            emptyText="Модели не найдены"
           />
         </View>
 
