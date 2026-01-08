@@ -7,122 +7,137 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  RefreshControl,
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { adminAPI } from '../../services/api';
-import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { adminAPI } from '../../services/api';
+import { CarListing } from '../../types';
 
-export default function ModerationScreen() {
+export default function AdminModerationScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ totalCars: 0, approvedCars: 0, pendingCars: 0, totalUsers: 0 });
+  const [refreshing, setRefreshing] = useState(false);
+  const [stats, setStats] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const router = useRouter();
-  const { t } = useTranslation();
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [activeTab]);
 
   const loadData = async () => {
     try {
-      const [pendingCars, statsData] = await Promise.all([
+      const [carsData, statsData] = await Promise.all([
         adminAPI.getPendingCars(),
-        adminAPI.getStats(),
+        adminAPI.getStats()
       ]);
-      setCars(pendingCars);
+      setCars(carsData);
       setStats(statsData);
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error('Error loading admin data:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
-  const handleApprove = async (carId: string) => {
-    try {
-      await adminAPI.approveCar(carId);
-      Alert.alert(t('messages.success'), 'Объявление одобрено');
-      loadData();
-    } catch (error) {
-      Alert.alert(t('messages.error'), 'Ошибка при одобрении');
-    }
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadData();
   };
 
-  const handleReject = async (carId: string) => {
+  const handleApprove = async (carId: string, carTitle: string) => {
     Alert.alert(
-      'Отклонить объявление?',
-      'Вы уверены?',
+      'Одобрить объявление',
+      `Одобрить "${carTitle}"?`,
       [
-        { text: t('actions.cancel'), style: 'cancel' },
+        { text: 'Отмена', style: 'cancel' },
         {
-          text: t('admin.reject'),
-          style: 'destructive',
+          text: 'Одобрить',
           onPress: async () => {
             try {
-              await adminAPI.rejectCar(carId);
-              Alert.alert(t('messages.success'), 'Объявление отклонено');
-              loadData();
+              await adminAPI.approveCar(carId);
+              setCars(cars.filter(car => car._id !== carId));
+              Alert.alert('Успешно', 'Объявление одобрено');
             } catch (error) {
-              Alert.alert(t('messages.error'), 'Ошибка при отклонении');
+              Alert.alert('Ошибка', 'Не удалось одобрить объявление');
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
 
+  const handleReject = async (carId: string, carTitle: string) => {
+    Alert.alert(
+      'Отклонить объявление',
+      `Отклонить "${carTitle}"?`,
+      [
+        { text: 'Отмена', style: 'cancel' },
+        {
+          text: 'Отклонить',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await adminAPI.rejectCar(carId);
+              setCars(cars.filter(car => car._id !== carId));
+              Alert.alert('Успешно', 'Объявление отклонено');
+            } catch (error) {
+              Alert.alert('Ошибка', 'Не удалось отклонить объявление');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const formatPrice = (price: number) => `${price.toLocaleString()} TJS`;
+
   const renderCarItem = ({ item }: { item: CarListing }) => (
     <View style={styles.carCard}>
-      {item.photos && item.photos.length > 0 ? (
-        <Image
-          source={{ uri: item.photos[0] }}
-          style={styles.carImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.carImage, styles.noImage]}>
-          <Ionicons name="car-outline" size={60} color="#C7C7CC" />
-        </View>
-      )}
-      <View style={styles.carInfo}>
-        <Text style={styles.carTitle}>
-          {item.brand} {item.model}
-        </Text>
-        <Text style={styles.carPrice}>
-          {item.price.toLocaleString()} {t('car.currency')}
-        </Text>
-        <View style={styles.carDetails}>
-          <Text style={styles.carDetail}>{item.year}</Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>{item.mileage.toLocaleString()} км</Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>{item.sellerPhone}</Text>
-        </View>
-        {item.description && (
-          <Text style={styles.description} numberOfLines={2}>
-            {item.description}
-          </Text>
+      <TouchableOpacity
+        style={styles.cardContent}
+        onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
+      >
+        {item.photos && item.photos.length > 0 ? (
+          <Image source={{ uri: item.photos[0] }} style={styles.carImage} resizeMode="cover" />
+        ) : (
+          <View style={[styles.carImage, styles.noImage]}>
+            <Ionicons name="car-outline" size={32} color="#CBD5E1" />
+          </View>
         )}
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.approveButton]}
-            onPress={() => handleApprove(item._id!)}
-          >
-            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
-            <Text style={styles.actionText}>{t('admin.approve')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.rejectButton]}
-            onPress={() => handleReject(item._id!)}
-          >
-            <Ionicons name="close-circle" size={20} color="#FFFFFF" />
-            <Text style={styles.actionText}>{t('admin.reject')}</Text>
-          </TouchableOpacity>
+        
+        <View style={styles.carInfo}>
+          <Text style={styles.carTitle} numberOfLines={1}>
+            {item.brand} {item.model}
+          </Text>
+          <Text style={styles.carPrice}>{formatPrice(item.price)}</Text>
+          <Text style={styles.carSpecs}>
+            {item.year} • {item.mileage.toLocaleString()} км
+          </Text>
+          <Text style={styles.sellerPhone}>📱 {item.sellerPhone}</Text>
         </View>
+      </TouchableOpacity>
+      
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.approveButton}
+          onPress={() => handleApprove(item._id!, `${item.brand} ${item.model}`)}
+        >
+          <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+          <Text style={styles.approveButtonText}>Одобрить</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.rejectButton}
+          onPress={() => handleReject(item._id!, `${item.brand} ${item.model}`)}
+        >
+          <Ionicons name="close-circle" size={20} color="#FFFFFF" />
+          <Text style={styles.rejectButtonText}>Отклонить</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -130,50 +145,58 @@ export default function ModerationScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#0066FF" />
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000000" />
+          <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('admin.moderation')}</Text>
-        <View style={{ width: 40 }} />
+        <Text style={styles.headerTitle}>🛡️ Модерация</Text>
+        <View style={{ width: 44 }} />
       </View>
 
       {/* Stats */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>{stats.totalCars}</Text>
-          <Text style={styles.statLabel}>Всего авто</Text>
+      {stats && (
+        <View style={styles.statsContainer}>
+          <View style={styles.statCard}>
+            <Text style={styles.statNumber}>{stats.pendingCars}</Text>
+            <Text style={styles.statLabel}>Ожидают</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statNumber, { color: '#10B981' }]}>{stats.approvedCars}</Text>
+            <Text style={styles.statLabel}>Одобрено</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statNumber, { color: '#EF4444' }]}>{stats.rejectedCars}</Text>
+            <Text style={styles.statLabel}>Отклонено</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statNumber, { color: '#8B5CF6' }]}>{stats.totalUsers}</Text>
+            <Text style={styles.statLabel}>Юзеры</Text>
+          </View>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>{stats.approvedCars}</Text>
-          <Text style={styles.statLabel}>Одобрено</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={[styles.statValue, { color: '#FF9500' }]}>{stats.pendingCars}</Text>
-          <Text style={styles.statLabel}>На модерации</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>{stats.totalUsers}</Text>
-          <Text style={styles.statLabel}>Пользователей</Text>
-        </View>
-      </View>
+      )}
 
       <FlatList
         data={cars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0066FF" />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="checkmark-circle" size={80} color="#34C759" />
-            <Text style={styles.emptyText}>Нет объявлений на модерации</Text>
+            <Ionicons name="checkmark-done-circle" size={64} color="#10B981" />
+            <Text style={styles.emptyTitle}>Всё проверено!</Text>
+            <Text style={styles.emptySubtitle}>Нет объявлений для модерации</Text>
           </View>
         }
       />
@@ -184,30 +207,35 @@ export default function ModerationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F8FAFC',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
   },
   header: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: '#E2E8F0',
   },
   backButton: {
-    padding: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
     textAlign: 'center',
   },
   statsContainer: {
@@ -221,101 +249,122 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     alignItems: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  statValue: {
+  statNumber: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0066CC',
+    fontWeight: '800',
+    color: '#F59E0B',
   },
   statLabel: {
-    fontSize: 12,
-    color: '#8E8E93',
-    marginTop: 4,
-    textAlign: 'center',
+    fontSize: 11,
+    color: '#64748B',
+    marginTop: 2,
   },
   listContainer: {
     padding: 16,
-    gap: 16,
+    gap: 12,
   },
   carCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: '#0F172A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 3,
   },
+  cardContent: {
+    flexDirection: 'row',
+    padding: 12,
+    gap: 12,
+  },
   carImage: {
-    width: '100%',
-    height: 200,
-    backgroundColor: '#F2F2F7',
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
   },
   noImage: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   carInfo: {
-    padding: 16,
+    flex: 1,
+    justifyContent: 'center',
   },
   carTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
     marginBottom: 4,
   },
   carPrice: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0066CC',
-    marginBottom: 8,
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0066FF',
+    marginBottom: 4,
   },
-  carDetails: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 8,
+  carSpecs: {
+    fontSize: 13,
+    color: '#64748B',
+    marginBottom: 4,
   },
-  carDetail: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  description: {
-    fontSize: 14,
-    color: '#000000',
-    marginBottom: 12,
+  sellerPhone: {
+    fontSize: 12,
+    color: '#94A3B8',
   },
   actions: {
     flexDirection: 'row',
-    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
   },
-  actionButton: {
+  approveButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    padding: 12,
-    borderRadius: 8,
+    gap: 6,
+    backgroundColor: '#10B981',
+    paddingVertical: 12,
   },
-  approveButton: {
-    backgroundColor: '#34C759',
+  approveButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   rejectButton: {
-    backgroundColor: '#FF3B30',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#EF4444',
+    paddingVertical: 12,
   },
-  actionText: {
-    fontSize: 16,
-    fontWeight: '600',
+  rejectButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
     color: '#FFFFFF',
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 80,
   },
-  emptyText: {
-    fontSize: 18,
-    color: '#8E8E93',
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
     marginTop: 16,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    marginTop: 4,
   },
 });
