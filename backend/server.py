@@ -261,6 +261,18 @@ async def create_car_listing(car: CarListing):
     return serialize_doc(new_car)
 
 
+@api_router.get("/cars/user/{user_id}", response_model=List[CarListingResponse])
+async def get_user_car_listings(user_id: str, limit: int = 50, skip: int = 0):
+    """Get all car listings for a specific user"""
+    cars = await db.cars.find({
+        "$or": [
+            {"sellerId": user_id},
+            {"sellerPhone": user_id}
+        ]
+    }).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(car) for car in cars]
+
+
 @api_router.get("/cars", response_model=List[CarListingResponse])
 async def get_car_listings(
     status: Optional[str] = 'approved',
