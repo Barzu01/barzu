@@ -674,12 +674,15 @@ async def send_message(
         }
     )
     
-    # Create notification for receiver
-    notification = Notification(
-        userId=receiverId,
-        message=f"Новое сообщение: {message[:50]}..."
-    )
-    await db.notifications.insert_one(notification.model_dump())
+    # Create simple notification for receiver (without carId/type requirement)
+    chat_notification = {
+        "userId": receiverId,
+        "message": f"Новое сообщение: {message[:50]}...",
+        "isRead": False,
+        "createdAt": datetime.utcnow(),
+        "type": "chat"
+    }
+    await db.notifications.insert_one(chat_notification)
     
     new_message = await db.chat_messages.find_one({"_id": result.inserted_id})
     return serialize_doc(new_message)
