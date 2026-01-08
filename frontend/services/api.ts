@@ -49,6 +49,10 @@ export const carAPI = {
     const response = await api.delete(`/cars/${id}`);
     return response.data;
   },
+  getUserCars: async (userId: string, limit = 50, skip = 0) => {
+    const response = await api.get(`/cars/user/${encodeURIComponent(userId)}?limit=${limit}&skip=${skip}`);
+    return response.data;
+  },
   search: async (filters: SearchFilters, limit = 50, skip = 0) => {
     const response = await api.post(`/cars/search?limit=${limit}&skip=${skip}`, filters);
     return response.data;
