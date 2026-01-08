@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
   ActivityIndicator,
-  ScrollView,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,9 @@ import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
@@ -24,6 +27,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -78,10 +82,6 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    loadCars();
-  }, []);
-
   const loadCars = async () => {
     try {
       const data = await carAPI.getAll('approved', 50, 0);
@@ -97,81 +97,135 @@ export default function HomeScreen() {
   const onRefresh = () => {
     setRefreshing(true);
     loadCars();
+    if (user) {
+      loadUnreadCount();
+      loadFavorites();
+    }
   };
 
   const formatPrice = (price: number) => {
-    return `${price.toLocaleString()} ${t('car.currency')}`;
+    return price.toLocaleString();
   };
 
   const categories = [
-    { id: '1', name: 'Автомобили', icon: '🚗', filter: null },
-    { id: '2', name: 'Электромобили', icon: '⚡', filter: { engineType: 'electric' } },
-    { id: '3', name: 'Мотоциклы', icon: '🏍️', filter: null },
-    { id: '4', name: 'Грузовики', icon: '🚚', filter: null },
-    { id: '5', name: 'Запчасти', icon: '🔧', filter: null },
-    { id: '6', name: 'Аренда авто', icon: '🔑', filter: null },
+    { id: 'all', name: 'Все', icon: '🚙', gradient: ['#6366F1', '#8B5CF6'] },
+    { id: 'cars', name: 'Авто', icon: '🚗', gradient: ['#0066FF', '#00D4FF'] },
+    { id: 'electric', name: 'Электро', icon: '⚡', gradient: ['#10B981', '#34D399'] },
+    { id: 'motorcycles', name: 'Мото', icon: '🏍️', gradient: ['#F59E0B', '#FBBF24'] },
+    { id: 'trucks', name: 'Грузовики', icon: '🚚', gradient: ['#EF4444', '#F87171'] },
+    { id: 'rent', name: 'Аренда', icon: '🔑', gradient: ['#8B5CF6', '#A78BFA'] },
   ];
 
-  const renderCategory = ({ item }: { item: any }) => (
-    <TouchableOpacity 
-      style={styles.categoryCard}
-      onPress={() => {
-        if (item.filter) {
-          // TODO: Фильтрация по категории
-        }
-      }}
-    >
-      <View style={styles.categoryIconContainer}>
-        <Text style={styles.categoryIcon}>{item.icon}</Text>
-      </View>
-      <Text style={styles.categoryName}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+  const filteredCars = selectedCategory && selectedCategory !== 'all'
+    ? cars.filter(car => {
+        if (selectedCategory === 'electric') return car.engineType === 'electric';
+        if (selectedCategory === 'cars') return car.category === 'cars';
+        return car.category === selectedCategory;
+      })
+    : cars;
 
-  const renderCarItem = ({ item }: { item: CarListing }) => (
-    <TouchableOpacity
-      style={styles.carCard}
-      onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
-    >
-      {item.photos && item.photos.length > 0 ? (
-        <Image
-          source={{ uri: item.photos[0] }}
-          style={styles.carImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.carImage, styles.noImage]}>
-          <Ionicons name="car-outline" size={60} color="#C7C7CC" />
-        </View>
-      )}
-      
+  const renderCategory = ({ item }: { item: typeof categories[0] }) => {
+    const isSelected = selectedCategory === item.id || (!selectedCategory && item.id === 'all');
+    return (
       <TouchableOpacity 
-        style={styles.favoriteButton}
-        onPress={(e) => toggleFavorite(item._id!, e)}
+        style={styles.categoryCard}
+        onPress={() => setSelectedCategory(item.id === 'all' ? null : item.id)}
+        activeOpacity={0.8}
       >
-        <Ionicons 
-          name={favoriteIds.has(item._id!) ? "heart" : "heart-outline"} 
-          size={24} 
-          color={favoriteIds.has(item._id!) ? "#FF3B30" : "#FFFFFF"} 
-        />
+        <View style={[styles.categoryIconWrapper, isSelected && styles.categoryIconWrapperActive]}>
+          <Text style={styles.categoryIcon}>{item.icon}</Text>
+        </View>
+        <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
+          {item.name}
+        </Text>
       </TouchableOpacity>
+    );
+  };
+
+  const renderCarItem = ({ item, index }: { item: CarListing; index: number }) => (
+    <TouchableOpacity
+      style={[styles.carCard, index === 0 && styles.carCardFirst]}
+      onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
+      activeOpacity={0.95}
+    >
+      <View style={styles.imageContainer}>
+        {item.photos && item.photos.length > 0 ? (
+          <Image
+            source={{ uri: item.photos[0] }}
+            style={styles.carImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={[styles.carImage, styles.noImage]}>
+            <Ionicons name="car-sport" size={60} color="#CBD5E1" />
+          </View>
+        )}
+        
+        {/* Gradient overlay */}
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.3)']}
+          style={styles.imageGradient}
+        />
+        
+        {/* Photo count badge */}
+        {item.photos && item.photos.length > 1 && (
+          <View style={styles.photoCountBadge}>
+            <Ionicons name="images" size={12} color="#FFFFFF" />
+            <Text style={styles.photoCountText}>{item.photos.length}</Text>
+          </View>
+        )}
+        
+        {/* Favorite button */}
+        <TouchableOpacity 
+          style={styles.favoriteButton}
+          onPress={(e) => toggleFavorite(item._id!, e)}
+        >
+          <Ionicons 
+            name={favoriteIds.has(item._id!) ? "heart" : "heart-outline"} 
+            size={22} 
+            color={favoriteIds.has(item._id!) ? "#EF4444" : "#FFFFFF"} 
+          />
+        </TouchableOpacity>
+
+        {/* Condition badge */}
+        {item.condition === 'new' && (
+          <View style={styles.newBadge}>
+            <Text style={styles.newBadgeText}>Новый</Text>
+          </View>
+        )}
+      </View>
 
       <View style={styles.carInfo}>
-        <Text style={styles.carTitle}>
-          {item.brand} {item.model}
-        </Text>
-        <Text style={styles.carPrice}>{formatPrice(item.price)}</Text>
-        <View style={styles.carDetails}>
-          <Text style={styles.carDetail}>{item.year} {t('car.year')}</Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>
-            {item.mileage.toLocaleString()} {t('car.km')}
+        <View style={styles.carHeader}>
+          <Text style={styles.carTitle} numberOfLines={1}>
+            {item.brand} {item.model}
           </Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>{t(`car.${item.transmission}`)}</Text>
+          <Text style={styles.carYear}>{item.year}</Text>
         </View>
+        
+        <Text style={styles.carPrice}>
+          {formatPrice(item.price)} <Text style={styles.currency}>TJS</Text>
+        </Text>
+        
+        <View style={styles.specRow}>
+          <View style={styles.specItem}>
+            <Ionicons name="speedometer-outline" size={14} color="#64748B" />
+            <Text style={styles.specText}>{item.mileage.toLocaleString()} км</Text>
+          </View>
+          <View style={styles.specDivider} />
+          <View style={styles.specItem}>
+            <Ionicons name="cog-outline" size={14} color="#64748B" />
+            <Text style={styles.specText}>{t(`car.${item.transmission}`)}</Text>
+          </View>
+          <View style={styles.specDivider} />
+          <View style={styles.specItem}>
+            <Ionicons name="flash-outline" size={14} color="#64748B" />
+            <Text style={styles.specText}>{t(`car.${item.engineType}`)}</Text>
+          </View>
+        </View>
+
         <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={14} color="#8E8E93" />
+          <Ionicons name="location" size={14} color="#0066FF" />
           <Text style={styles.location}>{t(`regions.${item.region}`)}</Text>
         </View>
       </View>
@@ -181,20 +235,25 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#0066FF" />
+        <Text style={styles.loadingText}>Загрузка объявлений...</Text>
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('app.name')}</Text>
+        <View>
+          <Text style={styles.headerGreeting}>Добро пожаловать 👋</Text>
+          <Text style={styles.headerTitle}>SafedAuto</Text>
+        </View>
         <TouchableOpacity 
           style={styles.notificationButton}
           onPress={() => router.push('/notifications')}
         >
-          <Ionicons name="notifications-outline" size={26} color="#000000" />
+          <Ionicons name="notifications" size={24} color="#0F172A" />
           {unreadCount > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
@@ -202,6 +261,16 @@ export default function HomeScreen() {
           )}
         </TouchableOpacity>
       </View>
+
+      {/* Search Bar */}
+      <TouchableOpacity 
+        style={styles.searchBar}
+        onPress={() => router.push('/(tabs)/search')}
+        activeOpacity={0.8}
+      >
+        <Ionicons name="search" size={20} color="#94A3B8" />
+        <Text style={styles.searchPlaceholder}>Поиск по марке или модели...</Text>
+      </TouchableOpacity>
 
       {/* Categories */}
       <View style={styles.categoriesSection}>
@@ -215,18 +284,39 @@ export default function HomeScreen() {
         />
       </View>
 
+      {/* Section title */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>
+          {selectedCategory && selectedCategory !== 'all' 
+            ? categories.find(c => c.id === selectedCategory)?.name 
+            : 'Все объявления'}
+        </Text>
+        <Text style={styles.sectionCount}>{filteredCars.length}</Text>
+      </View>
+
+      {/* Car List */}
       <FlatList
-        data={cars}
+        data={filteredCars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor="#0066FF"
+          />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="car-outline" size={80} color="#C7C7CC" />
-            <Text style={styles.emptyText}>{t('messages.noResults')}</Text>
+            <View style={styles.emptyIcon}>
+              <Ionicons name="car-sport-outline" size={48} color="#94A3B8" />
+            </View>
+            <Text style={styles.emptyTitle}>Нет объявлений</Text>
+            <Text style={styles.emptySubtitle}>
+              В этой категории пока нет автомобилей
+            </Text>
           </View>
         }
       />
@@ -237,187 +327,314 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F8FAFC',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F8FAFC',
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#64748B',
+    fontWeight: '500',
   },
   header: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    paddingTop: 12,
+    paddingBottom: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerGreeting: {
+    fontSize: 14,
+    color: '#64748B',
+    marginBottom: 2,
+  },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#1A1A1A',
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#0F172A',
     letterSpacing: -0.5,
   },
   notificationButton: {
     position: 'relative',
-    padding: 8,
-    borderRadius: 12,
-    backgroundColor: '#F8F9FA',
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   badge: {
     position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#FF3B30',
-    borderRadius: 12,
-    minWidth: 22,
-    height: 22,
+    top: 6,
+    right: 6,
+    backgroundColor: '#EF4444',
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     borderWidth: 2,
     borderColor: '#FFFFFF',
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
   },
-  categoriesSection: {
+  searchBar: {
     backgroundColor: '#FFFFFF',
-    paddingVertical: 20,
+    marginHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 16,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  searchPlaceholder: {
+    fontSize: 15,
+    color: '#94A3B8',
+  },
+  categoriesSection: {
+    paddingBottom: 8,
   },
   categoriesContainer: {
     paddingHorizontal: 16,
-    gap: 16,
+    gap: 8,
   },
   categoryCard: {
     alignItems: 'center',
-    marginHorizontal: 4,
-    width: 85,
+    width: 72,
   },
-  categoryIconContainer: {
-    width: 75,
-    height: 75,
-    borderRadius: 20,
-    backgroundColor: '#F0F6FF',
+  categoryIconWrapper: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: '#F1F5F9',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-    shadowColor: '#0066CC',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    marginBottom: 8,
+  },
+  categoryIconWrapperActive: {
+    backgroundColor: '#0066FF',
   },
   categoryIcon: {
-    fontSize: 36,
+    fontSize: 26,
   },
   categoryName: {
-    fontSize: 13,
-    color: '#1A1A1A',
-    textAlign: 'center',
+    fontSize: 12,
     fontWeight: '600',
+    color: '#64748B',
+    textAlign: 'center',
+  },
+  categoryNameActive: {
+    color: '#0066FF',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  sectionCount: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   listContainer: {
-    padding: 20,
-    gap: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 16,
   },
   carCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: '#0F172A',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowRadius: 16,
     elevation: 4,
+  },
+  carCardFirst: {
+    marginTop: 0,
+  },
+  imageContainer: {
     position: 'relative',
   },
   carImage: {
     width: '100%',
-    height: 240,
-    backgroundColor: '#F8F9FA',
+    height: 200,
+    backgroundColor: '#F1F5F9',
   },
   noImage: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  imageGradient: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 80,
+  },
+  photoCountBadge: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  photoCountText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
   favoriteButton: {
     position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    top: 12,
+    right: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(15, 23, 42, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 5,
+  },
+  newBadge: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    backgroundColor: '#10B981',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  newBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   carInfo: {
-    padding: 20,
+    padding: 16,
+  },
+  carHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   carTitle: {
-    fontSize: 22,
+    flex: 1,
+    fontSize: 18,
     fontWeight: '700',
-    color: '#1A1A1A',
-    marginBottom: 8,
-    letterSpacing: -0.3,
+    color: '#0F172A',
+  },
+  carYear: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
   },
   carPrice: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: '800',
-    color: '#0066CC',
+    color: '#0066FF',
     marginBottom: 12,
-    letterSpacing: -0.5,
   },
-  carDetails: {
+  currency: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  specRow: {
     flexDirection: 'row',
-    gap: 10,
+    alignItems: 'center',
     marginBottom: 12,
-    flexWrap: 'wrap',
   },
-  carDetail: {
-    fontSize: 15,
-    color: '#6B7280',
+  specItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  specText: {
+    fontSize: 13,
+    color: '#64748B',
     fontWeight: '500',
+  },
+  specDivider: {
+    width: 1,
+    height: 12,
+    backgroundColor: '#E2E8F0',
+    marginHorizontal: 10,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#F8F9FA',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
+    gap: 4,
   },
   location: {
-    fontSize: 14,
-    color: '#6B7280',
+    fontSize: 13,
+    color: '#0066FF',
     fontWeight: '600',
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingTop: 80,
+    paddingTop: 60,
+    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontSize: 20,
-    color: '#9CA3AF',
-    marginTop: 20,
-    fontWeight: '600',
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    textAlign: 'center',
   },
 });
