@@ -7,160 +7,198 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  RefreshControl,
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { myListingsAPI, carAPI } from '../../services/api';
-import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
+import { carAPI } from '../../services/api';
+import { CarListing } from '../../types';
 
 export default function MyListingsScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
-  const { t } = useTranslation();
   const { user } = useAuth();
 
   useEffect(() => {
-    loadListings();
+    loadMyCars();
   }, []);
 
-  const loadListings = async () => {
+  const loadMyCars = async () => {
     if (!user) return;
+    
     try {
-      const data = await myListingsAPI.getAll(user.phone);
+      const data = await carAPI.getUserCars(user.phone);
       setCars(data);
     } catch (error) {
-      console.error('Error loading listings:', error);
+      console.error('Error loading my cars:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
-  const deleteListing = async (carId: string) => {
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadMyCars();
+  };
+
+  const handleDelete = (carId: string, carTitle: string) => {
     Alert.alert(
-      t('actions.delete'),
-      'Вы уверены, что хотите удалить это объявление?',
+      'Удалить объявление',
+      `Вы уверены, что хотите удалить "${carTitle}"?`,
       [
-        { text: t('actions.cancel'), style: 'cancel' },
+        { text: 'Отмена', style: 'cancel' },
         {
-          text: t('actions.delete'),
+          text: 'Удалить',
           style: 'destructive',
           onPress: async () => {
             try {
               await carAPI.delete(carId);
-              Alert.alert(t('messages.success'), t('messages.carDeleted'));
-              loadListings();
+              setCars(cars.filter(car => car._id !== carId));
+              Alert.alert('Успешно', 'Объявление удалено');
             } catch (error) {
-              Alert.alert(t('messages.error'), 'Ошибка при удалении');
+              Alert.alert('Ошибка', 'Не удалось удалить объявление');
             }
-          },
-        },
+          }
+        }
       ]
     );
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return '#34C759';
+        return { label: 'Активно', color: '#10B981', bg: '#D1FAE5' };
       case 'pending':
-        return '#FF9500';
+        return { label: 'На модерации', color: '#F59E0B', bg: '#FEF3C7' };
       case 'rejected':
-        return '#FF3B30';
+        return { label: 'Отклонено', color: '#EF4444', bg: '#FEE2E2' };
       default:
-        return '#8E8E93';
+        return { label: status, color: '#64748B', bg: '#F1F5F9' };
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return 'Одобрено';
-      case 'pending':
-        return 'На модерации';
-      case 'rejected':
-        return 'Отклонено';
-      default:
-        return status;
-    }
+  const formatPrice = (price: number) => {
+    return `${price.toLocaleString()} TJS`;
   };
 
-  const renderCarItem = ({ item }: { item: CarListing }) => (
-    <TouchableOpacity
-      style={styles.carCard}
-      onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
-    >
-      {item.photos && item.photos.length > 0 ? (
-        <Image
-          source={{ uri: item.photos[0] }}
-          style={styles.carImage}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={[styles.carImage, styles.noImage]}>
-          <Ionicons name="car-outline" size={60} color="#C7C7CC" />
-        </View>
-      )}
-      <View style={styles.carInfo}>
-        <View style={styles.titleRow}>
-          <Text style={styles.carTitle}>
-            {item.brand} {item.model}
-          </Text>
-          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-            <Text style={styles.statusText}>{getStatusText(item.status)}</Text>
+  const renderCarItem = ({ item }: { item: CarListing }) => {
+    const statusBadge = getStatusBadge(item.status);
+    
+    return (
+      <View style={styles.carCard}>
+        <TouchableOpacity
+          style={styles.cardContent}
+          onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
+          activeOpacity={0.9}
+        >
+          {item.photos && item.photos.length > 0 ? (
+            <Image
+              source={{ uri: item.photos[0] }}
+              style={styles.carImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={[styles.carImage, styles.noImage]}>
+              <Ionicons name="car-outline" size={32} color="#CBD5E1" />
+            </View>
+          )}
+          
+          <View style={styles.carInfo}>
+            <View style={styles.titleRow}>
+              <Text style={styles.carTitle} numberOfLines={1}>
+                {item.brand} {item.model}
+              </Text>
+              <View style={[styles.statusBadge, { backgroundColor: statusBadge.bg }]}>
+                <Text style={[styles.statusText, { color: statusBadge.color }]}>
+                  {statusBadge.label}
+                </Text>
+              </View>
+            </View>
+            
+            <Text style={styles.carPrice}>{formatPrice(item.price)}</Text>
+            
+            <Text style={styles.carSpecs}>
+              {item.year} • {item.mileage.toLocaleString()} км
+            </Text>
           </View>
-        </View>
-        <Text style={styles.carPrice}>
-          {item.price.toLocaleString()} {t('car.currency')}
-        </Text>
-        <View style={styles.carDetails}>
-          <Text style={styles.carDetail}>{item.year}</Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>{item.mileage.toLocaleString()} км</Text>
-        </View>
+        </TouchableOpacity>
+        
+        {/* Action buttons */}
         <View style={styles.actions}>
           <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => deleteListing(item._id!)}
+            style={styles.editButton}
+            onPress={() => router.push({ pathname: '/edit-car/[id]', params: { id: item._id } })}
           >
-            <Ionicons name="trash" size={20} color="#FF3B30" />
-            <Text style={styles.deleteText}>{t('actions.delete')}</Text>
+            <Ionicons name="create-outline" size={20} color="#0066FF" />
+            <Text style={styles.editButtonText}>Редактировать</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDelete(item._id!, `${item.brand} ${item.model}`)}
+          >
+            <Ionicons name="trash-outline" size={20} color="#EF4444" />
           </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
-  );
+    );
+  };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#0066FF" />
       </View>
     );
   }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#000000" />
+          <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('profile.myListings')}</Text>
-        <View style={{ width: 40 }} />
+        <Text style={styles.headerTitle}>Мои объявления</Text>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => router.push('/(tabs)/add-car')}
+        >
+          <Ionicons name="add" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
       </View>
+
       <FlatList
         data={cars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0066FF" />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="car-outline" size={80} color="#C7C7CC" />
-            <Text style={styles.emptyText}>У вас пока нет объявлений</Text>
+            <View style={styles.emptyIcon}>
+              <Ionicons name="car-outline" size={48} color="#94A3B8" />
+            </View>
+            <Text style={styles.emptyTitle}>Нет объявлений</Text>
+            <Text style={styles.emptySubtitle}>
+              Вы ещё не добавили ни одного автомобиля
+            </Text>
+            <TouchableOpacity 
+              style={styles.addCarButton}
+              onPress={() => router.push('/(tabs)/add-car')}
+            >
+              <Ionicons name="add" size={20} color="#FFFFFF" />
+              <Text style={styles.addCarButtonText}>Добавить автомобиль</Text>
+            </TouchableOpacity>
           </View>
         }
       />
@@ -171,31 +209,45 @@ export default function MyListingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F8FAFC',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: '#E2E8F0',
+    gap: 12,
   },
   backButton: {
-    padding: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  addButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#0066FF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listContainer: {
     padding: 16,
@@ -203,37 +255,44 @@ const styles = StyleSheet.create({
   },
   carCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: '#0F172A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 3,
   },
+  cardContent: {
+    flexDirection: 'row',
+    padding: 12,
+    gap: 12,
+  },
   carImage: {
-    width: '100%',
-    height: 200,
-    backgroundColor: '#F2F2F7',
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
   },
   noImage: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   carInfo: {
-    padding: 16,
+    flex: 1,
+    justifyContent: 'center',
   },
   titleRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 4,
   },
   carTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
     flex: 1,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -241,47 +300,87 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
-    color: '#FFFFFF',
   },
   carPrice: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0066CC',
-    marginBottom: 8,
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0066FF',
+    marginBottom: 4,
   },
-  carDetails: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
-  },
-  carDetail: {
-    fontSize: 14,
-    color: '#8E8E93',
+  carSpecs: {
+    fontSize: 13,
+    color: '#64748B',
   },
   actions: {
     flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    padding: 12,
     gap: 12,
   },
-  deleteButton: {
+  editButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    padding: 8,
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#E8F1FF',
+    paddingVertical: 10,
+    borderRadius: 10,
   },
-  deleteText: {
+  editButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FF3B30',
+    color: '#0066FF',
+  },
+  deleteButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: '#FEE2E2',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 80,
+    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontSize: 18,
-    color: '#8E8E93',
-    marginTop: 16,
+  emptyIcon: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  addCarButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#0066FF',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+  },
+  addCarButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
