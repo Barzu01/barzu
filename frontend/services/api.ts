@@ -150,4 +150,43 @@ export const brandsAPI = {
   },
 };
 
+// Chat APIs
+export const chatAPI = {
+  getChats: async (userId: string) => {
+    const response = await api.get(`/chats/${encodeURIComponent(userId)}`);
+    return response.data;
+  },
+  createOrGetChat: async (senderId: string, receiverId: string, carId?: string, carTitle?: string) => {
+    const params = new URLSearchParams();
+    params.append('senderId', senderId);
+    params.append('receiverId', receiverId);
+    if (carId) params.append('carId', carId);
+    if (carTitle) params.append('carTitle', carTitle);
+    const response = await api.post(`/chats?${params.toString()}`);
+    return response.data;
+  },
+  getMessages: async (chatId: string, limit = 50, skip = 0) => {
+    const response = await api.get(`/chats/${chatId}/messages?limit=${limit}&skip=${skip}`);
+    return response.data;
+  },
+  sendMessage: async (chatId: string, senderId: string, receiverId: string, message: string, carId?: string, carTitle?: string) => {
+    const params = new URLSearchParams();
+    params.append('senderId', senderId);
+    params.append('receiverId', receiverId);
+    params.append('message', message);
+    if (carId) params.append('carId', carId);
+    if (carTitle) params.append('carTitle', carTitle);
+    const response = await api.post(`/chats/${chatId}/messages?${params.toString()}`);
+    return response.data;
+  },
+  markAsRead: async (chatId: string, userId: string) => {
+    const response = await api.put(`/chats/${chatId}/read?user_id=${encodeURIComponent(userId)}`);
+    return response.data;
+  },
+  getUnreadCount: async (userId: string) => {
+    const response = await api.get(`/chats/unread-count/${encodeURIComponent(userId)}`);
+    return response.data;
+  },
+};
+
 export default api;
