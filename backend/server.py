@@ -171,6 +171,10 @@ class CarListing(BaseModel):
     sellerPhone: str
     sellerId: str
     status: Literal['pending', 'approved', 'rejected'] = 'pending'
+    isPromoted: bool = False  # Продвигаемое объявление
+    promotedUntil: Optional[datetime] = None  # До какого времени продвигается
+    viewsCount: int = 0  # Количество просмотров
+    priceHistory: List[dict] = Field(default_factory=list)  # История изменения цен
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
@@ -181,10 +185,27 @@ class CarListingResponse(CarListing):
         populate_by_name = True
 
 
-class Notification(BaseModel):
+# Report model
+class Report(BaseModel):
+    carId: str
+    reporterId: str
+    reason: Literal['fake', 'scam', 'inappropriate', 'duplicate', 'other']
+    description: Optional[str] = None
+    status: Literal['pending', 'reviewed', 'resolved'] = 'pending'
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+
+# Recently viewed model
+class RecentlyViewed(BaseModel):
     userId: str
     carId: str
-    type: Literal['approved', 'rejected']
+    viewedAt: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Notification(BaseModel):
+    userId: str
+    carId: Optional[str] = None
+    type: Literal['approved', 'rejected', 'price_drop', 'chat', 'promotion']
     message: str
     isRead: bool = False
     createdAt: datetime = Field(default_factory=datetime.utcnow)
