@@ -123,4 +123,31 @@ export const notificationAPI = {
   },
 };
 
+// Car Brands & Models APIs
+export const brandsAPI = {
+  sync: async () => {
+    const response = await api.post('/brands/sync');
+    return response.data;
+  },
+  getAll: async (search?: string, limit = 100) => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    params.append('limit', limit.toString());
+    const response = await api.get(`/brands?${params.toString()}`);
+    return response.data;
+  },
+  getModels: async (makeId: number) => {
+    const response = await api.get(`/brands/${makeId}/models`);
+    return response.data;
+  },
+  searchModels: async (makeId: number, search: string, limit = 50) => {
+    const params = new URLSearchParams();
+    params.append('make_id', makeId.toString());
+    params.append('search', search);
+    params.append('limit', limit.toString());
+    const response = await api.get(`/models/search?${params.toString()}`);
+    return response.data;
+  },
+};
+
 export default api;
