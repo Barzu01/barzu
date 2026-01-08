@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header, BackgroundTasks
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
 from datetime import datetime
 from bson import ObjectId
+import httpx
 
 
 ROOT_DIR = Path(__file__).parent
@@ -31,6 +32,107 @@ def serialize_doc(doc):
     if doc and '_id' in doc:
         doc['_id'] = str(doc['_id'])
     return doc
+
+
+# ===== BRANDS AND MODELS =====
+class CarBrand(BaseModel):
+    name: str
+    make_id: int
+    
+class CarModel(BaseModel):
+    name: str
+    model_id: int
+    make_id: int
+
+
+async def fetch_brands_from_api():
+    """Fetch all car brands from NHTSA API"""
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get("https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=json")
+            data = response.json()
+            brands = []
+            for item in data.get('Results', []):
+                brands.append({
+                    'name': item.get('Make_Name'),
+                    'make_id': item.get('Make_ID'),
+                })
+            return brands
+    except Exception as e:
+        logging.error(f"Error fetching brands: {e}")
+        return []
+
+
+async def fetch_models_for_brand(make_id: int):
+    """Fetch all models for a specific brand"""
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.get(
+                f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeId/{make_id}?format=json"
+            )
+            data = response.json()
+            models = []
+            for item in data.get('Results', []):
+                models.append({
+                    'name': item.get('Model_Name'),
+                    'model_id': item.get('Model_ID'),
+                    'make_id': make_id,
+                })
+            return models
+    except Exception as e:
+        logging.error(f"Error fetching models for make {make_id}: {e}")
+        return []
+
+
+@api_router.post("/brands/sync")
+async def sync_brands(background_tasks: BackgroundTasks):
+    """Sync car brands from NHTSA API"""
+    brands = await fetch_brands_from_api()
+    if brands:
+        # Clear existing brands
+        await db.car_brands.delete_many({})
+        # Insert new brands
+        await db.car_brands.insert_many(brands)
+        return {"message": f"Synced {len(brands)} brands", "count": len(brands)}
+    return {"message": "No brands fetched", "count": 0}
+
+
+@api_router.get("/brands")
+async def get_brands(search: Optional[str] = None, limit: int = 100):
+    """Get all car brands with optional search"""
+    query = {}
+    if search:
+        query['name'] = {'$regex': search, '$options': 'i'}
+    
+    brands = await db.car_brands.find(query).sort('name', 1).limit(limit).to_list(limit)
+    return [{'name': b['name'], 'make_id': b['make_id']} for b in brands]
+
+
+@api_router.get("/brands/{make_id}/models")
+async def get_models_for_brand(make_id: int):
+    """Get all models for a specific brand"""
+    # Check if models exist in cache
+    models = await db.car_models.find({'make_id': make_id}).sort('name', 1).to_list(1000)
+    
+    if not models:
+        # Fetch from API and cache
+        models_data = await fetch_models_for_brand(make_id)
+        if models_data:
+            await db.car_models.insert_many(models_data)
+            models = models_data
+    
+    return [{'name': m['name'], 'model_id': m.get('model_id', 0)} for m in models]
+
+
+@api_router.get("/models/search")
+async def search_models(make_id: int, search: str, limit: int = 50):
+    """Search models for a specific brand"""
+    query = {
+        'make_id': make_id,
+        'name': {'$regex': search, '$options': 'i'}
+    }
+    models = await db.car_models.find(query).sort('name', 1).limit(limit).to_list(limit)
+    return [{'name': m['name'], 'model_id': m.get('model_id', 0)} for m in models]
 
 
 # Define Models
