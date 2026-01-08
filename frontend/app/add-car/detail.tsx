@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -18,8 +18,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../contexts/AuthContext';
-import { carAPI } from '../../services/api';
-import { CAR_BRANDS, REGIONS, ENGINE_TYPES, TRANSMISSIONS, DRIVE_TYPES, CONDITIONS, COLORS } from '../../constants/carData';
+import { carAPI, brandsAPI } from '../../services/api';
+import { REGIONS } from '../../constants/carData';
+import SearchableSelect from '../../components/SearchableSelect';
+
+interface Brand {
+  name: string;
+  make_id: number;
+}
+
+interface CarModel {
+  name: string;
+  model_id: number;
+}
 
 export default function AddCarDetailScreen() {
   const { user } = useAuth();
