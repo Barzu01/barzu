@@ -25,11 +25,11 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      t('auth.logout'),
+      'Выход',
       'Вы уверены, что хотите выйти?',
       [
-        { text: t('actions.cancel'), style: 'cancel' },
-        { text: t('auth.logout'), style: 'destructive', onPress: logout },
+        { text: 'Отмена', style: 'cancel' },
+        { text: 'Выйти', style: 'destructive', onPress: logout },
       ]
     );
   };
@@ -41,16 +41,16 @@ export default function ProfileScreen() {
 
   const handleSaveName = async () => {
     if (!newName.trim()) {
-      Alert.alert(t('messages.error'), 'Введите имя');
+      Alert.alert('Ошибка', 'Введите имя');
       return;
     }
 
     try {
       await updateUserProfile(newName.trim());
       setEditModalVisible(false);
-      Alert.alert(t('messages.success'), 'Имя успешно обновлено');
+      Alert.alert('Успешно', 'Имя обновлено');
     } catch (error) {
-      Alert.alert(t('messages.error'), 'Не удалось обновить имя');
+      Alert.alert('Ошибка', 'Не удалось обновить имя');
     }
   };
 
@@ -61,46 +61,64 @@ export default function ProfileScreen() {
   const MenuItem = ({
     icon,
     title,
-    value,
+    subtitle,
     onPress,
-    color = '#000000',
+    iconBg = '#F1F5F9',
+    iconColor = '#0066FF',
+    showArrow = true,
+    badge,
   }: {
     icon: string;
     title: string;
-    value?: string;
+    subtitle?: string;
     onPress?: () => void;
-    color?: string;
+    iconBg?: string;
+    iconColor?: string;
+    showArrow?: boolean;
+    badge?: string;
   }) => (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      <View style={styles.menuLeft}>
-        <Ionicons name={icon as any} size={24} color={color} />
-        <Text style={[styles.menuTitle, { color }]}>{title}</Text>
+    <TouchableOpacity style={styles.menuItem} onPress={onPress} activeOpacity={0.7}>
+      <View style={[styles.menuIcon, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon as any} size={22} color={iconColor} />
       </View>
-      {value && <Text style={styles.menuValue}>{value}</Text>}
-      <Ionicons name="chevron-forward" size={20} color="#C7C7CC" />
+      <View style={styles.menuContent}>
+        <Text style={styles.menuTitle}>{title}</Text>
+        {subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
+      </View>
+      {badge && (
+        <View style={styles.menuBadge}>
+          <Text style={styles.menuBadgeText}>{badge}</Text>
+        </View>
+      )}
+      {showArrow && <Ionicons name="chevron-forward" size={20} color="#CBD5E1" />}
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('profile.myProfile')}</Text>
-      </View>
-      
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.profileCard}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Profile Card */}
+        <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="person" size={60} color="#0066CC" />
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {user?.name ? user.name.charAt(0).toUpperCase() : '👤'}
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.editAvatarBtn} onPress={handleEditProfile}>
+              <Ionicons name="pencil" size={14} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
+          
           <Text style={styles.userName}>{user?.name || 'Пользователь'}</Text>
           <Text style={styles.userPhone}>{user?.phone}</Text>
           
           <TouchableOpacity 
-            style={styles.editButton}
+            style={styles.editProfileButton}
             onPress={handleEditProfile}
           >
-            <Ionicons name="create-outline" size={20} color="#0066CC" />
-            <Text style={styles.editButtonText}>{t('profile.editProfile')}</Text>
+            <Ionicons name="create-outline" size={18} color="#0066FF" />
+            <Text style={styles.editProfileText}>Редактировать профиль</Text>
           </TouchableOpacity>
         </View>
 
@@ -114,19 +132,20 @@ export default function ProfileScreen() {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{t('profile.editProfile')}</Text>
+                <Text style={styles.modalTitle}>Редактировать имя</Text>
                 <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                  <Ionicons name="close" size={28} color="#000000" />
+                  <Ionicons name="close" size={28} color="#0F172A" />
                 </TouchableOpacity>
               </View>
               
               <View style={styles.modalBody}>
-                <Text style={styles.inputLabel}>{t('profile.name')}</Text>
+                <Text style={styles.inputLabel}>Ваше имя</Text>
                 <TextInput
                   style={styles.input}
                   value={newName}
                   onChangeText={setNewName}
                   placeholder="Введите ваше имя"
+                  placeholderTextColor="#94A3B8"
                   autoFocus
                 />
                 
@@ -135,14 +154,14 @@ export default function ProfileScreen() {
                     style={styles.cancelButton}
                     onPress={() => setEditModalVisible(false)}
                   >
-                    <Text style={styles.cancelButtonText}>{t('actions.cancel')}</Text>
+                    <Text style={styles.cancelButtonText}>Отмена</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity 
                     style={styles.saveButton}
                     onPress={handleSaveName}
                   >
-                    <Text style={styles.saveButtonText}>{t('actions.save')}</Text>
+                    <Text style={styles.saveButtonText}>Сохранить</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -150,53 +169,93 @@ export default function ProfileScreen() {
           </View>
         </Modal>
 
-        <View style={styles.section}>
-          <MenuItem
-            icon="list"
-            title={t('profile.myListings')}
-            onPress={() => router.push('/profile/my-listings')}
-          />
+        {/* Menu Sections */}
+        <View style={styles.menuSection}>
+          <Text style={styles.sectionLabel}>МОИ ОБЪЯВЛЕНИЯ</Text>
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="car"
+              title="Мои объявления"
+              subtitle="Управление объявлениями"
+              onPress={() => router.push('/profile/my-listings')}
+              iconBg="#E8F1FF"
+            />
+          </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('profile.settings')}</Text>
-          <MenuItem
-            icon="language"
-            title={t('profile.language')}
-            value={i18n.language === 'ru' ? 'Русский' : 'Тоҷикӣ'}
-            onPress={() => {
-              Alert.alert(
-                t('profile.language'),
-                'Выберите язык',
-                [
-                  { text: 'Русский', onPress: () => changeLanguage('ru') },
-                  { text: 'Тоҷикӣ', onPress: () => changeLanguage('tg') },
-                  { text: t('actions.cancel'), style: 'cancel' },
-                ]
-              );
-            }}
-          />
+        <View style={styles.menuSection}>
+          <Text style={styles.sectionLabel}>НАСТРОЙКИ</Text>
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="language"
+              title="Язык"
+              subtitle={i18n.language === 'ru' ? 'Русский' : 'Тоҷикӣ'}
+              onPress={() => {
+                Alert.alert(
+                  'Язык',
+                  'Выберите язык приложения',
+                  [
+                    { text: 'Русский', onPress: () => changeLanguage('ru') },
+                    { text: 'Тоҷикӣ', onPress: () => changeLanguage('tg') },
+                    { text: 'Отмена', style: 'cancel' },
+                  ]
+                );
+              }}
+              iconBg="#F0FDF4"
+              iconColor="#10B981"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="notifications"
+              title="Уведомления"
+              subtitle="Настройки уведомлений"
+              onPress={() => router.push('/notifications')}
+              iconBg="#FEF3C7"
+              iconColor="#F59E0B"
+            />
+          </View>
         </View>
 
         {user?.isAdmin && (
-          <View style={styles.section}>
-            <MenuItem
-              icon="shield-checkmark"
-              title={t('admin.adminPanel')}
-              onPress={() => router.push('/admin/moderation')}
-              color="#FF9500"
-            />
+          <View style={styles.menuSection}>
+            <Text style={styles.sectionLabel}>АДМИНИСТРИРОВАНИЕ</Text>
+            <View style={styles.menuCard}>
+              <MenuItem
+                icon="shield-checkmark"
+                title="Панель модерации"
+                subtitle="Управление объявлениями"
+                onPress={() => router.push('/admin/moderation')}
+                iconBg="#FEE2E2"
+                iconColor="#EF4444"
+              />
+            </View>
           </View>
         )}
 
-        <View style={styles.section}>
-          <MenuItem
-            icon="log-out"
-            title={t('auth.logout')}
-            onPress={handleLogout}
-            color="#FF3B30"
-          />
+        <View style={styles.menuSection}>
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="information-circle"
+              title="О приложении"
+              subtitle="SafedAuto v1.0.0"
+              iconBg="#F1F5F9"
+              iconColor="#64748B"
+              showArrow={false}
+            />
+          </View>
         </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity 
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="log-out-outline" size={22} color="#EF4444" />
+          <Text style={styles.logoutText}>Выйти из аккаунта</Text>
+        </TouchableOpacity>
+
+        <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -205,79 +264,85 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F8FAFC',
   },
-  header: {
+  profileSection: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
-  },
-  content: {
-    padding: 16,
-  },
-  profileCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 24,
     alignItems: 'center',
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    paddingVertical: 32,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
     elevation: 3,
   },
   avatarContainer: {
+    position: 'relative',
+    marginBottom: 16,
+  },
+  avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#E5F0FF',
+    backgroundColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+  },
+  avatarText: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  editAvatarBtn: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#0066FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
   },
   userName: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: '700',
+    color: '#0F172A',
     marginBottom: 4,
   },
   userPhone: {
-    fontSize: 16,
-    color: '#8E8E93',
+    fontSize: 15,
+    color: '#64748B',
     marginBottom: 16,
   },
-  editButton: {
+  editProfileButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#0066CC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    backgroundColor: '#E8F1FF',
   },
-  editButtonText: {
-    fontSize: 15,
+  editProfileText: {
+    fontSize: 14,
     fontWeight: '600',
-    color: '#0066CC',
+    color: '#0066FF',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '50%',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -285,30 +350,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: '#E2E8F0',
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   modalBody: {
     padding: 20,
   },
   inputLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#000000',
+    color: '#64748B',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 8,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
     padding: 14,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: '#E2E8F0',
     marginBottom: 24,
+    color: '#0F172A',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -317,21 +383,20 @@ const styles = StyleSheet.create({
   cancelButton: {
     flex: 1,
     padding: 14,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
   },
   cancelButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
+    color: '#64748B',
   },
   saveButton: {
     flex: 1,
     padding: 14,
-    borderRadius: 10,
-    backgroundColor: '#0066CC',
+    borderRadius: 12,
+    backgroundColor: '#0066FF',
     alignItems: 'center',
   },
   saveButtonText: {
@@ -339,41 +404,85 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  section: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#8E8E93',
-    textTransform: 'uppercase',
+  menuSection: {
     paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
+    marginTop: 24,
+  },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#94A3B8',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  menuCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F7',
+    gap: 14,
   },
-  menuLeft: {
-    flexDirection: 'row',
+  menuIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  menuContent: {
     flex: 1,
-    gap: 12,
   },
   menuTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#0F172A',
   },
-  menuValue: {
-    fontSize: 14,
-    color: '#8E8E93',
+  menuSubtitle: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  menuBadge: {
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
     marginRight: 8,
+  },
+  menuBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#F1F5F9',
+    marginLeft: 74,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginHorizontal: 16,
+    marginTop: 32,
+    padding: 16,
+    backgroundColor: '#FEE2E2',
+    borderRadius: 14,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#EF4444',
   },
 });
