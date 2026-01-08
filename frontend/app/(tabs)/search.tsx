@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { carAPI, favoritesAPI } from '../../services/api';
 import { CarListing } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
+import { COLORS } from '../../constants/theme';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -72,34 +73,23 @@ export default function SearchScreen() {
     setLoading(true);
     setHasSearched(true);
     try {
-      // Разделяем текст на слова
       const words = searchText.trim().split(' ');
       
       let results: CarListing[] = [];
       
       if (words.length === 1) {
-        // Одно слово - ищем по марке ИЛИ модели
-        const searchFilters = {
-          brand: searchText.trim(),
-        };
+        const searchFilters = { brand: searchText.trim() };
         results = await carAPI.search(searchFilters);
         
-        // Если не найдено по марке, ищем по модели
         if (results.length === 0) {
-          const modelFilters = {
-            model: searchText.trim(),
-          };
+          const modelFilters = { model: searchText.trim() };
           results = await carAPI.search(modelFilters);
         }
       } else {
-        // Несколько слов - первое слово марка, остальное модель
         const brand = words[0];
         const model = words.slice(1).join(' ');
         
-        results = await carAPI.search({
-          brand: brand,
-          model: model,
-        });
+        results = await carAPI.search({ brand, model });
       }
       
       setSearchResults(results);
@@ -121,10 +111,20 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
+  const popularBrands = [
+    { name: 'Toyota', icon: '🚗' },
+    { name: 'Mercedes-Benz', icon: '⭐' },
+    { name: 'BMW', icon: '🔵' },
+    { name: 'Hyundai', icon: '🚙' },
+    { name: 'Honda', icon: '🏎️' },
+    { name: 'Lada', icon: '🚘' },
+  ];
+
   const renderCarItem = ({ item }: { item: CarListing }) => (
     <TouchableOpacity
       style={styles.carCard}
       onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
+      activeOpacity={0.9}
     >
       {item.photos && item.photos.length > 0 ? (
         <Image
@@ -134,7 +134,7 @@ export default function SearchScreen() {
         />
       ) : (
         <View style={[styles.carImage, styles.noImage]}>
-          <Ionicons name="car-outline" size={60} color="#C7C7CC" />
+          <Ionicons name="car-outline" size={48} color="#CBD5E1" />
         </View>
       )}
       
@@ -144,27 +144,29 @@ export default function SearchScreen() {
       >
         <Ionicons 
           name={favoriteIds.has(item._id!) ? "heart" : "heart-outline"} 
-          size={24} 
-          color={favoriteIds.has(item._id!) ? "#FF3B30" : "#FFFFFF"} 
+          size={22} 
+          color={favoriteIds.has(item._id!) ? "#EF4444" : "#FFFFFF"} 
         />
       </TouchableOpacity>
 
       <View style={styles.carInfo}>
-        <Text style={styles.carTitle}>
+        <Text style={styles.carTitle} numberOfLines={1}>
           {item.brand} {item.model}
         </Text>
         <Text style={styles.carPrice}>{formatPrice(item.price)}</Text>
-        <View style={styles.carDetails}>
-          <Text style={styles.carDetail}>{item.year} {t('car.year')}</Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>
-            {item.mileage.toLocaleString()} {t('car.km')}
-          </Text>
-          <Text style={styles.carDetail}>•</Text>
-          <Text style={styles.carDetail}>{t(`car.${item.transmission}`)}</Text>
+        <View style={styles.carSpecs}>
+          <View style={styles.specBadge}>
+            <Text style={styles.specText}>{item.year}</Text>
+          </View>
+          <View style={styles.specBadge}>
+            <Text style={styles.specText}>{item.mileage.toLocaleString()} км</Text>
+          </View>
+          <View style={styles.specBadge}>
+            <Text style={styles.specText}>{t(`car.${item.transmission}`)}</Text>
+          </View>
         </View>
         <View style={styles.locationRow}>
-          <Ionicons name="location-outline" size={14} color="#8E8E93" />
+          <Ionicons name="location" size={14} color="#64748B" />
           <Text style={styles.location}>{t(`regions.${item.region}`)}</Text>
         </View>
       </View>
@@ -173,24 +175,28 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('tabs.search')}</Text>
+        <Text style={styles.headerTitle}>Поиск</Text>
+        <Text style={styles.headerSubtitle}>Найдите идеальный автомобиль</Text>
       </View>
       
-      <View style={styles.searchContainer}>
+      {/* Search Bar */}
+      <View style={styles.searchSection}>
         <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#8E8E93" style={styles.searchIcon} />
+          <Ionicons name="search" size={20} color="#94A3B8" />
           <TextInput
             style={styles.searchInput}
-            placeholder="Напр: Toyota Camry, BMW X5..."
+            placeholder="Toyota Camry, BMW X5..."
+            placeholderTextColor="#94A3B8"
             value={searchText}
             onChangeText={setSearchText}
             onSubmitEditing={handleSearch}
             returnKeyType="search"
           />
           {searchText.length > 0 && (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-              <Ionicons name="close-circle" size={20} color="#8E8E93" />
+            <TouchableOpacity onPress={clearSearch}>
+              <Ionicons name="close-circle" size={20} color="#94A3B8" />
             </TouchableOpacity>
           )}
         </View>
@@ -202,15 +208,15 @@ export default function SearchScreen() {
           {loading ? (
             <ActivityIndicator color="#FFFFFF" size="small" />
           ) : (
-            <Text style={styles.searchButtonText}>Найти</Text>
+            <Ionicons name="arrow-forward" size={24} color="#FFFFFF" />
           )}
         </TouchableOpacity>
       </View>
 
       {loading ? (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#0066CC" />
-          <Text style={styles.loadingText}>Поиск автомобилей...</Text>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0066FF" />
+          <Text style={styles.loadingText}>Ищем автомобили...</Text>
         </View>
       ) : hasSearched ? (
         <FlatList
@@ -218,45 +224,70 @@ export default function SearchScreen() {
           renderItem={renderCarItem}
           keyExtractor={(item) => item._id || Math.random().toString()}
           contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="search-outline" size={80} color="#C7C7CC" />
-              <Text style={styles.emptyText}>
-                Ничего не найдено
-              </Text>
-              <Text style={styles.emptySubtext}>
-                Попробуйте изменить запрос
+              <View style={styles.emptyIcon}>
+                <Ionicons name="search-outline" size={48} color="#94A3B8" />
+              </View>
+              <Text style={styles.emptyTitle}>Ничего не найдено</Text>
+              <Text style={styles.emptySubtitle}>
+                Попробуйте изменить параметры поиска
               </Text>
             </View>
           }
+          ListHeaderComponent={
+            searchResults.length > 0 ? (
+              <Text style={styles.resultsCount}>
+                Найдено: {searchResults.length} {searchResults.length === 1 ? 'объявление' : 'объявлений'}
+              </Text>
+            ) : null
+          }
         />
       ) : (
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.suggestionsContainer}>
-            <Text style={styles.suggestionsTitle}>Популярные марки:</Text>
-            <View style={styles.brandButtons}>
-              {['Toyota', 'Honda', 'Mercedes-Benz', 'BMW', 'Hyundai', 'Lada'].map(brand => (
+        <ScrollView 
+          contentContainerStyle={styles.suggestionsContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Popular Brands */}
+          <View style={styles.suggestionsSection}>
+            <Text style={styles.sectionTitle}>🔥 Популярные марки</Text>
+            <View style={styles.brandsGrid}>
+              {popularBrands.map(brand => (
                 <TouchableOpacity
-                  key={brand}
-                  style={styles.brandButton}
+                  key={brand.name}
+                  style={styles.brandCard}
                   onPress={() => {
-                    setSearchText(brand);
-                    setTimeout(handleSearch, 100);
+                    setSearchText(brand.name);
+                    setTimeout(() => handleSearch(), 100);
                   }}
                 >
-                  <Text style={styles.brandButtonText}>{brand}</Text>
+                  <Text style={styles.brandIcon}>{brand.icon}</Text>
+                  <Text style={styles.brandName}>{brand.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          <View style={styles.tipsContainer}>
-            <Ionicons name="information-circle" size={24} color="#0066CC" />
-            <View style={styles.tipsText}>
-              <Text style={styles.tipsTitle}>Советы по поиску:</Text>
-              <Text style={styles.tip}>• Введите марку: "Toyota"</Text>
-              <Text style={styles.tip}>• Марку и модель: "Toyota Camry"</Text>
-              <Text style={styles.tip}>• Только модель: "Camry"</Text>
+          {/* Tips */}
+          <View style={styles.tipsCard}>
+            <View style={styles.tipsHeader}>
+              <Ionicons name="bulb" size={24} color="#F59E0B" />
+              <Text style={styles.tipsTitle}>Советы по поиску</Text>
+            </View>
+            <View style={styles.tipsList}>
+              <View style={styles.tipItem}>
+                <View style={styles.tipBullet} />
+                <Text style={styles.tipText}>Введите марку: «Toyota»</Text>
+              </View>
+              <View style={styles.tipItem}>
+                <View style={styles.tipBullet} />
+                <Text style={styles.tipText}>Марку и модель: «Toyota Camry»</Text>
+              </View>
+              <View style={styles.tipItem}>
+                <View style={styles.tipBullet} />
+                <Text style={styles.tipText}>Только модель: «Camry»</Text>
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -268,94 +299,95 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F8FAFC',
   },
   header: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#0F172A',
+    letterSpacing: -0.5,
   },
-  searchContainer: {
+  headerSubtitle: {
+    fontSize: 15,
+    color: '#64748B',
+    marginTop: 4,
+  },
+  searchSection: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: '#E2E8F0',
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-  },
-  searchIcon: {
-    marginRight: 8,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    gap: 10,
   },
   searchInput: {
     flex: 1,
-    height: 44,
+    height: 48,
     fontSize: 16,
-    color: '#000000',
-  },
-  clearButton: {
-    padding: 4,
+    color: '#0F172A',
   },
   searchButton: {
-    backgroundColor: '#0066CC',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    minWidth: 80,
-  },
-  searchButtonDisabled: {
-    opacity: 0.5,
-  },
-  searchButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  content: {
-    padding: 16,
-  },
-  centerContainer: {
-    flex: 1,
+    width: 52,
+    height: 52,
+    backgroundColor: '#0066FF',
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  searchButtonDisabled: {
+    backgroundColor: '#CBD5E1',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
   loadingText: {
-    marginTop: 16,
     fontSize: 16,
-    color: '#8E8E93',
+    color: '#64748B',
+    fontWeight: '500',
   },
   listContainer: {
-    padding: 16,
+    padding: 20,
     gap: 16,
+  },
+  resultsCount: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '600',
+    marginBottom: 8,
   },
   carCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    position: 'relative',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   carImage: {
     width: '100%',
     height: 200,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: '#F1F5F9',
   },
   noImage: {
     justifyContent: 'center',
@@ -365,37 +397,45 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     right: 12,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(15, 23, 42, 0.4)',
+    backdropFilter: 'blur(10px)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
   },
   carInfo: {
     padding: 16,
   },
   carTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 4,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 6,
   },
   carPrice: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0066CC',
-    marginBottom: 8,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0066FF',
+    marginBottom: 12,
   },
-  carDetails: {
+  carSpecs: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 12,
+    flexWrap: 'wrap',
   },
-  carDetail: {
-    fontSize: 14,
-    color: '#8E8E93',
+  specBadge: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  specText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#64748B',
   },
   locationRow: {
     flexDirection: 'row',
@@ -404,69 +444,104 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: '#64748B',
   },
   emptyContainer: {
     alignItems: 'center',
     paddingTop: 60,
+    paddingHorizontal: 40,
   },
-  emptyText: {
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  emptyTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginTop: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 8,
   },
-  emptySubtext: {
-    fontSize: 16,
-    color: '#8E8E93',
-    marginTop: 8,
+  emptySubtitle: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
   },
-  suggestionsContainer: {
-    marginBottom: 32,
+  suggestionsContent: {
+    padding: 20,
   },
-  suggestionsTitle: {
+  suggestionsSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: '700',
+    color: '#0F172A',
     marginBottom: 16,
   },
-  brandButtons: {
+  brandsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
   },
-  brandButton: {
+  brandCard: {
+    width: '31%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  brandButtonText: {
-    fontSize: 15,
-    color: '#0066CC',
-    fontWeight: '600',
-  },
-  tipsContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#E5F0FF',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
-    gap: 12,
+    alignItems: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  tipsText: {
-    flex: 1,
+  brandIcon: {
+    fontSize: 28,
+    marginBottom: 8,
+  },
+  brandName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#0F172A',
+    textAlign: 'center',
+  },
+  tipsCard: {
+    backgroundColor: '#FEF3C7',
+    borderRadius: 16,
+    padding: 20,
+  },
+  tipsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
   },
   tipsTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 8,
+    fontWeight: '700',
+    color: '#92400E',
   },
-  tip: {
+  tipsList: {
+    gap: 10,
+  },
+  tipItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  tipBullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#F59E0B',
+  },
+  tipText: {
     fontSize: 14,
-    color: '#000000',
-    marginBottom: 4,
+    color: '#92400E',
   },
 });
