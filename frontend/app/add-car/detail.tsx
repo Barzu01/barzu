@@ -41,6 +41,17 @@ export default function AddCarDetailScreen() {
   const [regionModalVisible, setRegionModalVisible] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
 
+  // Brands and Models state
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [models, setModels] = useState<CarModel[]>([]);
+  const [brandsLoading, setBrandsLoading] = useState(false);
+  const [modelsLoading, setModelsLoading] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
+  const [selectedModel, setSelectedModel] = useState<CarModel | null>(null);
+  
+  // Cache for models
+  const [modelsCache, setModelsCache] = useState<{ [key: number]: CarModel[] }>({});
+
   const categories = [
     { value: 'cars', label: 'Автомобили' },
     { value: 'electric', label: 'Электромобили' },
@@ -65,6 +76,80 @@ export default function AddCarDetailScreen() {
     category: 'cars',
     description: '',
   });
+
+  // Load initial brands on mount
+  useEffect(() => {
+    loadBrands('');
+  }, []);
+
+  // Load brands with search
+  const loadBrands = useCallback(async (search: string) => {
+    setBrandsLoading(true);
+    try {
+      const data = await brandsAPI.getAll(search, 100);
+      setBrands(data);
+    } catch (error) {
+      console.error('Error loading brands:', error);
+    } finally {
+      setBrandsLoading(false);
+    }
+  }, []);
+
+  // Load models for selected brand
+  const loadModels = useCallback(async (makeId: number) => {
+    // Check cache first
+    if (modelsCache[makeId]) {
+      setModels(modelsCache[makeId]);
+      return;
+    }
+
+    setModelsLoading(true);
+    try {
+      const data = await brandsAPI.getModels(makeId);
+      setModels(data);
+      // Cache the models
+      setModelsCache(prev => ({ ...prev, [makeId]: data }));
+    } catch (error) {
+      console.error('Error loading models:', error);
+    } finally {
+      setModelsLoading(false);
+    }
+  }, [modelsCache]);
+
+  // Handle brand selection
+  const handleBrandSelect = (option: { label: string; value: string | number; id?: number }) => {
+    const brand = brands.find(b => b.name === option.label);
+    if (brand) {
+      setSelectedBrand(brand);
+      setFormData(prev => ({ ...prev, brand: brand.name, model: '' }));
+      setSelectedModel(null);
+      setModels([]);
+      loadModels(brand.make_id);
+    }
+  };
+
+  // Handle model selection
+  const handleModelSelect = (option: { label: string; value: string | number }) => {
+    const model = models.find(m => m.name === option.label);
+    if (model) {
+      setSelectedModel(model);
+      setFormData(prev => ({ ...prev, model: model.name }));
+    }
+  };
+
+  // Convert brands to options for SearchableSelect
+  const brandOptions = brands.map(b => ({
+    label: b.name,
+    value: b.make_id.toString(),
+    id: b.make_id,
+  }));
+
+  // Convert models to options for SearchableSelect
+  const modelOptions = models.map(m => ({
+    label: m.name,
+    value: m.model_id?.toString() || m.name,
+    id: m.model_id,
+  }));
 
   const pickImage = async () => {
     if (photos.length >= 10) {
