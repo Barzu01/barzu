@@ -729,6 +729,268 @@ async def get_unread_messages_count(user_id: str):
     return {"count": count}
 
 
+# ===== ADMIN ENDPOINTS =====
+@api_router.get("/admin/cars/pending")
+async def get_pending_cars(limit: int = 50, skip: int = 0):
+    """Get all cars pending moderation"""
+    cars = await db.cars.find({"status": "pending"}).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(car) for car in cars]
+
+
+@api_router.get("/admin/cars/all")
+async def get_all_cars_admin(status: Optional[str] = None, limit: int = 50, skip: int = 0):
+    """Get all cars for admin"""
+    query = {}
+    if status:
+        query["status"] = status
+    cars = await db.cars.find(query).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(car) for car in cars]
+
+
+@api_router.put("/admin/cars/{car_id}/approve")
+async def approve_car(car_id: str):
+    """Approve a car listing"""
+    car = await db.cars.find_one({"_id": ObjectId(car_id)})
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    
+    await db.cars.update_one(
+        {"_id": ObjectId(car_id)},
+        {"$set": {"status": "approved", "updatedAt": datetime.utcnow()}}
+    )
+    
+    # Create notification for seller
+    notification = {
+        "userId": car.get("sellerId") or car.get("sellerPhone"),
+        "carId": car_id,
+        "type": "approved",
+        "message": f"Ваше объявление «{car['brand']} {car['model']}» одобрено и опубликовано!",
+        "isRead": False,
+        "createdAt": datetime.utcnow()
+    }
+    await db.notifications.insert_one(notification)
+    
+    return {"message": "Car approved", "carId": car_id}
+
+
+@api_router.put("/admin/cars/{car_id}/reject")
+async def reject_car(car_id: str, reason: str = "Не соответствует правилам"):
+    """Reject a car listing"""
+    car = await db.cars.find_one({"_id": ObjectId(car_id)})
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    
+    await db.cars.update_one(
+        {"_id": ObjectId(car_id)},
+        {"$set": {"status": "rejected", "rejectReason": reason, "updatedAt": datetime.utcnow()}}
+    )
+    
+    # Create notification for seller
+    notification = {
+        "userId": car.get("sellerId") or car.get("sellerPhone"),
+        "carId": car_id,
+        "type": "rejected",
+        "message": f"Ваше объявление «{car['brand']} {car['model']}» отклонено. Причина: {reason}",
+        "isRead": False,
+        "createdAt": datetime.utcnow()
+    }
+    await db.notifications.insert_one(notification)
+    
+    return {"message": "Car rejected", "carId": car_id}
+
+
+@api_router.get("/admin/stats")
+async def get_admin_stats():
+    """Get statistics for admin dashboard"""
+    total_cars = await db.cars.count_documents({})
+    pending_cars = await db.cars.count_documents({"status": "pending"})
+    approved_cars = await db.cars.count_documents({"status": "approved"})
+    rejected_cars = await db.cars.count_documents({"status": "rejected"})
+    total_users = await db.users.count_documents({})
+    pending_reports = await db.reports.count_documents({"status": "pending"})
+    
+    return {
+        "totalCars": total_cars,
+        "pendingCars": pending_cars,
+        "approvedCars": approved_cars,
+        "rejectedCars": rejected_cars,
+        "totalUsers": total_users,
+        "pendingReports": pending_reports
+    }
+
+
+# ===== ADVANCED SEARCH =====
+@api_router.post("/cars/search/advanced")
+async def advanced_search(filters: SearchFilters, limit: int = 50, skip: int = 0):
+    """Advanced search with multiple filters"""
+    query = {"status": "approved"}
+    
+    if filters.brand:
+        query["brand"] = {"$regex": filters.brand, "$options": "i"}
+    if filters.model:
+        query["model"] = {"$regex": filters.model, "$options": "i"}
+    if filters.yearFrom:
+        query["year"] = {"$gte": filters.yearFrom}
+    if filters.yearTo:
+        query.setdefault("year", {})["$lte"] = filters.yearTo
+    if filters.priceFrom:
+        query["price"] = {"$gte": filters.priceFrom}
+    if filters.priceTo:
+        query.setdefault("price", {})["$lte"] = filters.priceTo
+    if filters.mileageFrom:
+        query["mileage"] = {"$gte": filters.mileageFrom}
+    if filters.mileageTo:
+        query.setdefault("mileage", {})["$lte"] = filters.mileageTo
+    if filters.region:
+        query["region"] = filters.region
+    if filters.engineType:
+        query["engineType"] = filters.engineType
+    if filters.transmission:
+        query["transmission"] = filters.transmission
+    if filters.condition:
+        query["condition"] = filters.condition
+    
+    # Sorting
+    sort_field = [("isPromoted", -1)]  # Promoted cars first
+    if filters.sortBy == "newest":
+        sort_field.append(("createdAt", -1))
+    elif filters.sortBy == "priceAsc":
+        sort_field.append(("price", 1))
+    elif filters.sortBy == "priceDesc":
+        sort_field.append(("price", -1))
+    
+    cars = await db.cars.find(query).sort(sort_field).skip(skip).limit(limit).to_list(limit)
+    total = await db.cars.count_documents(query)
+    
+    return {"cars": [serialize_doc(car) for car in cars], "total": total}
+
+
+# ===== REPORTS =====
+@api_router.post("/reports")
+async def create_report(carId: str, reporterId: str, reason: str, description: Optional[str] = None):
+    """Create a report for a car listing"""
+    report = Report(
+        carId=carId,
+        reporterId=reporterId,
+        reason=reason,
+        description=description
+    )
+    result = await db.reports.insert_one(report.model_dump())
+    return {"message": "Report submitted", "reportId": str(result.inserted_id)}
+
+
+@api_router.get("/admin/reports")
+async def get_reports(status: str = "pending", limit: int = 50, skip: int = 0):
+    """Get all reports for admin"""
+    reports = await db.reports.find({"status": status}).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(report) for report in reports]
+
+
+@api_router.put("/admin/reports/{report_id}/resolve")
+async def resolve_report(report_id: str, action: str = "resolved"):
+    """Resolve a report"""
+    await db.reports.update_one(
+        {"_id": ObjectId(report_id)},
+        {"$set": {"status": action}}
+    )
+    return {"message": "Report resolved"}
+
+
+# ===== RECENTLY VIEWED =====
+@api_router.post("/recently-viewed")
+async def add_recently_viewed(userId: str, carId: str):
+    """Add a car to recently viewed"""
+    # Remove old entry if exists
+    await db.recently_viewed.delete_one({"userId": userId, "carId": carId})
+    
+    # Add new entry
+    viewed = RecentlyViewed(userId=userId, carId=carId)
+    await db.recently_viewed.insert_one(viewed.model_dump())
+    
+    # Keep only last 20 items
+    count = await db.recently_viewed.count_documents({"userId": userId})
+    if count > 20:
+        oldest = await db.recently_viewed.find({"userId": userId}).sort("viewedAt", 1).limit(count - 20).to_list(count - 20)
+        for item in oldest:
+            await db.recently_viewed.delete_one({"_id": item["_id"]})
+    
+    return {"message": "Added to recently viewed"}
+
+
+@api_router.get("/recently-viewed/{user_id}")
+async def get_recently_viewed(user_id: str, limit: int = 20):
+    """Get recently viewed cars for a user"""
+    viewed_items = await db.recently_viewed.find({"userId": user_id}).sort("viewedAt", -1).limit(limit).to_list(limit)
+    
+    cars = []
+    for item in viewed_items:
+        car = await db.cars.find_one({"_id": ObjectId(item["carId"]), "status": "approved"})
+        if car:
+            cars.append(serialize_doc(car))
+    
+    return cars
+
+
+# ===== PROMOTION =====
+@api_router.post("/cars/{car_id}/promote")
+async def promote_car(car_id: str, days: int = 7):
+    """Promote a car listing"""
+    car = await db.cars.find_one({"_id": ObjectId(car_id)})
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    
+    promoted_until = datetime.utcnow() + timedelta(days=days)
+    
+    await db.cars.update_one(
+        {"_id": ObjectId(car_id)},
+        {"$set": {"isPromoted": True, "promotedUntil": promoted_until}}
+    )
+    
+    return {"message": f"Car promoted for {days} days", "promotedUntil": promoted_until}
+
+
+@api_router.get("/cars/promoted")
+async def get_promoted_cars(limit: int = 10):
+    """Get promoted cars"""
+    cars = await db.cars.find({
+        "status": "approved",
+        "isPromoted": True,
+        "promotedUntil": {"$gte": datetime.utcnow()}
+    }).sort("promotedUntil", -1).limit(limit).to_list(limit)
+    return [serialize_doc(car) for car in cars]
+
+
+# ===== PRICE HISTORY =====
+@api_router.get("/cars/{car_id}/price-history")
+async def get_price_history(car_id: str):
+    """Get price history for a car"""
+    car = await db.cars.find_one({"_id": ObjectId(car_id)})
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    
+    return car.get("priceHistory", [])
+
+
+# ===== VIEW TRACKING =====
+@api_router.post("/cars/{car_id}/view")
+async def track_car_view(car_id: str, userId: Optional[str] = None):
+    """Track a view on a car listing"""
+    await db.cars.update_one(
+        {"_id": ObjectId(car_id)},
+        {"$inc": {"viewsCount": 1}}
+    )
+    
+    # Add to recently viewed if user is logged in
+    if userId:
+        await add_recently_viewed(userId, car_id)
+    
+    return {"message": "View tracked"}
+
+
+# Import timedelta for promotions
+from datetime import timedelta
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
