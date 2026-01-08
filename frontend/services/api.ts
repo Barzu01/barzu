@@ -193,4 +193,65 @@ export const chatAPI = {
   },
 };
 
+// Reports API
+export const reportAPI = {
+  create: async (carId: string, reporterId: string, reason: string, description?: string) => {
+    const params = new URLSearchParams();
+    params.append('carId', carId);
+    params.append('reporterId', reporterId);
+    params.append('reason', reason);
+    if (description) params.append('description', description);
+    const response = await api.post(`/reports?${params.toString()}`);
+    return response.data;
+  },
+};
+
+// Recently Viewed API
+export const recentlyViewedAPI = {
+  add: async (userId: string, carId: string) => {
+    const params = new URLSearchParams();
+    params.append('userId', userId);
+    params.append('carId', carId);
+    const response = await api.post(`/recently-viewed?${params.toString()}`);
+    return response.data;
+  },
+  getAll: async (userId: string, limit = 20) => {
+    const response = await api.get(`/recently-viewed/${encodeURIComponent(userId)}?limit=${limit}`);
+    return response.data;
+  },
+};
+
+// Advanced Search API
+export const advancedSearchAPI = {
+  search: async (filters: any, limit = 50, skip = 0) => {
+    const response = await api.post(`/cars/search/advanced?limit=${limit}&skip=${skip}`, filters);
+    return response.data;
+  },
+};
+
+// Promotion API
+export const promotionAPI = {
+  promote: async (carId: string, days: number = 7) => {
+    const response = await api.post(`/cars/${carId}/promote?days=${days}`);
+    return response.data;
+  },
+  getPromoted: async (limit = 10) => {
+    const response = await api.get(`/cars/promoted?limit=${limit}`);
+    return response.data;
+  },
+};
+
+// View tracking API
+export const viewAPI = {
+  trackView: async (carId: string, userId?: string) => {
+    const params = userId ? `?userId=${encodeURIComponent(userId)}` : '';
+    const response = await api.post(`/cars/${carId}/view${params}`);
+    return response.data;
+  },
+  getPriceHistory: async (carId: string) => {
+    const response = await api.get(`/cars/${carId}/price-history`);
+    return response.data;
+  },
+};
+
 export default api;
