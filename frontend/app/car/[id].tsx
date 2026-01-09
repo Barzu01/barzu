@@ -21,14 +21,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
+const COMPARE_STORAGE_KEY = 'compare_cars';
 
 export default function CarDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [car, setCar] = useState<CarListing | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isInCompare, setIsInCompare] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -41,7 +44,47 @@ export default function CarDetailsScreen() {
   useEffect(() => {
     loadCar();
     trackView();
+    checkCompareStatus();
   }, [id]);
+
+  const checkCompareStatus = async () => {
+    if (!id) return;
+    try {
+      const storedIds = await AsyncStorage.getItem(COMPARE_STORAGE_KEY);
+      if (storedIds) {
+        const ids = JSON.parse(storedIds) as string[];
+        setIsInCompare(ids.includes(id));
+      }
+    } catch (error) {
+      console.error('Error checking compare status:', error);
+    }
+  };
+
+  const toggleCompare = async () => {
+    if (!id || !car) return;
+    try {
+      const storedIds = await AsyncStorage.getItem(COMPARE_STORAGE_KEY);
+      let ids: string[] = storedIds ? JSON.parse(storedIds) : [];
+      
+      if (ids.includes(id)) {
+        ids = ids.filter(existingId => existingId !== id);
+        setIsInCompare(false);
+        Alert.alert('Удалено', `${car.brand} ${car.model} удалён из сравнения`);
+      } else {
+        if (ids.length >= 4) {
+          Alert.alert('Лимит', 'Можно сравнивать максимум 4 автомобиля');
+          return;
+        }
+        ids.push(id);
+        setIsInCompare(true);
+        Alert.alert('Добавлено', `${car.brand} ${car.model} добавлен в сравнение`);
+      }
+      
+      await AsyncStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(ids));
+    } catch (error) {
+      console.error('Error toggling compare:', error);
+    }
+  };
 
   const trackView = async () => {
     if (!id) return;
