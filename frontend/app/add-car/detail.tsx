@@ -1118,6 +1118,23 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
   },
+  brandHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    padding: 16,
+    borderRadius: 12,
+    gap: 12,
+  },
+  brandHeaderLogo: {
+    width: 48,
+    height: 48,
+  },
+  brandHeaderText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
   fieldLabel: {
     fontSize: 14,
     fontWeight: '600',
