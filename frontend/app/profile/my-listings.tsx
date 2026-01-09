@@ -74,6 +74,31 @@ export default function MyListingsScreen() {
     );
   };
 
+  const openPromoteModal = (car: CarListing) => {
+    setSelectedCarForPromotion(car);
+    setPromoteModalVisible(true);
+  };
+
+  const handlePromote = async (days: number) => {
+    if (!selectedCarForPromotion) return;
+    
+    setPromoting(true);
+    try {
+      await promotionAPI.promote(selectedCarForPromotion._id!, days);
+      setCars(cars.map(car => 
+        car._id === selectedCarForPromotion._id 
+          ? { ...car, isPromoted: true } 
+          : car
+      ));
+      setPromoteModalVisible(false);
+      Alert.alert('Успешно! 🎉', `Ваше объявление "${selectedCarForPromotion.brand} ${selectedCarForPromotion.model}" продвинуто на ${days} дней!`);
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось продвинуть объявление');
+    } finally {
+      setPromoting(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
