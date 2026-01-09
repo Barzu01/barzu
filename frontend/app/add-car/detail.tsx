@@ -365,7 +365,7 @@ export default function AddCarDetailScreen() {
   ];
 
   const [formData, setFormData] = useState({
-    brand: '',
+    brand: 'Mercedes-Benz',
     model: '',
     year: new Date().getFullYear().toString(),
     price: '',
@@ -373,8 +373,8 @@ export default function AddCarDetailScreen() {
     engineType: 'petrol',
     engineVolume: null as number | null,
     bodyType: '',
-    transmission: 'manual',
-    driveType: 'front',
+    transmission: 'automatic',
+    driveType: 'rear',
     condition: 'used',
     color: '',
     region: 'dushanbe',
@@ -382,54 +382,6 @@ export default function AddCarDetailScreen() {
     description: '',
     features: [] as string[],
   });
-
-  // Load initial brands on mount
-  useEffect(() => {
-    loadBrands('');
-  }, []);
-
-  // Load brands with search
-  const loadBrands = useCallback(async (search: string) => {
-    setBrandsLoading(true);
-    try {
-      const data = await brandsAPI.getAll(search, 100);
-      setBrands(data);
-    } catch (error) {
-      console.error('Error loading brands:', error);
-    } finally {
-      setBrandsLoading(false);
-    }
-  }, []);
-
-  // Load models for selected brand
-  const loadModels = useCallback(async (makeId: number) => {
-    if (modelsCache[makeId]) {
-      setModels(modelsCache[makeId]);
-      return;
-    }
-
-    setModelsLoading(true);
-    try {
-      const data = await brandsAPI.getModels(makeId);
-      setModels(data);
-      setModelsCache(prev => ({ ...prev, [makeId]: data }));
-    } catch (error) {
-      console.error('Error loading models:', error);
-    } finally {
-      setModelsLoading(false);
-    }
-  }, [modelsCache]);
-
-  const handleBrandSelect = (option: { label: string; value: string | number; id?: number }) => {
-    const brand = brands.find(b => b.name === option.label);
-    if (brand) {
-      setSelectedBrand(brand);
-      setFormData(prev => ({ ...prev, brand: brand.name, model: '' }));
-      setSelectedModel(null);
-      setModels([]);
-      loadModels(brand.make_id);
-    }
-  };
 
   const handleModelSelect = (option: { label: string; value: string | number }) => {
     const model = models.find(m => m.name === option.label);
