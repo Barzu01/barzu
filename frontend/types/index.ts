@@ -27,6 +27,14 @@ export interface CarListing {
   status: 'pending' | 'approved' | 'rejected';
   createdAt?: string;
   updatedAt?: string;
+  // New fields
+  engineVolume?: number;
+  bodyType?: string;
+  features?: string[];
+  isPromoted?: boolean;
+  promotedUntil?: string;
+  viewsCount?: number;
+  priceHistory?: { price: number; date: string }[];
 }
 
 export interface SearchFilters {
