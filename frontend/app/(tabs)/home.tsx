@@ -205,7 +205,10 @@ export default function HomeScreen() {
     );
   };
 
-  const renderCarItem = ({ item, index }: { item: CarListing; index: number }) => (
+  const renderCarItem = ({ item, index }: { item: CarListing; index: number }) => {
+    const logoUrl = getCarLogo(item.brand);
+    
+    return (
     <TouchableOpacity
       style={[styles.carCard, index === 0 && styles.carCardFirst]}
       onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
@@ -260,9 +263,23 @@ export default function HomeScreen() {
 
       <View style={styles.carInfo}>
         <View style={styles.carHeader}>
-          <Text style={styles.carTitle} numberOfLines={1}>
-            {item.brand} {item.model}
-          </Text>
+          {/* Brand logo + title */}
+          <View style={styles.brandRow}>
+            {logoUrl ? (
+              <Image
+                source={{ uri: logoUrl }}
+                style={styles.brandLogo}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={styles.brandLogoPlaceholder}>
+                <Ionicons name="car" size={16} color="#64748B" />
+              </View>
+            )}
+            <Text style={styles.carTitle} numberOfLines={1}>
+              {item.brand} {item.model}
+            </Text>
+          </View>
           <Text style={styles.carYear}>{item.year}</Text>
         </View>
         
@@ -294,6 +311,7 @@ export default function HomeScreen() {
       </View>
     </TouchableOpacity>
   );
+  };
 
   if (loading) {
     return (
