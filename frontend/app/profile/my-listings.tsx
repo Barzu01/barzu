@@ -22,6 +22,9 @@ export default function MyListingsScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [promoteModalVisible, setPromoteModalVisible] = useState(false);
+  const [selectedCarForPromotion, setSelectedCarForPromotion] = useState<CarListing | null>(null);
+  const [promoting, setPromoting] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
