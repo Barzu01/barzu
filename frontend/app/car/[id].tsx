@@ -502,6 +502,7 @@ const styles = StyleSheet.create({
   headerButtons: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8 },
   headerRight: { flexDirection: 'row', gap: 8 },
   headerBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(15, 23, 42, 0.4)', justifyContent: 'center', alignItems: 'center' },
+  headerBtnActive: { backgroundColor: '#FFFFFF' },
   pagination: { position: 'absolute', bottom: 16, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 6 },
   paginationDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255, 255, 255, 0.5)' },
   paginationDotActive: { backgroundColor: '#FFFFFF', width: 24 },
