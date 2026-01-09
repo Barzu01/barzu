@@ -599,29 +599,24 @@ export default function AddCarDetailScreen() {
 
         {/* Brand & Model */}
         <View style={styles.card}>
-          <SectionHeader title="🚗 Марка и модель" required />
-          <Text style={styles.fieldLabel}>Марка</Text>
-          <SearchableSelect
-            title="Выберите марку"
-            placeholder="Например: Toyota, BMW, Mercedes..."
-            value={formData.brand}
-            options={brandOptions}
-            onSelect={handleBrandSelect}
-            onSearch={loadBrands}
-            loading={brandsLoading}
-            emptyText="Марки не найдены"
-          />
+          <SectionHeader title="🚗 Mercedes-Benz" required />
+          <View style={styles.brandHeader}>
+            <Image 
+              source={{ uri: 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png' }} 
+              style={styles.brandHeaderLogo}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandHeaderText}>Mercedes-Benz</Text>
+          </View>
           
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Модель</Text>
           <SearchableSelect
-            title="Выберите модель"
-            placeholder="Выберите модель"
+            title="Выберите модель Mercedes-Benz"
+            placeholder="Например: E 200, S 500, GLC 300..."
             value={formData.model}
             options={modelOptions}
             onSelect={handleModelSelect}
             loading={modelsLoading}
-            disabled={!selectedBrand}
-            disabledPlaceholder="Сначала выберите марку"
             emptyText="Модели не найдены"
           />
         </View>
