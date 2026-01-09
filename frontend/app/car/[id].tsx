@@ -268,6 +268,9 @@ export default function CarDetailsScreen() {
             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </TouchableOpacity>
           <View style={styles.headerRight}>
+            <TouchableOpacity onPress={toggleCompare} style={[styles.headerBtn, isInCompare && styles.headerBtnActive]}>
+              <Ionicons name="git-compare" size={22} color={isInCompare ? '#0066FF' : '#FFFFFF'} />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShareModalVisible(true)} style={styles.headerBtn}>
               <Ionicons name="share-social" size={24} color="#FFFFFF" />
             </TouchableOpacity>
