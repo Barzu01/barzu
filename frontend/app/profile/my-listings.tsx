@@ -249,6 +249,58 @@ export default function MyListingsScreen() {
           </View>
         }
       />
+
+      {/* Promote Modal */}
+      <Modal visible={promoteModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>🚀 Продвинуть объявление</Text>
+              <TouchableOpacity onPress={() => setPromoteModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.modalSubtitle}>
+              Выберите срок продвижения для "{selectedCarForPromotion?.brand} {selectedCarForPromotion?.model}"
+            </Text>
+            
+            <View style={styles.promoteOptions}>
+              {[
+                { days: 3, price: '50 TJS', popular: false },
+                { days: 7, price: '100 TJS', popular: true },
+                { days: 14, price: '180 TJS', popular: false },
+                { days: 30, price: '300 TJS', popular: false },
+              ].map((option) => (
+                <TouchableOpacity
+                  key={option.days}
+                  style={[styles.promoteOption, option.popular && styles.promoteOptionPopular]}
+                  onPress={() => handlePromote(option.days)}
+                  disabled={promoting}
+                >
+                  {option.popular && (
+                    <View style={styles.popularBadge}>
+                      <Text style={styles.popularBadgeText}>Популярно</Text>
+                    </View>
+                  )}
+                  <Text style={styles.promoteDays}>{option.days} дней</Text>
+                  <Text style={styles.promotePrice}>{option.price}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            
+            {promoting && (
+              <View style={styles.promotingOverlay}>
+                <ActivityIndicator size="large" color="#0066FF" />
+              </View>
+            )}
+            
+            <Text style={styles.promoteNote}>
+              * Ваше объявление будет отображаться выше остальных и помечено значком TOP
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
