@@ -121,6 +121,14 @@ export default function MyListingsScreen() {
     
     return (
       <View style={styles.carCard}>
+        {/* Promoted badge */}
+        {item.isPromoted && (
+          <View style={styles.promotedBadge}>
+            <Ionicons name="star" size={12} color="#FFFFFF" />
+            <Text style={styles.promotedBadgeText}>TOP</Text>
+          </View>
+        )}
+        
         <TouchableOpacity
           style={styles.cardContent}
           onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
@@ -160,12 +168,22 @@ export default function MyListingsScreen() {
         
         {/* Action buttons */}
         <View style={styles.actions}>
+          {!item.isPromoted && item.status === 'approved' && (
+            <TouchableOpacity
+              style={styles.promoteButton}
+              onPress={() => openPromoteModal(item)}
+            >
+              <Ionicons name="rocket" size={18} color="#FFFFFF" />
+              <Text style={styles.promoteButtonText}>Продвинуть</Text>
+            </TouchableOpacity>
+          )}
+          
           <TouchableOpacity
-            style={styles.editButton}
+            style={[styles.editButton, !item.isPromoted && item.status === 'approved' && { flex: 0.5 }]}
             onPress={() => router.push({ pathname: '/edit-car/[id]', params: { id: item._id } })}
           >
             <Ionicons name="create-outline" size={20} color="#0066FF" />
-            <Text style={styles.editButtonText}>Редактировать</Text>
+            <Text style={styles.editButtonText}>Изменить</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
