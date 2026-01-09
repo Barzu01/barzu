@@ -180,6 +180,38 @@ export default function ProfileScreen() {
               onPress={() => router.push('/profile/my-listings')}
               iconBg="#E8F1FF"
             />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="time"
+              title="Недавно просмотренные"
+              subtitle="История просмотров"
+              onPress={() => router.push('/profile/recently-viewed')}
+              iconBg="#F0FDF4"
+              iconColor="#10B981"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="git-compare"
+              title="Сравнение авто"
+              subtitle="Сравните характеристики"
+              onPress={() => router.push('/compare')}
+              iconBg="#FEF3C7"
+              iconColor="#F59E0B"
+            />
+          </View>
+        </View>
+
+        <View style={styles.menuSection}>
+          <Text style={styles.sectionLabel}>ПОИСК</Text>
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="options"
+              title="Расширенный поиск"
+              subtitle="Фильтры по всем параметрам"
+              onPress={() => router.push('/search/advanced')}
+              iconBg="#EDE9FE"
+              iconColor="#8B5CF6"
+            />
           </View>
         </View>
 
