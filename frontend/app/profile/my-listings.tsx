@@ -9,12 +9,13 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { carAPI } from '../../services/api';
+import { carAPI, promotionAPI } from '../../services/api';
 import { CarListing } from '../../types';
 
 export default function MyListingsScreen() {
