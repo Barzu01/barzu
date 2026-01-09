@@ -21,6 +21,69 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
+// Логотипы автопроизводителей
+const CAR_LOGOS: { [key: string]: string } = {
+  'Toyota': 'https://www.carlogos.org/car-logos/toyota-logo-2019-3700x1200.png',
+  'Honda': 'https://www.carlogos.org/car-logos/honda-logo-1700x1150.png',
+  'BMW': 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png',
+  'Mercedes-Benz': 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png',
+  'Mercedes': 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png',
+  'Audi': 'https://www.carlogos.org/car-logos/audi-logo-2016.png',
+  'Volkswagen': 'https://www.carlogos.org/car-logos/volkswagen-logo-2019-1500x1500.png',
+  'Hyundai': 'https://www.carlogos.org/car-logos/hyundai-logo-2011-1920x1080.png',
+  'Kia': 'https://www.carlogos.org/car-logos/kia-logo-2021-2560x1440.png',
+  'Nissan': 'https://www.carlogos.org/car-logos/nissan-logo-2020-black.png',
+  'Mazda': 'https://www.carlogos.org/car-logos/mazda-logo-2018-1920x1080.png',
+  'Ford': 'https://www.carlogos.org/car-logos/ford-logo-2017-1500x1101.png',
+  'Chevrolet': 'https://www.carlogos.org/car-logos/chevrolet-logo-2013-2560x1440.png',
+  'Lexus': 'https://www.carlogos.org/car-logos/lexus-logo-1988-1920x1080.png',
+  'Porsche': 'https://www.carlogos.org/car-logos/porsche-logo-2014-1920x1080.png',
+  'Land Rover': 'https://www.carlogos.org/car-logos/land-rover-logo-2020-green.png',
+  'Jeep': 'https://www.carlogos.org/car-logos/jeep-logo-1993-1920x1080.png',
+  'Subaru': 'https://www.carlogos.org/car-logos/subaru-logo-2019-1920x1080.png',
+  'Mitsubishi': 'https://www.carlogos.org/car-logos/mitsubishi-logo-2000x2500.png',
+  'Volvo': 'https://www.carlogos.org/car-logos/volvo-logo-2014-1920x1080.png',
+  'Peugeot': 'https://www.carlogos.org/car-logos/peugeot-logo-2010-1920x1080.png',
+  'Renault': 'https://www.carlogos.org/car-logos/renault-logo-2021-1920x1080.png',
+  'Skoda': 'https://www.carlogos.org/car-logos/skoda-logo-2016-1920x1080.png',
+  'Suzuki': 'https://www.carlogos.org/car-logos/suzuki-logo-1920x1080.png',
+  'Fiat': 'https://www.carlogos.org/car-logos/fiat-logo-2020-1920x1080.png',
+  'Jaguar': 'https://www.carlogos.org/car-logos/jaguar-logo-2012-1920x1080.png',
+  'Infiniti': 'https://www.carlogos.org/car-logos/infiniti-logo-1989-1920x1080.png',
+  'Acura': 'https://www.carlogos.org/car-logos/acura-logo-1990-1920x1080.png',
+  'Cadillac': 'https://www.carlogos.org/car-logos/cadillac-logo-2014-1920x1080.png',
+  'Chrysler': 'https://www.carlogos.org/car-logos/chrysler-logo-2010-1920x1080.png',
+  'Dodge': 'https://www.carlogos.org/car-logos/dodge-logo-2011-1920x1080.png',
+  'Tesla': 'https://www.carlogos.org/car-logos/tesla-logo-2007-1920x1080.png',
+  'Lada': 'https://www.carlogos.org/car-logos/lada-logo-2015-1920x1080.png',
+  'GAZ': 'https://www.carlogos.org/car-logos/gaz-logo-1920x1080.png',
+  'UAZ': 'https://www.carlogos.org/car-logos/uaz-logo-2016-1920x1080.png',
+  'Daewoo': 'https://www.carlogos.org/car-logos/daewoo-logo-1920x1080.png',
+  'Geely': 'https://www.carlogos.org/car-logos/geely-logo-2019-1920x1080.png',
+  'Chery': 'https://www.carlogos.org/car-logos/chery-logo-2013-1920x1080.png',
+  'BYD': 'https://www.carlogos.org/car-logos/byd-logo-2007-1920x1080.png',
+  'Great Wall': 'https://www.carlogos.org/car-logos/great-wall-logo-2007-1920x1080.png',
+  'Haval': 'https://www.carlogos.org/car-logos/haval-logo-2020-1920x1080.png',
+  'JAC': 'https://www.carlogos.org/car-logos/jac-logo-2016-1920x1080.png',
+  'Lifan': 'https://www.carlogos.org/car-logos/lifan-logo-2011-1920x1080.png',
+  'Ravon': 'https://www.carlogos.org/car-logos/ravon-logo-2015-1920x1080.png',
+  'ZAZ': 'https://www.carlogos.org/car-logos/zaz-logo-2018-1920x1080.png',
+};
+
+const getCarLogo = (brand: string): string | null => {
+  // Проверяем точное совпадение
+  if (CAR_LOGOS[brand]) return CAR_LOGOS[brand];
+  
+  // Проверяем частичное совпадение (без учёта регистра)
+  const brandLower = brand.toLowerCase();
+  for (const [key, value] of Object.entries(CAR_LOGOS)) {
+    if (key.toLowerCase() === brandLower || brandLower.includes(key.toLowerCase())) {
+      return value;
+    }
+  }
+  return null;
+};
+
 export default function HomeScreen() {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
