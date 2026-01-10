@@ -4643,7 +4643,7 @@ export default function AddCarDetailScreen() {
       >
         {/* Photos Section */}
         <View style={styles.card}>
-          <SectionHeader title="📷 Фотографии" required />
+          <SectionHeader title={t('addCar.photosSection')} required />
           <View style={styles.photosContainer}>
             {photos.map((photo, index) => (
               <View key={index} style={styles.photoWrapper}>
@@ -4696,10 +4696,10 @@ export default function AddCarDetailScreen() {
 
         {/* Brand & Model */}
         <View style={styles.card}>
-          <SectionHeader title="🚗 Марка и модель" required />
+          <SectionHeader title={t('addCar.brandModelSection')} required />
           
           {/* Brand Selection */}
-          <Text style={styles.fieldLabel}>Марка</Text>
+          <Text style={styles.fieldLabel}>{t('car.brand')}</Text>
           <TouchableOpacity
             style={styles.selectField}
             onPress={() => setBrandModalVisible(true)}
@@ -4715,13 +4715,13 @@ export default function AddCarDetailScreen() {
               </View>
             ) : (
               <Text style={[styles.selectFieldText, styles.placeholder]}>
-                Выберите марку
+                {t('addCar.selectBrand')}
               </Text>
             )}
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
           
-          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Модель</Text>
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.model')}</Text>
           <SearchableSelect
             title={selectedBrand ? `Модели ${selectedBrand.name}` : "Выберите модель"}
             placeholder="Выберите модель"
