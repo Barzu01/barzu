@@ -119,7 +119,7 @@ export default function FavoritesScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Избранное</Text>
+        <Text style={styles.headerTitle}>{t('tabs.favorites')}</Text>
         {cars.length > 0 && (
           <View style={styles.countBadge}>
             <Text style={styles.countText}>{cars.length}</Text>
@@ -141,15 +141,15 @@ export default function FavoritesScreen() {
             <View style={styles.emptyIcon}>
               <Ionicons name="heart-outline" size={48} color="#94A3B8" />
             </View>
-            <Text style={styles.emptyTitle}>Пока ничего нет</Text>
+            <Text style={styles.emptyTitle}>{t('favorites.nothingYet')}</Text>
             <Text style={styles.emptySubtitle}>
-              Нажмите ❤️ на объявлении, чтобы добавить его в избранное
+              {t('favorites.addToFavoritesHint')}
             </Text>
             <TouchableOpacity 
               style={styles.browseButton}
               onPress={() => router.push('/(tabs)/home')}
             >
-              <Text style={styles.browseButtonText}>Смотреть объявления</Text>
+              <Text style={styles.browseButtonText}>{t('favorites.browseListings')}</Text>
             </TouchableOpacity>
           </View>
         }
