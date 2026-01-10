@@ -4326,6 +4326,7 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   507: ASTON_MARTIN_MODELS, // Aston Martin
   508: MCLAREN_MODELS,  // McLaren
   509: LOTUS_MODELS,    // Lotus
+  999: [{ name: 'Введите модель вручную', model_id: 99999 }], // Другая марка
 };
 
 // Логотипы брендов
