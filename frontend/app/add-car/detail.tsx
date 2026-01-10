@@ -2576,6 +2576,696 @@ const JEEP_MODELS: CarModel[] = [
   { name: 'Другая модель', model_id: 17999 },
 ];
 
+// Все модели Volvo
+const VOLVO_MODELS: CarModel[] = [
+  // S40
+  { name: 'S40', model_id: 18001 },
+  { name: 'S40 1.6', model_id: 18002 },
+  { name: 'S40 1.8', model_id: 18003 },
+  { name: 'S40 2.0', model_id: 18004 },
+  { name: 'S40 2.4', model_id: 18005 },
+  { name: 'S40 T5', model_id: 18006 },
+  // S60
+  { name: 'S60', model_id: 18010 },
+  { name: 'S60 2.0 T', model_id: 18011 },
+  { name: 'S60 2.0 D', model_id: 18012 },
+  { name: 'S60 T4', model_id: 18013 },
+  { name: 'S60 T5', model_id: 18014 },
+  { name: 'S60 T6', model_id: 18015 },
+  { name: 'S60 T8', model_id: 18016 },
+  { name: 'S60 Recharge', model_id: 18017 },
+  { name: 'S60 Polestar', model_id: 18018 },
+  // S80
+  { name: 'S80', model_id: 18020 },
+  { name: 'S80 2.0 T', model_id: 18021 },
+  { name: 'S80 2.4', model_id: 18022 },
+  { name: 'S80 2.5 T', model_id: 18023 },
+  { name: 'S80 3.2', model_id: 18024 },
+  { name: 'S80 T6', model_id: 18025 },
+  { name: 'S80 D5', model_id: 18026 },
+  // S90
+  { name: 'S90', model_id: 18030 },
+  { name: 'S90 T4', model_id: 18031 },
+  { name: 'S90 T5', model_id: 18032 },
+  { name: 'S90 T6', model_id: 18033 },
+  { name: 'S90 T8', model_id: 18034 },
+  { name: 'S90 D4', model_id: 18035 },
+  { name: 'S90 D5', model_id: 18036 },
+  { name: 'S90 Recharge', model_id: 18037 },
+  // V40
+  { name: 'V40', model_id: 18040 },
+  { name: 'V40 T2', model_id: 18041 },
+  { name: 'V40 T3', model_id: 18042 },
+  { name: 'V40 T4', model_id: 18043 },
+  { name: 'V40 T5', model_id: 18044 },
+  { name: 'V40 D2', model_id: 18045 },
+  { name: 'V40 D3', model_id: 18046 },
+  { name: 'V40 D4', model_id: 18047 },
+  { name: 'V40 Cross Country', model_id: 18048 },
+  // V50
+  { name: 'V50', model_id: 18050 },
+  { name: 'V50 1.6', model_id: 18051 },
+  { name: 'V50 1.8', model_id: 18052 },
+  { name: 'V50 2.0', model_id: 18053 },
+  { name: 'V50 2.4', model_id: 18054 },
+  { name: 'V50 T5', model_id: 18055 },
+  // V60
+  { name: 'V60', model_id: 18060 },
+  { name: 'V60 T4', model_id: 18061 },
+  { name: 'V60 T5', model_id: 18062 },
+  { name: 'V60 T6', model_id: 18063 },
+  { name: 'V60 T8', model_id: 18064 },
+  { name: 'V60 D3', model_id: 18065 },
+  { name: 'V60 D4', model_id: 18066 },
+  { name: 'V60 D5', model_id: 18067 },
+  { name: 'V60 Cross Country', model_id: 18068 },
+  { name: 'V60 Recharge', model_id: 18069 },
+  { name: 'V60 Polestar', model_id: 18070 },
+  // V70
+  { name: 'V70', model_id: 18075 },
+  { name: 'V70 2.0 T', model_id: 18076 },
+  { name: 'V70 2.4', model_id: 18077 },
+  { name: 'V70 2.5 T', model_id: 18078 },
+  { name: 'V70 3.2', model_id: 18079 },
+  { name: 'V70 T6', model_id: 18080 },
+  { name: 'V70 D5', model_id: 18081 },
+  // V90
+  { name: 'V90', model_id: 18085 },
+  { name: 'V90 T5', model_id: 18086 },
+  { name: 'V90 T6', model_id: 18087 },
+  { name: 'V90 T8', model_id: 18088 },
+  { name: 'V90 D4', model_id: 18089 },
+  { name: 'V90 D5', model_id: 18090 },
+  { name: 'V90 Cross Country', model_id: 18091 },
+  { name: 'V90 Recharge', model_id: 18092 },
+  // XC40
+  { name: 'XC40', model_id: 18100 },
+  { name: 'XC40 T3', model_id: 18101 },
+  { name: 'XC40 T4', model_id: 18102 },
+  { name: 'XC40 T5', model_id: 18103 },
+  { name: 'XC40 D3', model_id: 18104 },
+  { name: 'XC40 D4', model_id: 18105 },
+  { name: 'XC40 Recharge', model_id: 18106 },
+  // XC60
+  { name: 'XC60', model_id: 18110 },
+  { name: 'XC60 T4', model_id: 18111 },
+  { name: 'XC60 T5', model_id: 18112 },
+  { name: 'XC60 T6', model_id: 18113 },
+  { name: 'XC60 T8', model_id: 18114 },
+  { name: 'XC60 D3', model_id: 18115 },
+  { name: 'XC60 D4', model_id: 18116 },
+  { name: 'XC60 D5', model_id: 18117 },
+  { name: 'XC60 Recharge', model_id: 18118 },
+  // XC70
+  { name: 'XC70', model_id: 18120 },
+  { name: 'XC70 2.5 T', model_id: 18121 },
+  { name: 'XC70 3.2', model_id: 18122 },
+  { name: 'XC70 T6', model_id: 18123 },
+  { name: 'XC70 D5', model_id: 18124 },
+  // XC90
+  { name: 'XC90', model_id: 18130 },
+  { name: 'XC90 T5', model_id: 18131 },
+  { name: 'XC90 T6', model_id: 18132 },
+  { name: 'XC90 T8', model_id: 18133 },
+  { name: 'XC90 D4', model_id: 18134 },
+  { name: 'XC90 D5', model_id: 18135 },
+  { name: 'XC90 Recharge', model_id: 18136 },
+  // C30
+  { name: 'C30', model_id: 18140 },
+  { name: 'C30 1.6', model_id: 18141 },
+  { name: 'C30 2.0', model_id: 18142 },
+  { name: 'C30 T5', model_id: 18143 },
+  // C40
+  { name: 'C40 Recharge', model_id: 18150 },
+  // C70
+  { name: 'C70', model_id: 18155 },
+  { name: 'C70 T5', model_id: 18156 },
+  // EX30
+  { name: 'EX30', model_id: 18160 },
+  // EX90
+  { name: 'EX90', model_id: 18165 },
+  // Другие
+  { name: 'Другая модель', model_id: 18999 },
+];
+
+// Все модели Peugeot
+const PEUGEOT_MODELS: CarModel[] = [
+  // 108
+  { name: '108', model_id: 19001 },
+  { name: '108 1.0', model_id: 19002 },
+  { name: '108 1.2', model_id: 19003 },
+  // 208
+  { name: '208', model_id: 19010 },
+  { name: '208 1.0', model_id: 19011 },
+  { name: '208 1.2', model_id: 19012 },
+  { name: '208 1.2 PureTech', model_id: 19013 },
+  { name: '208 1.5 BlueHDi', model_id: 19014 },
+  { name: '208 1.6', model_id: 19015 },
+  { name: '208 GTi', model_id: 19016 },
+  { name: 'e-208', model_id: 19017 },
+  // 308
+  { name: '308', model_id: 19020 },
+  { name: '308 1.2 PureTech', model_id: 19021 },
+  { name: '308 1.5 BlueHDi', model_id: 19022 },
+  { name: '308 1.6', model_id: 19023 },
+  { name: '308 1.6 THP', model_id: 19024 },
+  { name: '308 2.0 BlueHDi', model_id: 19025 },
+  { name: '308 GTi', model_id: 19026 },
+  { name: '308 SW', model_id: 19027 },
+  { name: 'e-308', model_id: 19028 },
+  // 408
+  { name: '408', model_id: 19030 },
+  { name: '408 1.2 PureTech', model_id: 19031 },
+  { name: '408 1.6 PHEV', model_id: 19032 },
+  // 508
+  { name: '508', model_id: 19040 },
+  { name: '508 1.5 BlueHDi', model_id: 19041 },
+  { name: '508 1.6 PureTech', model_id: 19042 },
+  { name: '508 2.0 BlueHDi', model_id: 19043 },
+  { name: '508 SW', model_id: 19044 },
+  { name: '508 GT', model_id: 19045 },
+  { name: '508 PSE', model_id: 19046 },
+  { name: '508 Hybrid', model_id: 19047 },
+  // 2008
+  { name: '2008', model_id: 19050 },
+  { name: '2008 1.2 PureTech', model_id: 19051 },
+  { name: '2008 1.5 BlueHDi', model_id: 19052 },
+  { name: '2008 1.6', model_id: 19053 },
+  { name: 'e-2008', model_id: 19054 },
+  // 3008
+  { name: '3008', model_id: 19060 },
+  { name: '3008 1.2 PureTech', model_id: 19061 },
+  { name: '3008 1.5 BlueHDi', model_id: 19062 },
+  { name: '3008 1.6 THP', model_id: 19063 },
+  { name: '3008 2.0 BlueHDi', model_id: 19064 },
+  { name: '3008 Hybrid', model_id: 19065 },
+  { name: '3008 Hybrid4', model_id: 19066 },
+  // 4008
+  { name: '4008', model_id: 19070 },
+  // 5008
+  { name: '5008', model_id: 19080 },
+  { name: '5008 1.2 PureTech', model_id: 19081 },
+  { name: '5008 1.5 BlueHDi', model_id: 19082 },
+  { name: '5008 1.6 THP', model_id: 19083 },
+  { name: '5008 2.0 BlueHDi', model_id: 19084 },
+  { name: '5008 Hybrid', model_id: 19085 },
+  // Rifter / Partner
+  { name: 'Rifter', model_id: 19090 },
+  { name: 'Partner', model_id: 19091 },
+  { name: 'Partner Tepee', model_id: 19092 },
+  // Traveller / Expert
+  { name: 'Traveller', model_id: 19100 },
+  { name: 'Expert', model_id: 19101 },
+  // Boxer
+  { name: 'Boxer', model_id: 19110 },
+  // 206
+  { name: '206', model_id: 19120 },
+  { name: '206 1.4', model_id: 19121 },
+  { name: '206 1.6', model_id: 19122 },
+  { name: '206 2.0', model_id: 19123 },
+  { name: '206 GTi', model_id: 19124 },
+  { name: '206 CC', model_id: 19125 },
+  // 207
+  { name: '207', model_id: 19130 },
+  { name: '207 1.4', model_id: 19131 },
+  { name: '207 1.6', model_id: 19132 },
+  { name: '207 GTi', model_id: 19133 },
+  { name: '207 CC', model_id: 19134 },
+  // 307
+  { name: '307', model_id: 19140 },
+  { name: '307 1.6', model_id: 19141 },
+  { name: '307 2.0', model_id: 19142 },
+  { name: '307 CC', model_id: 19143 },
+  { name: '307 SW', model_id: 19144 },
+  // 407
+  { name: '407', model_id: 19150 },
+  { name: '407 2.0', model_id: 19151 },
+  { name: '407 2.2', model_id: 19152 },
+  { name: '407 3.0', model_id: 19153 },
+  { name: '407 Coupe', model_id: 19154 },
+  // RCZ
+  { name: 'RCZ', model_id: 19160 },
+  { name: 'RCZ 1.6 THP', model_id: 19161 },
+  { name: 'RCZ R', model_id: 19162 },
+  // Другие
+  { name: 'Другая модель', model_id: 19999 },
+];
+
+// Все модели Renault
+const RENAULT_MODELS: CarModel[] = [
+  // Clio
+  { name: 'Clio', model_id: 20001 },
+  { name: 'Clio 1.0 TCe', model_id: 20002 },
+  { name: 'Clio 1.2', model_id: 20003 },
+  { name: 'Clio 1.5 dCi', model_id: 20004 },
+  { name: 'Clio 1.6', model_id: 20005 },
+  { name: 'Clio RS', model_id: 20006 },
+  { name: 'Clio E-Tech', model_id: 20007 },
+  // Megane
+  { name: 'Megane', model_id: 20010 },
+  { name: 'Megane 1.2 TCe', model_id: 20011 },
+  { name: 'Megane 1.3 TCe', model_id: 20012 },
+  { name: 'Megane 1.5 dCi', model_id: 20013 },
+  { name: 'Megane 1.6', model_id: 20014 },
+  { name: 'Megane 2.0', model_id: 20015 },
+  { name: 'Megane RS', model_id: 20016 },
+  { name: 'Megane GT', model_id: 20017 },
+  { name: 'Megane E-Tech', model_id: 20018 },
+  { name: 'Megane Grandtour', model_id: 20019 },
+  // Talisman
+  { name: 'Talisman', model_id: 20020 },
+  { name: 'Talisman 1.3 TCe', model_id: 20021 },
+  { name: 'Talisman 1.6 TCe', model_id: 20022 },
+  { name: 'Talisman 1.5 dCi', model_id: 20023 },
+  { name: 'Talisman 2.0 dCi', model_id: 20024 },
+  { name: 'Talisman Grandtour', model_id: 20025 },
+  // Laguna
+  { name: 'Laguna', model_id: 20030 },
+  { name: 'Laguna 1.6', model_id: 20031 },
+  { name: 'Laguna 2.0', model_id: 20032 },
+  { name: 'Laguna 2.0 dCi', model_id: 20033 },
+  { name: 'Laguna Coupe', model_id: 20034 },
+  // Fluence
+  { name: 'Fluence', model_id: 20040 },
+  { name: 'Fluence 1.6', model_id: 20041 },
+  { name: 'Fluence 2.0', model_id: 20042 },
+  // Captur
+  { name: 'Captur', model_id: 20050 },
+  { name: 'Captur 0.9 TCe', model_id: 20051 },
+  { name: 'Captur 1.0 TCe', model_id: 20052 },
+  { name: 'Captur 1.2 TCe', model_id: 20053 },
+  { name: 'Captur 1.3 TCe', model_id: 20054 },
+  { name: 'Captur 1.5 dCi', model_id: 20055 },
+  { name: 'Captur E-Tech', model_id: 20056 },
+  // Kadjar
+  { name: 'Kadjar', model_id: 20060 },
+  { name: 'Kadjar 1.2 TCe', model_id: 20061 },
+  { name: 'Kadjar 1.3 TCe', model_id: 20062 },
+  { name: 'Kadjar 1.5 dCi', model_id: 20063 },
+  { name: 'Kadjar 1.6 dCi', model_id: 20064 },
+  // Koleos
+  { name: 'Koleos', model_id: 20070 },
+  { name: 'Koleos 2.0 dCi', model_id: 20071 },
+  { name: 'Koleos 2.5', model_id: 20072 },
+  // Arkana
+  { name: 'Arkana', model_id: 20080 },
+  { name: 'Arkana 1.3 TCe', model_id: 20081 },
+  { name: 'Arkana 1.6 TCe', model_id: 20082 },
+  { name: 'Arkana E-Tech', model_id: 20083 },
+  // Austral
+  { name: 'Austral', model_id: 20085 },
+  { name: 'Austral E-Tech', model_id: 20086 },
+  // Espace
+  { name: 'Espace', model_id: 20090 },
+  { name: 'Espace 1.6 TCe', model_id: 20091 },
+  { name: 'Espace 2.0 dCi', model_id: 20092 },
+  { name: 'Espace E-Tech', model_id: 20093 },
+  // Scenic
+  { name: 'Scenic', model_id: 20100 },
+  { name: 'Scenic 1.2 TCe', model_id: 20101 },
+  { name: 'Scenic 1.3 TCe', model_id: 20102 },
+  { name: 'Scenic 1.5 dCi', model_id: 20103 },
+  { name: 'Scenic 1.6 dCi', model_id: 20104 },
+  { name: 'Grand Scenic', model_id: 20105 },
+  // Kangoo
+  { name: 'Kangoo', model_id: 20110 },
+  { name: 'Kangoo 1.5 dCi', model_id: 20111 },
+  { name: 'Kangoo E-Tech', model_id: 20112 },
+  // Trafic
+  { name: 'Trafic', model_id: 20120 },
+  { name: 'Trafic 1.6 dCi', model_id: 20121 },
+  { name: 'Trafic 2.0 dCi', model_id: 20122 },
+  // Master
+  { name: 'Master', model_id: 20130 },
+  // Duster
+  { name: 'Duster', model_id: 20140 },
+  { name: 'Duster 1.0 TCe', model_id: 20141 },
+  { name: 'Duster 1.3 TCe', model_id: 20142 },
+  { name: 'Duster 1.5 dCi', model_id: 20143 },
+  { name: 'Duster 1.6', model_id: 20144 },
+  { name: 'Duster 2.0', model_id: 20145 },
+  // Sandero
+  { name: 'Sandero', model_id: 20150 },
+  { name: 'Sandero 0.9 TCe', model_id: 20151 },
+  { name: 'Sandero 1.0', model_id: 20152 },
+  { name: 'Sandero 1.0 TCe', model_id: 20153 },
+  { name: 'Sandero Stepway', model_id: 20154 },
+  // Logan
+  { name: 'Logan', model_id: 20160 },
+  { name: 'Logan 1.0', model_id: 20161 },
+  { name: 'Logan 1.0 TCe', model_id: 20162 },
+  { name: 'Logan 1.5 dCi', model_id: 20163 },
+  { name: 'Logan MCV', model_id: 20164 },
+  // Twingo
+  { name: 'Twingo', model_id: 20170 },
+  { name: 'Twingo 1.0', model_id: 20171 },
+  { name: 'Twingo E-Tech', model_id: 20172 },
+  // Zoe
+  { name: 'Zoe', model_id: 20180 },
+  // Megane E-Tech Electric
+  { name: 'Megane E-Tech Electric', model_id: 20185 },
+  // Другие
+  { name: 'Другая модель', model_id: 20999 },
+];
+
+// Все модели Skoda
+const SKODA_MODELS: CarModel[] = [
+  // Fabia
+  { name: 'Fabia', model_id: 21001 },
+  { name: 'Fabia 1.0', model_id: 21002 },
+  { name: 'Fabia 1.0 TSI', model_id: 21003 },
+  { name: 'Fabia 1.2', model_id: 21004 },
+  { name: 'Fabia 1.2 TSI', model_id: 21005 },
+  { name: 'Fabia 1.4', model_id: 21006 },
+  { name: 'Fabia 1.4 TSI', model_id: 21007 },
+  { name: 'Fabia Combi', model_id: 21008 },
+  { name: 'Fabia RS', model_id: 21009 },
+  // Scala
+  { name: 'Scala', model_id: 21010 },
+  { name: 'Scala 1.0 TSI', model_id: 21011 },
+  { name: 'Scala 1.5 TSI', model_id: 21012 },
+  // Rapid
+  { name: 'Rapid', model_id: 21020 },
+  { name: 'Rapid 1.0 TSI', model_id: 21021 },
+  { name: 'Rapid 1.2 TSI', model_id: 21022 },
+  { name: 'Rapid 1.4 TSI', model_id: 21023 },
+  { name: 'Rapid 1.6', model_id: 21024 },
+  { name: 'Rapid Spaceback', model_id: 21025 },
+  // Octavia
+  { name: 'Octavia', model_id: 21030 },
+  { name: 'Octavia 1.0 TSI', model_id: 21031 },
+  { name: 'Octavia 1.4 TSI', model_id: 21032 },
+  { name: 'Octavia 1.5 TSI', model_id: 21033 },
+  { name: 'Octavia 1.8 TSI', model_id: 21034 },
+  { name: 'Octavia 2.0 TSI', model_id: 21035 },
+  { name: 'Octavia 1.6 TDI', model_id: 21036 },
+  { name: 'Octavia 2.0 TDI', model_id: 21037 },
+  { name: 'Octavia Combi', model_id: 21038 },
+  { name: 'Octavia Scout', model_id: 21039 },
+  { name: 'Octavia RS', model_id: 21040 },
+  { name: 'Octavia iV', model_id: 21041 },
+  // Superb
+  { name: 'Superb', model_id: 21050 },
+  { name: 'Superb 1.4 TSI', model_id: 21051 },
+  { name: 'Superb 1.8 TSI', model_id: 21052 },
+  { name: 'Superb 2.0 TSI', model_id: 21053 },
+  { name: 'Superb 1.6 TDI', model_id: 21054 },
+  { name: 'Superb 2.0 TDI', model_id: 21055 },
+  { name: 'Superb Combi', model_id: 21056 },
+  { name: 'Superb iV', model_id: 21057 },
+  // Kamiq
+  { name: 'Kamiq', model_id: 21060 },
+  { name: 'Kamiq 1.0 TSI', model_id: 21061 },
+  { name: 'Kamiq 1.5 TSI', model_id: 21062 },
+  // Karoq
+  { name: 'Karoq', model_id: 21070 },
+  { name: 'Karoq 1.0 TSI', model_id: 21071 },
+  { name: 'Karoq 1.5 TSI', model_id: 21072 },
+  { name: 'Karoq 2.0 TSI', model_id: 21073 },
+  { name: 'Karoq 1.6 TDI', model_id: 21074 },
+  { name: 'Karoq 2.0 TDI', model_id: 21075 },
+  { name: 'Karoq Scout', model_id: 21076 },
+  { name: 'Karoq Sportline', model_id: 21077 },
+  // Kodiaq
+  { name: 'Kodiaq', model_id: 21080 },
+  { name: 'Kodiaq 1.4 TSI', model_id: 21081 },
+  { name: 'Kodiaq 1.5 TSI', model_id: 21082 },
+  { name: 'Kodiaq 2.0 TSI', model_id: 21083 },
+  { name: 'Kodiaq 2.0 TDI', model_id: 21084 },
+  { name: 'Kodiaq Scout', model_id: 21085 },
+  { name: 'Kodiaq Sportline', model_id: 21086 },
+  { name: 'Kodiaq RS', model_id: 21087 },
+  // Yeti
+  { name: 'Yeti', model_id: 21090 },
+  { name: 'Yeti 1.2 TSI', model_id: 21091 },
+  { name: 'Yeti 1.4 TSI', model_id: 21092 },
+  { name: 'Yeti 1.8 TSI', model_id: 21093 },
+  { name: 'Yeti 2.0 TDI', model_id: 21094 },
+  // Roomster
+  { name: 'Roomster', model_id: 21100 },
+  { name: 'Roomster 1.2', model_id: 21101 },
+  { name: 'Roomster 1.4', model_id: 21102 },
+  { name: 'Roomster 1.6', model_id: 21103 },
+  // Enyaq
+  { name: 'Enyaq iV', model_id: 21110 },
+  { name: 'Enyaq iV 50', model_id: 21111 },
+  { name: 'Enyaq iV 60', model_id: 21112 },
+  { name: 'Enyaq iV 80', model_id: 21113 },
+  { name: 'Enyaq iV 80x', model_id: 21114 },
+  { name: 'Enyaq RS iV', model_id: 21115 },
+  { name: 'Enyaq Coupe iV', model_id: 21116 },
+  // Другие
+  { name: 'Другая модель', model_id: 21999 },
+];
+
+// Все модели Infiniti
+const INFINITI_MODELS: CarModel[] = [
+  // Q30
+  { name: 'Q30', model_id: 22001 },
+  { name: 'Q30 1.5d', model_id: 22002 },
+  { name: 'Q30 1.6t', model_id: 22003 },
+  { name: 'Q30 2.0t', model_id: 22004 },
+  { name: 'Q30 2.2d', model_id: 22005 },
+  // Q50
+  { name: 'Q50', model_id: 22010 },
+  { name: 'Q50 2.0t', model_id: 22011 },
+  { name: 'Q50 2.2d', model_id: 22012 },
+  { name: 'Q50 3.0t', model_id: 22013 },
+  { name: 'Q50 3.5 Hybrid', model_id: 22014 },
+  { name: 'Q50 Red Sport 400', model_id: 22015 },
+  // Q60
+  { name: 'Q60', model_id: 22020 },
+  { name: 'Q60 2.0t', model_id: 22021 },
+  { name: 'Q60 3.0t', model_id: 22022 },
+  { name: 'Q60 Red Sport 400', model_id: 22023 },
+  // Q70
+  { name: 'Q70', model_id: 22030 },
+  { name: 'Q70 2.5', model_id: 22031 },
+  { name: 'Q70 3.5', model_id: 22032 },
+  { name: 'Q70 3.7', model_id: 22033 },
+  { name: 'Q70 5.6', model_id: 22034 },
+  { name: 'Q70 Hybrid', model_id: 22035 },
+  // QX30
+  { name: 'QX30', model_id: 22040 },
+  { name: 'QX30 2.0t', model_id: 22041 },
+  // QX50
+  { name: 'QX50', model_id: 22050 },
+  { name: 'QX50 2.0t', model_id: 22051 },
+  { name: 'QX50 3.5', model_id: 22052 },
+  { name: 'QX50 3.7', model_id: 22053 },
+  // QX55
+  { name: 'QX55', model_id: 22060 },
+  { name: 'QX55 2.0t', model_id: 22061 },
+  // QX60
+  { name: 'QX60', model_id: 22070 },
+  { name: 'QX60 2.5 Hybrid', model_id: 22071 },
+  { name: 'QX60 3.5', model_id: 22072 },
+  // QX70
+  { name: 'QX70', model_id: 22080 },
+  { name: 'QX70 3.0d', model_id: 22081 },
+  { name: 'QX70 3.7', model_id: 22082 },
+  { name: 'QX70 5.0', model_id: 22083 },
+  // QX80
+  { name: 'QX80', model_id: 22090 },
+  { name: 'QX80 5.6', model_id: 22091 },
+  // G35/G37
+  { name: 'G35', model_id: 22100 },
+  { name: 'G37', model_id: 22101 },
+  { name: 'G37 Coupe', model_id: 22102 },
+  { name: 'G37 Convertible', model_id: 22103 },
+  // FX35/FX45/FX50
+  { name: 'FX35', model_id: 22110 },
+  { name: 'FX37', model_id: 22111 },
+  { name: 'FX45', model_id: 22112 },
+  { name: 'FX50', model_id: 22113 },
+  // EX35/EX37
+  { name: 'EX35', model_id: 22120 },
+  { name: 'EX37', model_id: 22121 },
+  // M35/M37/M45/M56
+  { name: 'M35', model_id: 22130 },
+  { name: 'M37', model_id: 22131 },
+  { name: 'M45', model_id: 22132 },
+  { name: 'M56', model_id: 22133 },
+  // Другие
+  { name: 'Другая модель', model_id: 22999 },
+];
+
+// Все модели Acura
+const ACURA_MODELS: CarModel[] = [
+  // ILX
+  { name: 'ILX', model_id: 23001 },
+  { name: 'ILX 2.0', model_id: 23002 },
+  { name: 'ILX 2.4', model_id: 23003 },
+  // TLX
+  { name: 'TLX', model_id: 23010 },
+  { name: 'TLX 2.0T', model_id: 23011 },
+  { name: 'TLX 2.4', model_id: 23012 },
+  { name: 'TLX 3.5', model_id: 23013 },
+  { name: 'TLX Type S', model_id: 23014 },
+  // RLX
+  { name: 'RLX', model_id: 23020 },
+  { name: 'RLX 3.5', model_id: 23021 },
+  { name: 'RLX Sport Hybrid', model_id: 23022 },
+  // Integra
+  { name: 'Integra', model_id: 23030 },
+  { name: 'Integra 1.5T', model_id: 23031 },
+  { name: 'Integra Type S', model_id: 23032 },
+  // TSX
+  { name: 'TSX', model_id: 23040 },
+  { name: 'TSX 2.4', model_id: 23041 },
+  { name: 'TSX 3.5', model_id: 23042 },
+  { name: 'TSX Sport Wagon', model_id: 23043 },
+  // TL
+  { name: 'TL', model_id: 23050 },
+  { name: 'TL 3.2', model_id: 23051 },
+  { name: 'TL 3.5', model_id: 23052 },
+  { name: 'TL 3.7', model_id: 23053 },
+  // RL
+  { name: 'RL', model_id: 23060 },
+  { name: 'RL 3.5', model_id: 23061 },
+  { name: 'RL 3.7', model_id: 23062 },
+  // RDX
+  { name: 'RDX', model_id: 23070 },
+  { name: 'RDX 2.0T', model_id: 23071 },
+  { name: 'RDX 3.5', model_id: 23072 },
+  // MDX
+  { name: 'MDX', model_id: 23080 },
+  { name: 'MDX 3.5', model_id: 23081 },
+  { name: 'MDX 3.7', model_id: 23082 },
+  { name: 'MDX Type S', model_id: 23083 },
+  { name: 'MDX Sport Hybrid', model_id: 23084 },
+  // ZDX
+  { name: 'ZDX', model_id: 23090 },
+  { name: 'ZDX 3.7', model_id: 23091 },
+  { name: 'ZDX EV', model_id: 23092 },
+  // NSX
+  { name: 'NSX', model_id: 23100 },
+  { name: 'NSX Type S', model_id: 23101 },
+  // RSX
+  { name: 'RSX', model_id: 23110 },
+  { name: 'RSX Type S', model_id: 23111 },
+  // Другие
+  { name: 'Другая модель', model_id: 23999 },
+];
+
+// Все модели Cadillac
+const CADILLAC_MODELS: CarModel[] = [
+  // CT4
+  { name: 'CT4', model_id: 24001 },
+  { name: 'CT4 2.0T', model_id: 24002 },
+  { name: 'CT4-V', model_id: 24003 },
+  { name: 'CT4-V Blackwing', model_id: 24004 },
+  // CT5
+  { name: 'CT5', model_id: 24010 },
+  { name: 'CT5 2.0T', model_id: 24011 },
+  { name: 'CT5 3.0T', model_id: 24012 },
+  { name: 'CT5-V', model_id: 24013 },
+  { name: 'CT5-V Blackwing', model_id: 24014 },
+  // CT6
+  { name: 'CT6', model_id: 24020 },
+  { name: 'CT6 2.0T', model_id: 24021 },
+  { name: 'CT6 3.0T', model_id: 24022 },
+  { name: 'CT6 3.6', model_id: 24023 },
+  { name: 'CT6 4.2T V8', model_id: 24024 },
+  { name: 'CT6-V', model_id: 24025 },
+  { name: 'CT6 Plug-in Hybrid', model_id: 24026 },
+  // ATS
+  { name: 'ATS', model_id: 24030 },
+  { name: 'ATS 2.0T', model_id: 24031 },
+  { name: 'ATS 2.5', model_id: 24032 },
+  { name: 'ATS 3.6', model_id: 24033 },
+  { name: 'ATS-V', model_id: 24034 },
+  { name: 'ATS Coupe', model_id: 24035 },
+  // CTS
+  { name: 'CTS', model_id: 24040 },
+  { name: 'CTS 2.0T', model_id: 24041 },
+  { name: 'CTS 2.8', model_id: 24042 },
+  { name: 'CTS 3.0', model_id: 24043 },
+  { name: 'CTS 3.6', model_id: 24044 },
+  { name: 'CTS-V', model_id: 24045 },
+  { name: 'CTS Sport Wagon', model_id: 24046 },
+  // XTS
+  { name: 'XTS', model_id: 24050 },
+  { name: 'XTS 3.6', model_id: 24051 },
+  { name: 'XTS V-Sport', model_id: 24052 },
+  // XT4
+  { name: 'XT4', model_id: 24060 },
+  { name: 'XT4 2.0T', model_id: 24061 },
+  // XT5
+  { name: 'XT5', model_id: 24070 },
+  { name: 'XT5 2.0T', model_id: 24071 },
+  { name: 'XT5 3.6', model_id: 24072 },
+  // XT6
+  { name: 'XT6', model_id: 24080 },
+  { name: 'XT6 2.0T', model_id: 24081 },
+  { name: 'XT6 3.6', model_id: 24082 },
+  // Escalade
+  { name: 'Escalade', model_id: 24090 },
+  { name: 'Escalade 6.2', model_id: 24091 },
+  { name: 'Escalade ESV', model_id: 24092 },
+  { name: 'Escalade-V', model_id: 24093 },
+  // SRX
+  { name: 'SRX', model_id: 24100 },
+  { name: 'SRX 2.8', model_id: 24101 },
+  { name: 'SRX 3.0', model_id: 24102 },
+  { name: 'SRX 3.6', model_id: 24103 },
+  // Lyriq
+  { name: 'Lyriq', model_id: 24110 },
+  // Celestiq
+  { name: 'Celestiq', model_id: 24115 },
+  // DTS
+  { name: 'DTS', model_id: 24120 },
+  { name: 'DTS 4.6', model_id: 24121 },
+  // STS
+  { name: 'STS', model_id: 24130 },
+  { name: 'STS 3.6', model_id: 24131 },
+  { name: 'STS 4.6', model_id: 24132 },
+  { name: 'STS-V', model_id: 24133 },
+  // Другие
+  { name: 'Другая модель', model_id: 24999 },
+];
+
+// Все модели Genesis
+const GENESIS_MODELS: CarModel[] = [
+  // G70
+  { name: 'G70', model_id: 25001 },
+  { name: 'G70 2.0T', model_id: 25002 },
+  { name: 'G70 2.5T', model_id: 25003 },
+  { name: 'G70 3.3T', model_id: 25004 },
+  { name: 'G70 Shooting Brake', model_id: 25005 },
+  // G80
+  { name: 'G80', model_id: 25010 },
+  { name: 'G80 2.5T', model_id: 25011 },
+  { name: 'G80 3.5T', model_id: 25012 },
+  { name: 'G80 3.3T', model_id: 25013 },
+  { name: 'G80 Sport', model_id: 25014 },
+  { name: 'Electrified G80', model_id: 25015 },
+  // G90
+  { name: 'G90', model_id: 25020 },
+  { name: 'G90 3.3T', model_id: 25021 },
+  { name: 'G90 3.5T', model_id: 25022 },
+  { name: 'G90 5.0', model_id: 25023 },
+  // GV60
+  { name: 'GV60', model_id: 25030 },
+  { name: 'GV60 Standard', model_id: 25031 },
+  { name: 'GV60 Performance', model_id: 25032 },
+  // GV70
+  { name: 'GV70', model_id: 25040 },
+  { name: 'GV70 2.5T', model_id: 25041 },
+  { name: 'GV70 3.5T', model_id: 25042 },
+  { name: 'Electrified GV70', model_id: 25043 },
+  // GV80
+  { name: 'GV80', model_id: 25050 },
+  { name: 'GV80 2.5T', model_id: 25051 },
+  { name: 'GV80 3.0D', model_id: 25052 },
+  { name: 'GV80 3.5T', model_id: 25053 },
+  { name: 'GV80 Coupe', model_id: 25054 },
+  // X Convertible (концепт)
+  { name: 'X Convertible', model_id: 25060 },
+  // Другие
+  { name: 'Другая модель', model_id: 25999 },
+];
+
 // Объединённые данные марок и моделей
 const ALL_BRANDS: Brand[] = [
   { name: 'Mercedes-Benz', make_id: 449 },
@@ -2596,6 +3286,14 @@ const ALL_BRANDS: Brand[] = [
   { name: 'Porsche', make_id: 465 },
   { name: 'Land Rover', make_id: 466 },
   { name: 'Jeep', make_id: 467 },
+  { name: 'Volvo', make_id: 468 },
+  { name: 'Peugeot', make_id: 469 },
+  { name: 'Renault', make_id: 470 },
+  { name: 'Skoda', make_id: 471 },
+  { name: 'Infiniti', make_id: 472 },
+  { name: 'Acura', make_id: 473 },
+  { name: 'Cadillac', make_id: 474 },
+  { name: 'Genesis', make_id: 475 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
