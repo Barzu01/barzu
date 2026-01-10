@@ -2068,6 +2068,514 @@ const CHEVROLET_MODELS: CarModel[] = [
   { name: 'Другая модель', model_id: 11999 },
 ];
 
+// Все модели Mazda
+const MAZDA_MODELS: CarModel[] = [
+  // Mazda2 / Demio
+  { name: 'Mazda2', model_id: 12001 },
+  { name: 'Mazda2 1.3', model_id: 12002 },
+  { name: 'Mazda2 1.5', model_id: 12003 },
+  { name: 'Demio', model_id: 12004 },
+  // Mazda3 / Axela
+  { name: 'Mazda3', model_id: 12010 },
+  { name: 'Mazda3 1.5', model_id: 12011 },
+  { name: 'Mazda3 2.0', model_id: 12012 },
+  { name: 'Mazda3 2.5', model_id: 12013 },
+  { name: 'Mazda3 2.5 Turbo', model_id: 12014 },
+  { name: 'Mazda3 Hatchback', model_id: 12015 },
+  { name: 'Axela', model_id: 12016 },
+  // Mazda6 / Atenza
+  { name: 'Mazda6', model_id: 12020 },
+  { name: 'Mazda6 2.0', model_id: 12021 },
+  { name: 'Mazda6 2.2 Diesel', model_id: 12022 },
+  { name: 'Mazda6 2.5', model_id: 12023 },
+  { name: 'Mazda6 2.5 Turbo', model_id: 12024 },
+  { name: 'Atenza', model_id: 12025 },
+  // CX-3
+  { name: 'CX-3', model_id: 12030 },
+  { name: 'CX-3 1.5', model_id: 12031 },
+  { name: 'CX-3 2.0', model_id: 12032 },
+  // CX-30
+  { name: 'CX-30', model_id: 12040 },
+  { name: 'CX-30 2.0', model_id: 12041 },
+  { name: 'CX-30 2.5', model_id: 12042 },
+  { name: 'CX-30 2.5 Turbo', model_id: 12043 },
+  // CX-5
+  { name: 'CX-5', model_id: 12050 },
+  { name: 'CX-5 2.0', model_id: 12051 },
+  { name: 'CX-5 2.2 Diesel', model_id: 12052 },
+  { name: 'CX-5 2.5', model_id: 12053 },
+  { name: 'CX-5 2.5 Turbo', model_id: 12054 },
+  // CX-50
+  { name: 'CX-50', model_id: 12060 },
+  { name: 'CX-50 2.5', model_id: 12061 },
+  { name: 'CX-50 2.5 Turbo', model_id: 12062 },
+  // CX-7
+  { name: 'CX-7', model_id: 12070 },
+  { name: 'CX-7 2.3 Turbo', model_id: 12071 },
+  { name: 'CX-7 2.5', model_id: 12072 },
+  // CX-8
+  { name: 'CX-8', model_id: 12075 },
+  // CX-9
+  { name: 'CX-9', model_id: 12080 },
+  { name: 'CX-9 2.5 Turbo', model_id: 12081 },
+  { name: 'CX-9 3.5', model_id: 12082 },
+  { name: 'CX-9 3.7', model_id: 12083 },
+  // CX-60
+  { name: 'CX-60', model_id: 12090 },
+  { name: 'CX-60 2.5', model_id: 12091 },
+  { name: 'CX-60 3.3 Diesel', model_id: 12092 },
+  { name: 'CX-60 PHEV', model_id: 12093 },
+  // CX-90
+  { name: 'CX-90', model_id: 12100 },
+  { name: 'CX-90 3.3 Turbo', model_id: 12101 },
+  { name: 'CX-90 PHEV', model_id: 12102 },
+  // MX-5 / Miata / Roadster
+  { name: 'MX-5', model_id: 12110 },
+  { name: 'MX-5 1.5', model_id: 12111 },
+  { name: 'MX-5 2.0', model_id: 12112 },
+  { name: 'MX-5 RF', model_id: 12113 },
+  { name: 'Miata', model_id: 12114 },
+  { name: 'Roadster', model_id: 12115 },
+  // MX-30
+  { name: 'MX-30', model_id: 12120 },
+  { name: 'MX-30 EV', model_id: 12121 },
+  { name: 'MX-30 R-EV', model_id: 12122 },
+  // RX-7
+  { name: 'RX-7', model_id: 12130 },
+  // RX-8
+  { name: 'RX-8', model_id: 12140 },
+  // BT-50
+  { name: 'BT-50', model_id: 12150 },
+  { name: 'BT-50 2.2', model_id: 12151 },
+  { name: 'BT-50 3.0', model_id: 12152 },
+  { name: 'BT-50 3.2', model_id: 12153 },
+  // MPV
+  { name: 'MPV', model_id: 12160 },
+  // Premacy
+  { name: 'Premacy', model_id: 12170 },
+  // Tribute
+  { name: 'Tribute', model_id: 12180 },
+  // 323 / Familia
+  { name: '323', model_id: 12190 },
+  { name: 'Familia', model_id: 12191 },
+  // 626 / Capella
+  { name: '626', model_id: 12200 },
+  { name: 'Capella', model_id: 12201 },
+  // Другие
+  { name: 'Другая модель', model_id: 12999 },
+];
+
+// Все модели Subaru
+const SUBARU_MODELS: CarModel[] = [
+  // Impreza
+  { name: 'Impreza', model_id: 13001 },
+  { name: 'Impreza 1.5', model_id: 13002 },
+  { name: 'Impreza 1.6', model_id: 13003 },
+  { name: 'Impreza 2.0', model_id: 13004 },
+  { name: 'Impreza WRX', model_id: 13005 },
+  { name: 'Impreza WRX STI', model_id: 13006 },
+  { name: 'Impreza Sport', model_id: 13007 },
+  // WRX
+  { name: 'WRX', model_id: 13010 },
+  { name: 'WRX 2.0 Turbo', model_id: 13011 },
+  { name: 'WRX 2.4 Turbo', model_id: 13012 },
+  { name: 'WRX STI', model_id: 13013 },
+  // Legacy
+  { name: 'Legacy', model_id: 13020 },
+  { name: 'Legacy 2.0', model_id: 13021 },
+  { name: 'Legacy 2.4', model_id: 13022 },
+  { name: 'Legacy 2.5', model_id: 13023 },
+  { name: 'Legacy 3.0', model_id: 13024 },
+  { name: 'Legacy 3.6', model_id: 13025 },
+  { name: 'Legacy GT', model_id: 13026 },
+  // Levorg
+  { name: 'Levorg', model_id: 13030 },
+  { name: 'Levorg 1.6 Turbo', model_id: 13031 },
+  { name: 'Levorg 1.8 Turbo', model_id: 13032 },
+  { name: 'Levorg 2.0 Turbo', model_id: 13033 },
+  // Outback
+  { name: 'Outback', model_id: 13040 },
+  { name: 'Outback 2.4', model_id: 13041 },
+  { name: 'Outback 2.5', model_id: 13042 },
+  { name: 'Outback 2.5 Turbo', model_id: 13043 },
+  { name: 'Outback 3.0', model_id: 13044 },
+  { name: 'Outback 3.6', model_id: 13045 },
+  // Forester
+  { name: 'Forester', model_id: 13050 },
+  { name: 'Forester 2.0', model_id: 13051 },
+  { name: 'Forester 2.0 Turbo', model_id: 13052 },
+  { name: 'Forester 2.5', model_id: 13053 },
+  { name: 'Forester 2.5 Turbo', model_id: 13054 },
+  { name: 'Forester e-Boxer', model_id: 13055 },
+  { name: 'Forester XT', model_id: 13056 },
+  // XV / Crosstrek
+  { name: 'XV', model_id: 13060 },
+  { name: 'XV 1.6', model_id: 13061 },
+  { name: 'XV 2.0', model_id: 13062 },
+  { name: 'XV e-Boxer', model_id: 13063 },
+  { name: 'Crosstrek', model_id: 13064 },
+  { name: 'Crosstrek 2.0', model_id: 13065 },
+  { name: 'Crosstrek 2.5', model_id: 13066 },
+  // Ascent
+  { name: 'Ascent', model_id: 13070 },
+  { name: 'Ascent 2.4 Turbo', model_id: 13071 },
+  // BRZ
+  { name: 'BRZ', model_id: 13080 },
+  { name: 'BRZ 2.0', model_id: 13081 },
+  { name: 'BRZ 2.4', model_id: 13082 },
+  { name: 'BRZ tS', model_id: 13083 },
+  // Solterra
+  { name: 'Solterra', model_id: 13090 },
+  // Tribeca
+  { name: 'Tribeca', model_id: 13100 },
+  { name: 'Tribeca 3.0', model_id: 13101 },
+  { name: 'Tribeca 3.6', model_id: 13102 },
+  // Exiga
+  { name: 'Exiga', model_id: 13110 },
+  // Trezia
+  { name: 'Trezia', model_id: 13120 },
+  // Justy
+  { name: 'Justy', model_id: 13130 },
+  // Другие
+  { name: 'Другая модель', model_id: 13999 },
+];
+
+// Все модели Mitsubishi
+const MITSUBISHI_MODELS: CarModel[] = [
+  // Lancer
+  { name: 'Lancer', model_id: 14001 },
+  { name: 'Lancer 1.5', model_id: 14002 },
+  { name: 'Lancer 1.6', model_id: 14003 },
+  { name: 'Lancer 1.8', model_id: 14004 },
+  { name: 'Lancer 2.0', model_id: 14005 },
+  { name: 'Lancer Evolution', model_id: 14006 },
+  { name: 'Lancer Evolution X', model_id: 14007 },
+  // Mirage / Attrage
+  { name: 'Mirage', model_id: 14010 },
+  { name: 'Mirage 1.0', model_id: 14011 },
+  { name: 'Mirage 1.2', model_id: 14012 },
+  { name: 'Attrage', model_id: 14013 },
+  // Galant
+  { name: 'Galant', model_id: 14020 },
+  { name: 'Galant 2.0', model_id: 14021 },
+  { name: 'Galant 2.4', model_id: 14022 },
+  { name: 'Galant 3.0', model_id: 14023 },
+  { name: 'Galant 3.8', model_id: 14024 },
+  // ASX / RVR / Outlander Sport
+  { name: 'ASX', model_id: 14030 },
+  { name: 'ASX 1.6', model_id: 14031 },
+  { name: 'ASX 1.8', model_id: 14032 },
+  { name: 'ASX 2.0', model_id: 14033 },
+  { name: 'ASX 2.2 Diesel', model_id: 14034 },
+  { name: 'RVR', model_id: 14035 },
+  { name: 'Outlander Sport', model_id: 14036 },
+  // Eclipse Cross
+  { name: 'Eclipse Cross', model_id: 14040 },
+  { name: 'Eclipse Cross 1.5 Turbo', model_id: 14041 },
+  { name: 'Eclipse Cross 2.2 Diesel', model_id: 14042 },
+  { name: 'Eclipse Cross PHEV', model_id: 14043 },
+  // Outlander
+  { name: 'Outlander', model_id: 14050 },
+  { name: 'Outlander 2.0', model_id: 14051 },
+  { name: 'Outlander 2.2 Diesel', model_id: 14052 },
+  { name: 'Outlander 2.4', model_id: 14053 },
+  { name: 'Outlander 3.0', model_id: 14054 },
+  { name: 'Outlander PHEV', model_id: 14055 },
+  { name: 'Outlander GT', model_id: 14056 },
+  // Pajero / Montero / Shogun
+  { name: 'Pajero', model_id: 14060 },
+  { name: 'Pajero 3.0', model_id: 14061 },
+  { name: 'Pajero 3.2 Diesel', model_id: 14062 },
+  { name: 'Pajero 3.5', model_id: 14063 },
+  { name: 'Pajero 3.8', model_id: 14064 },
+  { name: 'Montero', model_id: 14065 },
+  { name: 'Shogun', model_id: 14066 },
+  // Pajero Sport / Challenger
+  { name: 'Pajero Sport', model_id: 14070 },
+  { name: 'Pajero Sport 2.4', model_id: 14071 },
+  { name: 'Pajero Sport 2.5 Diesel', model_id: 14072 },
+  { name: 'Pajero Sport 3.0', model_id: 14073 },
+  { name: 'Challenger', model_id: 14074 },
+  // Pajero Pinin / iO
+  { name: 'Pajero Pinin', model_id: 14080 },
+  { name: 'Pajero iO', model_id: 14081 },
+  // L200 / Triton
+  { name: 'L200', model_id: 14090 },
+  { name: 'L200 2.4', model_id: 14091 },
+  { name: 'L200 2.4 Diesel', model_id: 14092 },
+  { name: 'L200 2.5 Diesel', model_id: 14093 },
+  { name: 'Triton', model_id: 14094 },
+  // Delica
+  { name: 'Delica', model_id: 14100 },
+  { name: 'Delica D:5', model_id: 14101 },
+  { name: 'Delica 2.2 Diesel', model_id: 14102 },
+  { name: 'Delica 2.4', model_id: 14103 },
+  // Space Star
+  { name: 'Space Star', model_id: 14110 },
+  // Grandis
+  { name: 'Grandis', model_id: 14120 },
+  { name: 'Grandis 2.4', model_id: 14121 },
+  // Colt
+  { name: 'Colt', model_id: 14130 },
+  { name: 'Colt 1.1', model_id: 14131 },
+  { name: 'Colt 1.3', model_id: 14132 },
+  { name: 'Colt 1.5', model_id: 14133 },
+  // Carisma
+  { name: 'Carisma', model_id: 14140 },
+  // Space Wagon
+  { name: 'Space Wagon', model_id: 14150 },
+  // Eclipse
+  { name: 'Eclipse', model_id: 14160 },
+  { name: 'Eclipse 2.0', model_id: 14161 },
+  { name: 'Eclipse 2.4', model_id: 14162 },
+  { name: 'Eclipse 3.0', model_id: 14163 },
+  // 3000GT / GTO
+  { name: '3000GT', model_id: 14170 },
+  { name: 'GTO', model_id: 14171 },
+  // i-MiEV
+  { name: 'i-MiEV', model_id: 14180 },
+  // Xpander
+  { name: 'Xpander', model_id: 14190 },
+  { name: 'Xpander 1.5', model_id: 14191 },
+  { name: 'Xpander Cross', model_id: 14192 },
+  // Другие
+  { name: 'Другая модель', model_id: 14999 },
+];
+
+// Все модели Porsche
+const PORSCHE_MODELS: CarModel[] = [
+  // 911
+  { name: '911', model_id: 15001 },
+  { name: '911 Carrera', model_id: 15002 },
+  { name: '911 Carrera S', model_id: 15003 },
+  { name: '911 Carrera 4', model_id: 15004 },
+  { name: '911 Carrera 4S', model_id: 15005 },
+  { name: '911 Carrera GTS', model_id: 15006 },
+  { name: '911 Targa', model_id: 15007 },
+  { name: '911 Targa 4', model_id: 15008 },
+  { name: '911 Targa 4S', model_id: 15009 },
+  { name: '911 Turbo', model_id: 15010 },
+  { name: '911 Turbo S', model_id: 15011 },
+  { name: '911 GT3', model_id: 15012 },
+  { name: '911 GT3 RS', model_id: 15013 },
+  { name: '911 GT2 RS', model_id: 15014 },
+  { name: '911 Dakar', model_id: 15015 },
+  { name: '911 Sport Classic', model_id: 15016 },
+  // 718 Cayman / Boxster
+  { name: '718 Cayman', model_id: 15020 },
+  { name: '718 Cayman S', model_id: 15021 },
+  { name: '718 Cayman GTS', model_id: 15022 },
+  { name: '718 Cayman GT4', model_id: 15023 },
+  { name: '718 Cayman GT4 RS', model_id: 15024 },
+  { name: '718 Boxster', model_id: 15025 },
+  { name: '718 Boxster S', model_id: 15026 },
+  { name: '718 Boxster GTS', model_id: 15027 },
+  { name: '718 Spyder', model_id: 15028 },
+  { name: 'Cayman', model_id: 15029 },
+  { name: 'Boxster', model_id: 15030 },
+  // Panamera
+  { name: 'Panamera', model_id: 15040 },
+  { name: 'Panamera 4', model_id: 15041 },
+  { name: 'Panamera 4S', model_id: 15042 },
+  { name: 'Panamera GTS', model_id: 15043 },
+  { name: 'Panamera Turbo', model_id: 15044 },
+  { name: 'Panamera Turbo S', model_id: 15045 },
+  { name: 'Panamera 4 E-Hybrid', model_id: 15046 },
+  { name: 'Panamera Turbo S E-Hybrid', model_id: 15047 },
+  { name: 'Panamera Sport Turismo', model_id: 15048 },
+  // Taycan
+  { name: 'Taycan', model_id: 15050 },
+  { name: 'Taycan 4S', model_id: 15051 },
+  { name: 'Taycan GTS', model_id: 15052 },
+  { name: 'Taycan Turbo', model_id: 15053 },
+  { name: 'Taycan Turbo S', model_id: 15054 },
+  { name: 'Taycan Cross Turismo', model_id: 15055 },
+  { name: 'Taycan Sport Turismo', model_id: 15056 },
+  // Macan
+  { name: 'Macan', model_id: 15060 },
+  { name: 'Macan S', model_id: 15061 },
+  { name: 'Macan GTS', model_id: 15062 },
+  { name: 'Macan Turbo', model_id: 15063 },
+  { name: 'Macan T', model_id: 15064 },
+  { name: 'Macan Electric', model_id: 15065 },
+  // Cayenne
+  { name: 'Cayenne', model_id: 15070 },
+  { name: 'Cayenne S', model_id: 15071 },
+  { name: 'Cayenne GTS', model_id: 15072 },
+  { name: 'Cayenne Turbo', model_id: 15073 },
+  { name: 'Cayenne Turbo S', model_id: 15074 },
+  { name: 'Cayenne Turbo GT', model_id: 15075 },
+  { name: 'Cayenne E-Hybrid', model_id: 15076 },
+  { name: 'Cayenne Turbo S E-Hybrid', model_id: 15077 },
+  { name: 'Cayenne Coupe', model_id: 15078 },
+  // Другие
+  { name: 'Другая модель', model_id: 15999 },
+];
+
+// Все модели Land Rover
+const LAND_ROVER_MODELS: CarModel[] = [
+  // Defender
+  { name: 'Defender', model_id: 16001 },
+  { name: 'Defender 90', model_id: 16002 },
+  { name: 'Defender 110', model_id: 16003 },
+  { name: 'Defender 130', model_id: 16004 },
+  { name: 'Defender V8', model_id: 16005 },
+  { name: 'Defender P300', model_id: 16006 },
+  { name: 'Defender P400', model_id: 16007 },
+  { name: 'Defender D250', model_id: 16008 },
+  { name: 'Defender D300', model_id: 16009 },
+  // Discovery
+  { name: 'Discovery', model_id: 16020 },
+  { name: 'Discovery 2.0 Si4', model_id: 16021 },
+  { name: 'Discovery 3.0 Td6', model_id: 16022 },
+  { name: 'Discovery 3.0 Si6', model_id: 16023 },
+  { name: 'Discovery 4.4', model_id: 16024 },
+  { name: 'Discovery 5.0', model_id: 16025 },
+  { name: 'Discovery 3', model_id: 16026 },
+  { name: 'Discovery 4', model_id: 16027 },
+  { name: 'Discovery 5', model_id: 16028 },
+  // Discovery Sport
+  { name: 'Discovery Sport', model_id: 16030 },
+  { name: 'Discovery Sport 2.0 Si4', model_id: 16031 },
+  { name: 'Discovery Sport 2.0 Td4', model_id: 16032 },
+  { name: 'Discovery Sport P200', model_id: 16033 },
+  { name: 'Discovery Sport P250', model_id: 16034 },
+  { name: 'Discovery Sport D165', model_id: 16035 },
+  { name: 'Discovery Sport D200', model_id: 16036 },
+  // Range Rover
+  { name: 'Range Rover', model_id: 16040 },
+  { name: 'Range Rover 3.0 Td6', model_id: 16041 },
+  { name: 'Range Rover 3.0 Si6', model_id: 16042 },
+  { name: 'Range Rover 4.4 SDV8', model_id: 16043 },
+  { name: 'Range Rover 5.0 V8', model_id: 16044 },
+  { name: 'Range Rover P400', model_id: 16045 },
+  { name: 'Range Rover P530', model_id: 16046 },
+  { name: 'Range Rover D300', model_id: 16047 },
+  { name: 'Range Rover D350', model_id: 16048 },
+  { name: 'Range Rover PHEV', model_id: 16049 },
+  { name: 'Range Rover SV', model_id: 16050 },
+  { name: 'Range Rover Autobiography', model_id: 16051 },
+  { name: 'Range Rover LWB', model_id: 16052 },
+  // Range Rover Sport
+  { name: 'Range Rover Sport', model_id: 16060 },
+  { name: 'Range Rover Sport 3.0 Td6', model_id: 16061 },
+  { name: 'Range Rover Sport 3.0 Si6', model_id: 16062 },
+  { name: 'Range Rover Sport 4.4 SDV8', model_id: 16063 },
+  { name: 'Range Rover Sport 5.0 V8', model_id: 16064 },
+  { name: 'Range Rover Sport P400', model_id: 16065 },
+  { name: 'Range Rover Sport P530', model_id: 16066 },
+  { name: 'Range Rover Sport SVR', model_id: 16067 },
+  { name: 'Range Rover Sport PHEV', model_id: 16068 },
+  // Range Rover Velar
+  { name: 'Range Rover Velar', model_id: 16070 },
+  { name: 'Range Rover Velar P250', model_id: 16071 },
+  { name: 'Range Rover Velar P340', model_id: 16072 },
+  { name: 'Range Rover Velar P380', model_id: 16073 },
+  { name: 'Range Rover Velar D180', model_id: 16074 },
+  { name: 'Range Rover Velar D240', model_id: 16075 },
+  { name: 'Range Rover Velar D300', model_id: 16076 },
+  { name: 'Range Rover Velar SVAutobiography', model_id: 16077 },
+  // Range Rover Evoque
+  { name: 'Range Rover Evoque', model_id: 16080 },
+  { name: 'Range Rover Evoque 2.0 Si4', model_id: 16081 },
+  { name: 'Range Rover Evoque 2.0 Td4', model_id: 16082 },
+  { name: 'Range Rover Evoque P200', model_id: 16083 },
+  { name: 'Range Rover Evoque P250', model_id: 16084 },
+  { name: 'Range Rover Evoque P300', model_id: 16085 },
+  { name: 'Range Rover Evoque D150', model_id: 16086 },
+  { name: 'Range Rover Evoque D200', model_id: 16087 },
+  // Freelander
+  { name: 'Freelander', model_id: 16090 },
+  { name: 'Freelander 2', model_id: 16091 },
+  { name: 'Freelander 2.0', model_id: 16092 },
+  { name: 'Freelander 2.2 Td4', model_id: 16093 },
+  { name: 'Freelander 3.2', model_id: 16094 },
+  // Другие
+  { name: 'Другая модель', model_id: 16999 },
+];
+
+// Все модели Jeep
+const JEEP_MODELS: CarModel[] = [
+  // Renegade
+  { name: 'Renegade', model_id: 17001 },
+  { name: 'Renegade 1.0', model_id: 17002 },
+  { name: 'Renegade 1.3', model_id: 17003 },
+  { name: 'Renegade 1.4', model_id: 17004 },
+  { name: 'Renegade 1.6', model_id: 17005 },
+  { name: 'Renegade 2.4', model_id: 17006 },
+  { name: 'Renegade Trailhawk', model_id: 17007 },
+  { name: 'Renegade 4xe', model_id: 17008 },
+  // Compass
+  { name: 'Compass', model_id: 17010 },
+  { name: 'Compass 1.3', model_id: 17011 },
+  { name: 'Compass 1.4', model_id: 17012 },
+  { name: 'Compass 2.0', model_id: 17013 },
+  { name: 'Compass 2.4', model_id: 17014 },
+  { name: 'Compass Trailhawk', model_id: 17015 },
+  { name: 'Compass 4xe', model_id: 17016 },
+  // Cherokee
+  { name: 'Cherokee', model_id: 17020 },
+  { name: 'Cherokee 2.0 Turbo', model_id: 17021 },
+  { name: 'Cherokee 2.4', model_id: 17022 },
+  { name: 'Cherokee 3.2', model_id: 17023 },
+  { name: 'Cherokee Trailhawk', model_id: 17024 },
+  // Grand Cherokee
+  { name: 'Grand Cherokee', model_id: 17030 },
+  { name: 'Grand Cherokee 3.0 CRD', model_id: 17031 },
+  { name: 'Grand Cherokee 3.0 V6', model_id: 17032 },
+  { name: 'Grand Cherokee 3.6', model_id: 17033 },
+  { name: 'Grand Cherokee 5.7', model_id: 17034 },
+  { name: 'Grand Cherokee 6.2', model_id: 17035 },
+  { name: 'Grand Cherokee 6.4 SRT', model_id: 17036 },
+  { name: 'Grand Cherokee Trackhawk', model_id: 17037 },
+  { name: 'Grand Cherokee Trailhawk', model_id: 17038 },
+  { name: 'Grand Cherokee 4xe', model_id: 17039 },
+  { name: 'Grand Cherokee L', model_id: 17040 },
+  { name: 'Grand Cherokee Summit', model_id: 17041 },
+  // Wrangler
+  { name: 'Wrangler', model_id: 17050 },
+  { name: 'Wrangler 2.0 Turbo', model_id: 17051 },
+  { name: 'Wrangler 2.2 CRD', model_id: 17052 },
+  { name: 'Wrangler 3.0 EcoDiesel', model_id: 17053 },
+  { name: 'Wrangler 3.6', model_id: 17054 },
+  { name: 'Wrangler 6.4 Rubicon 392', model_id: 17055 },
+  { name: 'Wrangler Rubicon', model_id: 17056 },
+  { name: 'Wrangler Sahara', model_id: 17057 },
+  { name: 'Wrangler Sport', model_id: 17058 },
+  { name: 'Wrangler 4xe', model_id: 17059 },
+  { name: 'Wrangler Unlimited', model_id: 17060 },
+  // Gladiator
+  { name: 'Gladiator', model_id: 17070 },
+  { name: 'Gladiator 3.0 EcoDiesel', model_id: 17071 },
+  { name: 'Gladiator 3.6', model_id: 17072 },
+  { name: 'Gladiator Rubicon', model_id: 17073 },
+  { name: 'Gladiator Mojave', model_id: 17074 },
+  // Commander
+  { name: 'Commander', model_id: 17080 },
+  { name: 'Commander 2.0 Turbo', model_id: 17081 },
+  { name: 'Commander 3.6', model_id: 17082 },
+  // Patriot
+  { name: 'Patriot', model_id: 17090 },
+  { name: 'Patriot 2.0', model_id: 17091 },
+  { name: 'Patriot 2.4', model_id: 17092 },
+  // Liberty
+  { name: 'Liberty', model_id: 17100 },
+  { name: 'Liberty 2.4', model_id: 17101 },
+  { name: 'Liberty 2.8 CRD', model_id: 17102 },
+  { name: 'Liberty 3.7', model_id: 17103 },
+  // Wagoneer / Grand Wagoneer
+  { name: 'Wagoneer', model_id: 17110 },
+  { name: 'Wagoneer 3.0 Turbo', model_id: 17111 },
+  { name: 'Grand Wagoneer', model_id: 17112 },
+  { name: 'Grand Wagoneer 3.0 Turbo', model_id: 17113 },
+  { name: 'Grand Wagoneer 6.4', model_id: 17114 },
+  // Avenger
+  { name: 'Avenger', model_id: 17120 },
+  { name: 'Avenger Electric', model_id: 17121 },
+  // Другие
+  { name: 'Другая модель', model_id: 17999 },
+];
+
 // Объединённые данные марок и моделей
 const ALL_BRANDS: Brand[] = [
   { name: 'Mercedes-Benz', make_id: 449 },
@@ -2082,6 +2590,12 @@ const ALL_BRANDS: Brand[] = [
   { name: 'Lexus', make_id: 459 },
   { name: 'Ford', make_id: 460 },
   { name: 'Chevrolet', make_id: 461 },
+  { name: 'Mazda', make_id: 462 },
+  { name: 'Subaru', make_id: 463 },
+  { name: 'Mitsubishi', make_id: 464 },
+  { name: 'Porsche', make_id: 465 },
+  { name: 'Land Rover', make_id: 466 },
+  { name: 'Jeep', make_id: 467 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
@@ -2097,6 +2611,12 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   459: LEXUS_MODELS,    // Lexus
   460: FORD_MODELS,     // Ford
   461: CHEVROLET_MODELS, // Chevrolet
+  462: MAZDA_MODELS,    // Mazda
+  463: SUBARU_MODELS,   // Subaru
+  464: MITSUBISHI_MODELS, // Mitsubishi
+  465: PORSCHE_MODELS,  // Porsche
+  466: LAND_ROVER_MODELS, // Land Rover
+  467: JEEP_MODELS,     // Jeep
 };
 
 // Логотипы брендов
@@ -2113,6 +2633,12 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Lexus': 'https://www.carlogos.org/car-logos/lexus-logo-1988-1920x1080.png',
   'Ford': 'https://www.carlogos.org/car-logos/ford-logo-2017-1500x1101.png',
   'Chevrolet': 'https://www.carlogos.org/car-logos/chevrolet-logo-2013-2560x1440.png',
+  'Mazda': 'https://www.carlogos.org/car-logos/mazda-logo-2018-1920x1080.png',
+  'Subaru': 'https://www.carlogos.org/car-logos/subaru-logo-2019-1920x1080.png',
+  'Mitsubishi': 'https://www.carlogos.org/car-logos/mitsubishi-logo-2000x2500.png',
+  'Porsche': 'https://www.carlogos.org/car-logos/porsche-logo-2014-1920x1080.png',
+  'Land Rover': 'https://www.carlogos.org/car-logos/land-rover-logo-2020-green.png',
+  'Jeep': 'https://www.carlogos.org/car-logos/jeep-logo-1993-1920x1080.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
