@@ -1195,6 +1195,43 @@ export default function AddCarDetailScreen() {
       </ScrollView>
 
       {/* Modals */}
+      {/* Brand Modal */}
+      <Modal visible={brandModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Выберите марку</Text>
+              <TouchableOpacity onPress={() => setBrandModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={brands}
+              keyExtractor={(item) => item.make_id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[styles.modalItem, styles.brandModalItem]}
+                  onPress={() => handleBrandSelect(item)}
+                >
+                  <Image 
+                    source={{ uri: item.name === 'Mercedes-Benz' 
+                      ? 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png'
+                      : 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png'
+                    }} 
+                    style={styles.brandModalLogo}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.brandModalText}>{item.name}</Text>
+                  {selectedBrand?.make_id === item.make_id && (
+                    <Ionicons name="checkmark-circle" size={24} color="#0066FF" />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+
       {/* Category Modal */}
       <Modal visible={categoryModalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
