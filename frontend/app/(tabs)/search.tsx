@@ -177,8 +177,8 @@ export default function SearchScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Поиск</Text>
-        <Text style={styles.headerSubtitle}>Найдите идеальный автомобиль</Text>
+        <Text style={styles.headerTitle}>{t('tabs.search')}</Text>
+        <Text style={styles.headerSubtitle}>{t('search.findPerfectCar')}</Text>
       </View>
       
       {/* Search Bar */}
@@ -216,7 +216,7 @@ export default function SearchScreen() {
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0066FF" />
-          <Text style={styles.loadingText}>Ищем автомобили...</Text>
+          <Text style={styles.loadingText}>{t('search.searchingCars')}</Text>
         </View>
       ) : hasSearched ? (
         <FlatList
@@ -230,16 +230,16 @@ export default function SearchScreen() {
               <View style={styles.emptyIcon}>
                 <Ionicons name="search-outline" size={48} color="#94A3B8" />
               </View>
-              <Text style={styles.emptyTitle}>Ничего не найдено</Text>
+              <Text style={styles.emptyTitle}>{t('messages.noResults')}</Text>
               <Text style={styles.emptySubtitle}>
-                Попробуйте изменить параметры поиска
+                {t('search.tryChangingParams')}
               </Text>
             </View>
           }
           ListHeaderComponent={
             searchResults.length > 0 ? (
               <Text style={styles.resultsCount}>
-                Найдено: {searchResults.length} {searchResults.length === 1 ? 'объявление' : 'объявлений'}
+                {t('search.found')}: {searchResults.length} {t('search.listings')}
               </Text>
             ) : null
           }
@@ -251,7 +251,7 @@ export default function SearchScreen() {
         >
           {/* Popular Brands */}
           <View style={styles.suggestionsSection}>
-            <Text style={styles.sectionTitle}>🔥 Популярные марки</Text>
+            <Text style={styles.sectionTitle}>🔥 {t('search.popularBrands')}</Text>
             <View style={styles.brandsGrid}>
               {popularBrands.map(brand => (
                 <TouchableOpacity
@@ -273,20 +273,20 @@ export default function SearchScreen() {
           <View style={styles.tipsCard}>
             <View style={styles.tipsHeader}>
               <Ionicons name="bulb" size={24} color="#F59E0B" />
-              <Text style={styles.tipsTitle}>Советы по поиску</Text>
+              <Text style={styles.tipsTitle}>{t('search.searchTips')}</Text>
             </View>
             <View style={styles.tipsList}>
               <View style={styles.tipItem}>
                 <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>Введите марку: «Toyota»</Text>
+                <Text style={styles.tipText}>{t('search.tipBrand')}</Text>
               </View>
               <View style={styles.tipItem}>
                 <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>Марку и модель: «Toyota Camry»</Text>
+                <Text style={styles.tipText}>{t('search.tipBrandModel')}</Text>
               </View>
               <View style={styles.tipItem}>
                 <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>Только модель: «Camry»</Text>
+                <Text style={styles.tipText}>{t('search.tipModel')}</Text>
               </View>
             </View>
           </View>
