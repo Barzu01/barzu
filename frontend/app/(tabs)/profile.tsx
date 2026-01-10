@@ -217,20 +217,6 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
-          <Text style={styles.sectionLabel}>{t('profile.searchSection')}</Text>
-          <View style={styles.menuCard}>
-            <MenuItem
-              icon="options"
-              title={t('profile.advancedSearch')}
-              subtitle={t('profile.filterByAllParams')}
-              onPress={() => router.push('/search/advanced')}
-              iconBg="#EDE9FE"
-              iconColor="#8B5CF6"
-            />
-          </View>
-        </View>
-
-        <View style={styles.menuSection}>
           <Text style={styles.sectionLabel}>{t('profile.settingsSection')}</Text>
           <View style={styles.menuCard}>
             <MenuItem
