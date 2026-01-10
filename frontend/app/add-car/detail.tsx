@@ -5199,6 +5199,79 @@ export default function AddCarDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Custom Brand Modal */}
+      <Modal visible={customBrandModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Добавить свою марку</Text>
+              <TouchableOpacity onPress={() => {
+                setCustomBrandModalVisible(false);
+                setCustomBrand('');
+                setCustomModel('');
+              }}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={{ padding: 16 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 }}>
+                Марка автомобиля *
+              </Text>
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#E2E8F0',
+                  borderRadius: 12,
+                  padding: 14,
+                  fontSize: 16,
+                  backgroundColor: '#FFFFFF',
+                  marginBottom: 16,
+                }}
+                placeholder="Например: Great Wall"
+                value={customBrand}
+                onChangeText={setCustomBrand}
+                placeholderTextColor="#94A3B8"
+              />
+              
+              <Text style={{ fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 }}>
+                Модель автомобиля
+              </Text>
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#E2E8F0',
+                  borderRadius: 12,
+                  padding: 14,
+                  fontSize: 16,
+                  backgroundColor: '#FFFFFF',
+                  marginBottom: 24,
+                }}
+                placeholder="Например: Hover H5"
+                value={customModel}
+                onChangeText={setCustomModel}
+                placeholderTextColor="#94A3B8"
+              />
+              
+              <TouchableOpacity
+                style={{
+                  backgroundColor: customBrand.trim() ? '#0066FF' : '#CBD5E1',
+                  padding: 16,
+                  borderRadius: 12,
+                  alignItems: 'center',
+                }}
+                onPress={handleCustomBrandSave}
+                disabled={!customBrand.trim()}
+              >
+                <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '600' }}>
+                  Сохранить
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
