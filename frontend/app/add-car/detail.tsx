@@ -1483,6 +1483,29 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0F172A',
   },
+  brandSelectedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
+  brandSelectLogo: {
+    width: 32,
+    height: 32,
+  },
+  brandModalItem: {
+    paddingVertical: 20,
+  },
+  brandModalLogo: {
+    width: 48,
+    height: 48,
+  },
+  brandModalText: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
   fieldLabel: {
     fontSize: 14,
     fontWeight: '600',
