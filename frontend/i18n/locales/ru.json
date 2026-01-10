@@ -280,6 +280,11 @@
     "weeksAgo": "нед. назад",
     "monthsAgo": "мес. назад"
   },
+  "favorites": {
+    "nothingYet": "Пока ничего нет",
+    "addToFavoritesHint": "Нажмите ❤️ на объявлении, чтобы добавить его в избранное",
+    "browseListings": "Смотреть объявления"
+  },
   "regions": {
     "dushanbe": "Душанбе",
     "vahdat": "Вахдат",

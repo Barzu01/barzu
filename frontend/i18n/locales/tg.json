@@ -280,6 +280,11 @@
     "weeksAgo": "ҳафта пеш",
     "monthsAgo": "моҳ пеш"
   },
+  "favorites": {
+    "nothingYet": "Ҳоло чизе нест",
+    "addToFavoritesHint": "Барои илова кардан ба интихобшуда ❤️ -ро пахш кунед",
+    "browseListings": "Эълонҳоро дидан"
+  },
   "regions": {
     "dushanbe": "Душанбе",
     "vahdat": "Ваҳдат",
