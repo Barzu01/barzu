@@ -606,15 +606,248 @@ const BMW_MODELS: CarModel[] = [
   { name: 'Другая модель', model_id: 1999 },
 ];
 
+// Все модели Hyundai
+const HYUNDAI_MODELS: CarModel[] = [
+  // Accent
+  { name: 'Accent', model_id: 2001 },
+  { name: 'Accent 1.4', model_id: 2002 },
+  { name: 'Accent 1.6', model_id: 2003 },
+  // Elantra
+  { name: 'Elantra', model_id: 2010 },
+  { name: 'Elantra 1.6', model_id: 2011 },
+  { name: 'Elantra 1.8', model_id: 2012 },
+  { name: 'Elantra 2.0', model_id: 2013 },
+  { name: 'Elantra N', model_id: 2014 },
+  { name: 'Elantra N Line', model_id: 2015 },
+  { name: 'Elantra GT', model_id: 2016 },
+  // Sonata
+  { name: 'Sonata', model_id: 2020 },
+  { name: 'Sonata 2.0', model_id: 2021 },
+  { name: 'Sonata 2.4', model_id: 2022 },
+  { name: 'Sonata 2.5', model_id: 2023 },
+  { name: 'Sonata 2.0T', model_id: 2024 },
+  { name: 'Sonata N Line', model_id: 2025 },
+  { name: 'Sonata Hybrid', model_id: 2026 },
+  { name: 'Sonata Plug-in Hybrid', model_id: 2027 },
+  // Azera / Grandeur
+  { name: 'Azera', model_id: 2030 },
+  { name: 'Grandeur', model_id: 2031 },
+  { name: 'Grandeur 2.4', model_id: 2032 },
+  { name: 'Grandeur 3.0', model_id: 2033 },
+  { name: 'Grandeur 3.3', model_id: 2034 },
+  { name: 'Grandeur Hybrid', model_id: 2035 },
+  // Genesis (до выделения в отдельный бренд)
+  { name: 'Genesis Coupe', model_id: 2040 },
+  { name: 'Genesis Coupe 2.0T', model_id: 2041 },
+  { name: 'Genesis Coupe 3.8', model_id: 2042 },
+  { name: 'Genesis Sedan', model_id: 2043 },
+  // i10
+  { name: 'i10', model_id: 2050 },
+  { name: 'i10 1.0', model_id: 2051 },
+  { name: 'i10 1.2', model_id: 2052 },
+  { name: 'Grand i10', model_id: 2053 },
+  // i20
+  { name: 'i20', model_id: 2060 },
+  { name: 'i20 1.2', model_id: 2061 },
+  { name: 'i20 1.4', model_id: 2062 },
+  { name: 'i20 N', model_id: 2063 },
+  { name: 'i20 N Line', model_id: 2064 },
+  { name: 'i20 Active', model_id: 2065 },
+  // i30
+  { name: 'i30', model_id: 2070 },
+  { name: 'i30 1.4', model_id: 2071 },
+  { name: 'i30 1.6', model_id: 2072 },
+  { name: 'i30 2.0', model_id: 2073 },
+  { name: 'i30 N', model_id: 2074 },
+  { name: 'i30 N Line', model_id: 2075 },
+  { name: 'i30 Fastback', model_id: 2076 },
+  { name: 'i30 Fastback N', model_id: 2077 },
+  { name: 'i30 Wagon', model_id: 2078 },
+  // i40
+  { name: 'i40', model_id: 2080 },
+  { name: 'i40 1.7 CRDi', model_id: 2081 },
+  { name: 'i40 2.0', model_id: 2082 },
+  { name: 'i40 Wagon', model_id: 2083 },
+  // Veloster
+  { name: 'Veloster', model_id: 2090 },
+  { name: 'Veloster 1.6', model_id: 2091 },
+  { name: 'Veloster 1.6T', model_id: 2092 },
+  { name: 'Veloster N', model_id: 2093 },
+  { name: 'Veloster Turbo', model_id: 2094 },
+  // Creta / ix25
+  { name: 'Creta', model_id: 2100 },
+  { name: 'Creta 1.6', model_id: 2101 },
+  { name: 'Creta 2.0', model_id: 2102 },
+  { name: 'ix25', model_id: 2103 },
+  // Venue
+  { name: 'Venue', model_id: 2110 },
+  { name: 'Venue 1.0T', model_id: 2111 },
+  { name: 'Venue 1.6', model_id: 2112 },
+  // Kona
+  { name: 'Kona', model_id: 2120 },
+  { name: 'Kona 1.6', model_id: 2121 },
+  { name: 'Kona 1.6T', model_id: 2122 },
+  { name: 'Kona 2.0', model_id: 2123 },
+  { name: 'Kona N', model_id: 2124 },
+  { name: 'Kona N Line', model_id: 2125 },
+  { name: 'Kona Electric', model_id: 2126 },
+  { name: 'Kona Hybrid', model_id: 2127 },
+  // Tucson
+  { name: 'Tucson', model_id: 2130 },
+  { name: 'Tucson 1.6', model_id: 2131 },
+  { name: 'Tucson 1.6T', model_id: 2132 },
+  { name: 'Tucson 2.0', model_id: 2133 },
+  { name: 'Tucson 2.0 CRDi', model_id: 2134 },
+  { name: 'Tucson 2.5', model_id: 2135 },
+  { name: 'Tucson N Line', model_id: 2136 },
+  { name: 'Tucson Hybrid', model_id: 2137 },
+  { name: 'Tucson Plug-in Hybrid', model_id: 2138 },
+  // ix35
+  { name: 'ix35', model_id: 2140 },
+  { name: 'ix35 1.6', model_id: 2141 },
+  { name: 'ix35 2.0', model_id: 2142 },
+  { name: 'ix35 2.0 CRDi', model_id: 2143 },
+  // Santa Fe
+  { name: 'Santa Fe', model_id: 2150 },
+  { name: 'Santa Fe 2.0T', model_id: 2151 },
+  { name: 'Santa Fe 2.2 CRDi', model_id: 2152 },
+  { name: 'Santa Fe 2.4', model_id: 2153 },
+  { name: 'Santa Fe 2.5', model_id: 2154 },
+  { name: 'Santa Fe 2.7', model_id: 2155 },
+  { name: 'Santa Fe 3.3', model_id: 2156 },
+  { name: 'Santa Fe 3.5', model_id: 2157 },
+  { name: 'Santa Fe Hybrid', model_id: 2158 },
+  { name: 'Santa Fe Plug-in Hybrid', model_id: 2159 },
+  { name: 'Santa Fe XL', model_id: 2160 },
+  // Palisade
+  { name: 'Palisade', model_id: 2170 },
+  { name: 'Palisade 2.2 CRDi', model_id: 2171 },
+  { name: 'Palisade 3.5', model_id: 2172 },
+  { name: 'Palisade 3.8', model_id: 2173 },
+  // Veracruz / ix55
+  { name: 'Veracruz', model_id: 2180 },
+  { name: 'ix55', model_id: 2181 },
+  { name: 'ix55 3.0 CRDi', model_id: 2182 },
+  { name: 'ix55 3.8', model_id: 2183 },
+  // Terracan
+  { name: 'Terracan', model_id: 2190 },
+  { name: 'Terracan 2.5', model_id: 2191 },
+  { name: 'Terracan 2.9 CRDi', model_id: 2192 },
+  { name: 'Terracan 3.5', model_id: 2193 },
+  // Galloper
+  { name: 'Galloper', model_id: 2200 },
+  { name: 'Galloper 2.5', model_id: 2201 },
+  { name: 'Galloper 3.0', model_id: 2202 },
+  // Starex / H-1 / Grand Starex
+  { name: 'Starex', model_id: 2210 },
+  { name: 'H-1', model_id: 2211 },
+  { name: 'Grand Starex', model_id: 2212 },
+  { name: 'H-1 2.4', model_id: 2213 },
+  { name: 'H-1 2.5 CRDi', model_id: 2214 },
+  // Staria
+  { name: 'Staria', model_id: 2220 },
+  { name: 'Staria 2.2 CRDi', model_id: 2221 },
+  { name: 'Staria 3.5', model_id: 2222 },
+  { name: 'Staria Premium', model_id: 2223 },
+  { name: 'Staria Lounge', model_id: 2224 },
+  // Porter / H100
+  { name: 'Porter', model_id: 2230 },
+  { name: 'Porter 2', model_id: 2231 },
+  { name: 'H100', model_id: 2232 },
+  // Ioniq (обычный)
+  { name: 'Ioniq', model_id: 2240 },
+  { name: 'Ioniq Hybrid', model_id: 2241 },
+  { name: 'Ioniq Electric', model_id: 2242 },
+  { name: 'Ioniq Plug-in Hybrid', model_id: 2243 },
+  // Ioniq (электрический суббренд)
+  { name: 'Ioniq 5', model_id: 2250 },
+  { name: 'Ioniq 5 Standard Range', model_id: 2251 },
+  { name: 'Ioniq 5 Long Range', model_id: 2252 },
+  { name: 'Ioniq 5 N', model_id: 2253 },
+  { name: 'Ioniq 6', model_id: 2254 },
+  { name: 'Ioniq 6 Standard Range', model_id: 2255 },
+  { name: 'Ioniq 6 Long Range', model_id: 2256 },
+  // Nexo (водородный)
+  { name: 'Nexo', model_id: 2260 },
+  // Getz
+  { name: 'Getz', model_id: 2270 },
+  { name: 'Getz 1.1', model_id: 2271 },
+  { name: 'Getz 1.3', model_id: 2272 },
+  { name: 'Getz 1.4', model_id: 2273 },
+  { name: 'Getz 1.5 CRDi', model_id: 2274 },
+  { name: 'Getz 1.6', model_id: 2275 },
+  // Atos / Santro
+  { name: 'Atos', model_id: 2280 },
+  { name: 'Atos Prime', model_id: 2281 },
+  { name: 'Santro', model_id: 2282 },
+  // Solaris (для СНГ)
+  { name: 'Solaris', model_id: 2290 },
+  { name: 'Solaris 1.4', model_id: 2291 },
+  { name: 'Solaris 1.6', model_id: 2292 },
+  // Matrix
+  { name: 'Matrix', model_id: 2300 },
+  { name: 'Matrix 1.5 CRDi', model_id: 2301 },
+  { name: 'Matrix 1.6', model_id: 2302 },
+  { name: 'Matrix 1.8', model_id: 2303 },
+  // Trajet
+  { name: 'Trajet', model_id: 2310 },
+  { name: 'Trajet 2.0', model_id: 2311 },
+  { name: 'Trajet 2.0 CRDi', model_id: 2312 },
+  { name: 'Trajet 2.7', model_id: 2313 },
+  // Coupe / Tiburon
+  { name: 'Coupe', model_id: 2320 },
+  { name: 'Tiburon', model_id: 2321 },
+  { name: 'Tiburon 1.6', model_id: 2322 },
+  { name: 'Tiburon 2.0', model_id: 2323 },
+  { name: 'Tiburon 2.7', model_id: 2324 },
+  // Lantra / Avante
+  { name: 'Lantra', model_id: 2330 },
+  { name: 'Avante', model_id: 2331 },
+  { name: 'Avante XD', model_id: 2332 },
+  { name: 'Avante HD', model_id: 2333 },
+  { name: 'Avante MD', model_id: 2334 },
+  { name: 'Avante AD', model_id: 2335 },
+  { name: 'Avante CN7', model_id: 2336 },
+  // Excel / Pony
+  { name: 'Excel', model_id: 2340 },
+  { name: 'Pony', model_id: 2341 },
+  { name: 'Pony Excel', model_id: 2342 },
+  // Equus / Centennial
+  { name: 'Equus', model_id: 2350 },
+  { name: 'Centennial', model_id: 2351 },
+  { name: 'Equus 3.8', model_id: 2352 },
+  { name: 'Equus 4.6', model_id: 2353 },
+  { name: 'Equus 5.0', model_id: 2354 },
+  // XG
+  { name: 'XG', model_id: 2360 },
+  { name: 'XG 25', model_id: 2361 },
+  { name: 'XG 30', model_id: 2362 },
+  { name: 'XG 350', model_id: 2363 },
+  // Dynasty
+  { name: 'Dynasty', model_id: 2370 },
+  // Bayon
+  { name: 'Bayon', model_id: 2380 },
+  { name: 'Bayon 1.0T', model_id: 2381 },
+  { name: 'Bayon 1.2', model_id: 2382 },
+  // Casper
+  { name: 'Casper', model_id: 2390 },
+  { name: 'Casper 1.0', model_id: 2391 },
+  { name: 'Casper 1.0T', model_id: 2392 },
+  // Другие
+  { name: 'Другая модель', model_id: 2999 },
+];
+
 // Объединённые данные марок и моделей
 const ALL_BRANDS: Brand[] = [
   { name: 'Mercedes-Benz', make_id: 449 },
   { name: 'BMW', make_id: 452 },
+  { name: 'Hyundai', make_id: 200 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   449: MERCEDES_MODELS, // Mercedes-Benz
   452: BMW_MODELS,      // BMW
+  200: HYUNDAI_MODELS,  // Hyundai
 };
 
 export default function AddCarDetailScreen() {
