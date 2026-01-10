@@ -3,6 +3,15 @@
     "name": "SafedAuto",
     "welcome": "Хуш омадед"
   },
+  "categories": {
+    "all": "Ҳама",
+    "cars": "Мошин",
+    "electric": "Электрикӣ",
+    "motorcycles": "Мотосикл",
+    "trucks": "Боркаш",
+    "rent": "Иҷора",
+    "allListings": "Ҳамаи эълонҳо"
+  },
   "auth": {
     "phoneNumber": "Рақами телефон",
     "enterPhone": "Рақами телефонро ворид кунед",
@@ -177,7 +186,8 @@
     "deleteConfirmation": "Эълонро нест кардан",
     "notFound": "Ёфт нашуд",
     "connectionError": "Хатои пайвастшавӣ",
-    "tryAgain": "Аз нав кӯшиш кунед"
+    "tryAgain": "Аз нав кӯшиш кунед",
+    "noCarsInCategory": "Дар ин категория ҳоло мошин нест"
   },
   "form": {
     "required": "Ҳатмӣ",

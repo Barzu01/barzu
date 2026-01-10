@@ -3,6 +3,15 @@
     "name": "SafedAuto",
     "welcome": "Добро пожаловать"
   },
+  "categories": {
+    "all": "Все",
+    "cars": "Авто",
+    "electric": "Электро",
+    "motorcycles": "Мото",
+    "trucks": "Грузовики",
+    "rent": "Аренда",
+    "allListings": "Все объявления"
+  },
   "auth": {
     "phoneNumber": "Номер телефона",
     "enterPhone": "Введите номер телефона",
@@ -177,7 +186,8 @@
     "deleteConfirmation": "Удалить объявление",
     "notFound": "Не найдено",
     "connectionError": "Ошибка соединения",
-    "tryAgain": "Попробовать снова"
+    "tryAgain": "Попробовать снова",
+    "noCarsInCategory": "В этой категории пока нет автомобилей"
   },
   "form": {
     "required": "Обязательно",
