@@ -171,12 +171,12 @@ export default function HomeScreen() {
   };
 
   const categories = [
-    { id: 'all', name: t('categories.all'), icon: '🚙', gradient: ['#6366F1', '#8B5CF6'] },
-    { id: 'cars', name: t('categories.cars'), icon: '🚗', gradient: ['#0066FF', '#00D4FF'] },
-    { id: 'electric', name: t('categories.electric'), icon: '⚡', gradient: ['#10B981', '#34D399'] },
-    { id: 'motorcycles', name: t('categories.motorcycles'), icon: '🏍️', gradient: ['#F59E0B', '#FBBF24'] },
-    { id: 'trucks', name: t('categories.trucks'), icon: '🚚', gradient: ['#EF4444', '#F87171'] },
-    { id: 'rent', name: t('categories.rent'), icon: '🔑', gradient: ['#8B5CF6', '#A78BFA'] },
+    { id: 'all', name: t('categories.all'), icon: 'apps' as const, gradient: ['#6366F1', '#8B5CF6'] },
+    { id: 'cars', name: t('categories.cars'), icon: 'car-sport' as const, gradient: ['#0066FF', '#00D4FF'] },
+    { id: 'electric', name: t('categories.electric'), icon: 'flash' as const, gradient: ['#10B981', '#34D399'] },
+    { id: 'motorcycles', name: t('categories.motorcycles'), icon: 'bicycle' as const, gradient: ['#F59E0B', '#FBBF24'] },
+    { id: 'trucks', name: t('categories.trucks'), icon: 'bus' as const, gradient: ['#EF4444', '#F87171'] },
+    { id: 'rent', name: t('categories.rent'), icon: 'key' as const, gradient: ['#8B5CF6', '#A78BFA'] },
   ];
 
   const filteredCars = selectedCategory && selectedCategory !== 'all'
