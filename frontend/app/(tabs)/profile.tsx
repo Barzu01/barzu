@@ -21,17 +21,18 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const [editModalVisible, setEditModalVisible] = React.useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = React.useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = React.useState(false);
   const [newName, setNewName] = React.useState('');
 
   const handleLogout = () => {
-    Alert.alert(
-      t('auth.logout'),
-      t('profile.confirmLogout'),
-      [
-        { text: t('actions.cancel'), style: 'cancel' },
-        { text: t('auth.logout'), style: 'destructive', onPress: logout },
-      ]
-    );
+    setLogoutModalVisible(true);
+  };
+
+  const confirmLogout = async () => {
+    setLogoutModalVisible(false);
+    await logout();
+    router.replace('/auth/login');
   };
 
   const handleEditProfile = () => {
@@ -41,21 +42,20 @@ export default function ProfileScreen() {
 
   const handleSaveName = async () => {
     if (!newName.trim()) {
-      Alert.alert(t('messages.error'), t('profile.enterName'));
       return;
     }
 
     try {
       await updateUserProfile(newName.trim());
       setEditModalVisible(false);
-      Alert.alert(t('messages.success'), t('profile.nameUpdated'));
     } catch (error) {
-      Alert.alert(t('messages.error'), t('profile.nameUpdateFailed'));
+      console.error('Error updating name:', error);
     }
   };
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    setLanguageModalVisible(false);
   };
 
   const MenuItem = ({
