@@ -4985,7 +4985,7 @@ export default function AddCarDetailScreen() {
           ) : (
             <>
               <Ionicons name="cloud-upload" size={24} color="#FFFFFF" />
-              <Text style={styles.submitText}>{submitting ? t('addCar.publishing') : t('addCar.publish')}</Text>
+              <Text style={styles.submitText}>{t('addCar.publish')}</Text>
             </>
           )}
         </TouchableOpacity>
