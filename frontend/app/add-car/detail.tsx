@@ -4878,9 +4878,9 @@ export default function AddCarDetailScreen() {
 
         {/* Condition & Color */}
         <View style={styles.card}>
-          <SectionHeader title="🎨 Состояние и цвет" />
+          <SectionHeader title={t('addCar.conditionColorSection')} />
           
-          <Text style={styles.fieldLabel}>Состояние</Text>
+          <Text style={styles.fieldLabel}>{t('car.condition')}</Text>
           <View style={styles.toggleContainer}>
             <TouchableOpacity
               style={[styles.toggleButton, formData.condition === 'new' && styles.toggleActiveGreen]}
@@ -4900,7 +4900,7 @@ export default function AddCarDetailScreen() {
             </TouchableOpacity>
           </View>
 
-          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Цвет</Text>
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.color')}</Text>
           <TextInput
             style={styles.input}
             value={formData.color}
@@ -4920,7 +4920,7 @@ export default function AddCarDetailScreen() {
             <Text style={[styles.selectFieldText, formData.features.length === 0 && styles.placeholder]}>
               {formData.features.length > 0 
                 ? `Выбрано: ${formData.features.length} опций`
-                : 'Выберите опции автомобиля'}
+                : t('addCar.selectOptions')}
             </Text>
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
@@ -4945,7 +4945,7 @@ export default function AddCarDetailScreen() {
 
         {/* Location */}
         <View style={styles.card}>
-          <SectionHeader title="📍 Регион" required />
+          <SectionHeader title={t('addCar.regionSection')} required />
           <TouchableOpacity
             style={styles.selectField}
             onPress={() => setRegionModalVisible(true)}
@@ -4960,7 +4960,7 @@ export default function AddCarDetailScreen() {
 
         {/* Description */}
         <View style={styles.card}>
-          <SectionHeader title="📝 Описание" />
+          <SectionHeader title={t('addCar.descriptionSection')} />
           <TextInput
             style={[styles.input, styles.textArea]}
             value={formData.description}
@@ -5003,7 +5003,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Выберите марку</Text>
+              <Text style={styles.modalTitle}>{t('addCar.selectBrand')}</Text>
               <TouchableOpacity onPress={() => setBrandModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
@@ -5037,7 +5037,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Выберите категорию</Text>
+              <Text style={styles.modalTitle}>{t('addCar.selectCategory')}</Text>
               <TouchableOpacity onPress={() => setCategoryModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
@@ -5070,7 +5070,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Тип кузова</Text>
+              <Text style={styles.modalTitle}>{t('car.bodyType')}</Text>
               <TouchableOpacity onPress={() => setBodyTypeModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
@@ -5102,7 +5102,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Объём двигателя</Text>
+              <Text style={styles.modalTitle}>{t('car.engineVolume')}</Text>
               <TouchableOpacity onPress={() => setEngineVolumeModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
@@ -5134,7 +5134,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Выберите регион</Text>
+              <Text style={styles.modalTitle}>{t('addCar.selectRegion')}</Text>
               <TouchableOpacity onPress={() => setRegionModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
@@ -5205,7 +5205,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Добавить свою марку</Text>
+              <Text style={styles.modalTitle}>{t('addCar.addOwnBrand')}</Text>
               <TouchableOpacity onPress={() => {
                 setCustomBrandModalVisible(false);
                 setCustomBrand('');
@@ -5217,7 +5217,7 @@ export default function AddCarDetailScreen() {
             
             <View style={{ padding: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 }}>
-                Марка автомобиля *
+                {t('addCar.carBrand')} *
               </Text>
               <TextInput
                 style={{
@@ -5236,7 +5236,7 @@ export default function AddCarDetailScreen() {
               />
               
               <Text style={{ fontSize: 14, fontWeight: '500', color: '#374151', marginBottom: 8 }}>
-                Модель автомобиля
+                {t('addCar.carModel')}
               </Text>
               <TextInput
                 style={{
