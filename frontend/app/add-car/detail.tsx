@@ -4293,6 +4293,38 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   475: GENESIS_MODELS,  // Genesis
   476: OPEL_MODELS,     // Opel
   477: LADA_MODELS,     // Lada
+  478: JAGUAR_MODELS,   // Jaguar
+  479: ALFA_ROMEO_MODELS, // Alfa Romeo
+  480: FIAT_MODELS,     // Fiat
+  481: CITROEN_MODELS,  // Citroën
+  482: SEAT_MODELS,     // SEAT
+  483: MINI_MODELS,     // MINI
+  484: DODGE_MODELS,    // Dodge
+  485: CHRYSLER_MODELS, // Chrysler
+  486: LINCOLN_MODELS,  // Lincoln
+  487: GMC_MODELS,      // GMC
+  488: BUICK_MODELS,    // Buick
+  489: TESLA_MODELS,    // Tesla
+  490: GEELY_MODELS,    // Geely
+  491: CHERY_MODELS,    // Chery
+  492: HAVAL_MODELS,    // Haval
+  493: CHANGAN_MODELS,  // Changan
+  494: BYD_MODELS,      // BYD
+  495: EXEED_MODELS,    // Exeed
+  496: OMODA_MODELS,    // OMODA
+  497: JETOUR_MODELS,   // Jetour
+  498: SUZUKI_MODELS,   // Suzuki
+  499: DAIHATSU_MODELS, // Daihatsu
+  500: UAZ_MODELS,      // УАЗ
+  501: GAZ_MODELS,      // ГАЗ
+  502: FERRARI_MODELS,  // Ferrari
+  503: LAMBORGHINI_MODELS, // Lamborghini
+  504: MASERATI_MODELS, // Maserati
+  505: BENTLEY_MODELS,  // Bentley
+  506: ROLLS_ROYCE_MODELS, // Rolls-Royce
+  507: ASTON_MARTIN_MODELS, // Aston Martin
+  508: MCLAREN_MODELS,  // McLaren
+  509: LOTUS_MODELS,    // Lotus
 };
 
 // Логотипы брендов
