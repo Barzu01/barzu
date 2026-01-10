@@ -1779,12 +1779,7 @@ export default function AddCarDetailScreen() {
             {selectedBrand ? (
               <View style={styles.brandSelectedRow}>
                 <Image 
-                  source={{ uri: selectedBrand.name === 'Mercedes-Benz' 
-                    ? 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png'
-                    : selectedBrand.name === 'BMW'
-                    ? 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png'
-                    : 'https://www.carlogos.org/car-logos/hyundai-logo-2011-1920x1080.png'
-                  }} 
+                  source={{ uri: getBrandLogo(selectedBrand.name) }} 
                   style={styles.brandSelectLogo}
                   resizeMode="contain"
                 />
