@@ -246,12 +246,31 @@ def normalize_phone(phone: str) -> str:
     return phone
 
 
+# Helper to find user by phone (tries multiple formats)
+async def find_user_by_phone(phone: str):
+    """Find user by phone, trying different formats"""
+    phone = normalize_phone(phone)
+    # Try with + first
+    user = await db.users.find_one({"phone": phone})
+    if user:
+        return user
+    # Try with space (legacy format)
+    phone_with_space = ' ' + phone[1:] if phone.startswith('+') else phone
+    user = await db.users.find_one({"phone": phone_with_space})
+    if user:
+        # Update phone format to use +
+        await db.users.update_one({"_id": user["_id"]}, {"$set": {"phone": phone}})
+        user["phone"] = phone
+        return user
+    return None
+
+
 # ===== USER ENDPOINTS =====
 @api_router.post("/users", response_model=UserResponse)
 async def create_or_get_user(phone: str):
     """Create or get user by phone number"""
     phone = normalize_phone(phone)
-    existing_user = await db.users.find_one({"phone": phone})
+    existing_user = await find_user_by_phone(phone)
     if existing_user:
         return serialize_doc(existing_user)
     
@@ -265,7 +284,7 @@ async def create_or_get_user(phone: str):
 async def get_user(phone: str):
     """Get user by phone"""
     phone = normalize_phone(phone)
-    user = await db.users.find_one({"phone": phone})
+    user = await find_user_by_phone(phone)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return serialize_doc(user)
@@ -275,6 +294,10 @@ async def get_user(phone: str):
 async def update_user(phone: str, name: Optional[str] = None):
     """Update user profile"""
     phone = normalize_phone(phone)
+    user = await find_user_by_phone(phone)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     update_data = {}
     if name is not None:
         update_data["name"] = name
@@ -283,8 +306,6 @@ async def update_user(phone: str, name: Optional[str] = None):
         await db.users.update_one({"phone": phone}, {"$set": update_data})
     
     user = await db.users.find_one({"phone": phone})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
     return serialize_doc(user)
 
 
