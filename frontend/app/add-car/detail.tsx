@@ -648,7 +648,7 @@ export default function AddCarDetailScreen() {
   ];
 
   const [formData, setFormData] = useState({
-    brand: 'Mercedes-Benz',
+    brand: '',
     model: '',
     year: new Date().getFullYear().toString(),
     price: '',
@@ -665,6 +665,14 @@ export default function AddCarDetailScreen() {
     description: '',
     features: [] as string[],
   });
+
+  const handleBrandSelect = (brand: Brand) => {
+    setSelectedBrand(brand);
+    setSelectedModel(null);
+    setFormData(prev => ({ ...prev, brand: brand.name, model: '' }));
+    setModels(MODELS_BY_BRAND[brand.make_id] || []);
+    setBrandModalVisible(false);
+  };
 
   const handleModelSelect = (option: { label: string; value: string | number }) => {
     const model = models.find(m => m.name === option.label);
