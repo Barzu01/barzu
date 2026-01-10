@@ -4451,11 +4451,33 @@ export default function AddCarDetailScreen() {
   });
 
   const handleBrandSelect = (brand: Brand) => {
+    if (brand.make_id === 999) {
+      // Открываем модальное окно для ввода своей марки
+      setBrandModalVisible(false);
+      setCustomBrandModalVisible(true);
+      return;
+    }
     setSelectedBrand(brand);
     setSelectedModel(null);
     setFormData(prev => ({ ...prev, brand: brand.name, model: '' }));
     setModels(MODELS_BY_BRAND[brand.make_id] || []);
     setBrandModalVisible(false);
+  };
+
+  const handleCustomBrandSave = () => {
+    if (customBrand.trim()) {
+      setFormData(prev => ({ 
+        ...prev, 
+        brand: customBrand.trim(), 
+        model: customModel.trim() 
+      }));
+      setSelectedBrand({ name: customBrand.trim(), make_id: 999 });
+      setSelectedModel(customModel.trim() ? { name: customModel.trim(), model_id: 99999 } : null);
+      setModels([]);
+      setCustomBrandModalVisible(false);
+      setCustomBrand('');
+      setCustomModel('');
+    }
   };
 
   const handleModelSelect = (option: { label: string; value: string | number }) => {
