@@ -4856,7 +4856,7 @@ export default function AddCarDetailScreen() {
           </View>
 
           {/* Drive Type */}
-          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Привод</Text>
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.driveType')}</Text>
           <View style={styles.chipContainer}>
             {[
               { value: 'front', label: 'Передний' },
