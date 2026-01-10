@@ -3266,6 +3266,198 @@ const GENESIS_MODELS: CarModel[] = [
   { name: 'Другая модель', model_id: 25999 },
 ];
 
+// Все модели Opel
+const OPEL_MODELS: CarModel[] = [
+  // Astra
+  { name: 'Astra', model_id: 26001 },
+  { name: 'Astra A', model_id: 26002 },
+  { name: 'Astra B', model_id: 26003 },
+  { name: 'Astra C', model_id: 26004 },
+  { name: 'Astra F', model_id: 26005 },
+  { name: 'Astra G', model_id: 26006 },
+  { name: 'Astra H', model_id: 26007 },
+  { name: 'Astra J', model_id: 26008 },
+  { name: 'Astra K', model_id: 26009 },
+  { name: 'Astra L', model_id: 26010 },
+  { name: 'Astra GTC', model_id: 26011 },
+  { name: 'Astra OPC', model_id: 26012 },
+  // Corsa
+  { name: 'Corsa', model_id: 26020 },
+  { name: 'Corsa A', model_id: 26021 },
+  { name: 'Corsa B', model_id: 26022 },
+  { name: 'Corsa C', model_id: 26023 },
+  { name: 'Corsa D', model_id: 26024 },
+  { name: 'Corsa E', model_id: 26025 },
+  { name: 'Corsa F', model_id: 26026 },
+  { name: 'Corsa OPC', model_id: 26027 },
+  { name: 'Corsa-e', model_id: 26028 },
+  // Insignia
+  { name: 'Insignia', model_id: 26030 },
+  { name: 'Insignia A', model_id: 26031 },
+  { name: 'Insignia B', model_id: 26032 },
+  { name: 'Insignia Sports Tourer', model_id: 26033 },
+  { name: 'Insignia Country Tourer', model_id: 26034 },
+  { name: 'Insignia OPC', model_id: 26035 },
+  { name: 'Insignia Grand Sport', model_id: 26036 },
+  // Vectra
+  { name: 'Vectra', model_id: 26040 },
+  { name: 'Vectra A', model_id: 26041 },
+  { name: 'Vectra B', model_id: 26042 },
+  { name: 'Vectra C', model_id: 26043 },
+  { name: 'Vectra OPC', model_id: 26044 },
+  // Omega
+  { name: 'Omega', model_id: 26050 },
+  { name: 'Omega A', model_id: 26051 },
+  { name: 'Omega B', model_id: 26052 },
+  // Zafira
+  { name: 'Zafira', model_id: 26060 },
+  { name: 'Zafira A', model_id: 26061 },
+  { name: 'Zafira B', model_id: 26062 },
+  { name: 'Zafira C Tourer', model_id: 26063 },
+  { name: 'Zafira Life', model_id: 26064 },
+  { name: 'Zafira-e Life', model_id: 26065 },
+  // Meriva
+  { name: 'Meriva', model_id: 26070 },
+  { name: 'Meriva A', model_id: 26071 },
+  { name: 'Meriva B', model_id: 26072 },
+  // Mokka
+  { name: 'Mokka', model_id: 26080 },
+  { name: 'Mokka X', model_id: 26081 },
+  { name: 'Mokka-e', model_id: 26082 },
+  // Crossland
+  { name: 'Crossland', model_id: 26090 },
+  { name: 'Crossland X', model_id: 26091 },
+  // Grandland
+  { name: 'Grandland', model_id: 26100 },
+  { name: 'Grandland X', model_id: 26101 },
+  { name: 'Grandland X Hybrid', model_id: 26102 },
+  // Antara
+  { name: 'Antara', model_id: 26110 },
+  // Frontera
+  { name: 'Frontera', model_id: 26120 },
+  { name: 'Frontera A', model_id: 26121 },
+  { name: 'Frontera B', model_id: 26122 },
+  // Combo
+  { name: 'Combo', model_id: 26130 },
+  { name: 'Combo Life', model_id: 26131 },
+  { name: 'Combo-e Life', model_id: 26132 },
+  // Vivaro
+  { name: 'Vivaro', model_id: 26140 },
+  { name: 'Vivaro-e', model_id: 26141 },
+  // Movano
+  { name: 'Movano', model_id: 26150 },
+  // Kadett
+  { name: 'Kadett', model_id: 26160 },
+  { name: 'Kadett E', model_id: 26161 },
+  // Calibra
+  { name: 'Calibra', model_id: 26170 },
+  // Tigra
+  { name: 'Tigra', model_id: 26180 },
+  { name: 'Tigra TwinTop', model_id: 26181 },
+  // Speedster
+  { name: 'Speedster', model_id: 26190 },
+  // GT
+  { name: 'GT', model_id: 26200 },
+  // Cascada
+  { name: 'Cascada', model_id: 26210 },
+  // Adam
+  { name: 'Adam', model_id: 26220 },
+  { name: 'Adam S', model_id: 26221 },
+  { name: 'Adam Rocks', model_id: 26222 },
+  // Karl
+  { name: 'Karl', model_id: 26230 },
+  { name: 'Karl Rocks', model_id: 26231 },
+  // Agila
+  { name: 'Agila', model_id: 26240 },
+  // Senator
+  { name: 'Senator', model_id: 26250 },
+  // Monza
+  { name: 'Monza', model_id: 26260 },
+  // Manta
+  { name: 'Manta', model_id: 26270 },
+  // Rekord
+  { name: 'Rekord', model_id: 26280 },
+  // Другие
+  { name: 'Другая модель', model_id: 26999 },
+];
+
+// Все модели Lada (ВАЗ)
+const LADA_MODELS: CarModel[] = [
+  // Современные модели
+  { name: 'Vesta', model_id: 27001 },
+  { name: 'Vesta Sedan', model_id: 27002 },
+  { name: 'Vesta SW', model_id: 27003 },
+  { name: 'Vesta SW Cross', model_id: 27004 },
+  { name: 'Vesta Cross', model_id: 27005 },
+  { name: 'Vesta Sport', model_id: 27006 },
+  { name: 'Vesta CNG', model_id: 27007 },
+  // Granta
+  { name: 'Granta', model_id: 27010 },
+  { name: 'Granta Sedan', model_id: 27011 },
+  { name: 'Granta Liftback', model_id: 27012 },
+  { name: 'Granta SW', model_id: 27013 },
+  { name: 'Granta Cross', model_id: 27014 },
+  { name: 'Granta Drive Active', model_id: 27015 },
+  // XRAY
+  { name: 'XRAY', model_id: 27020 },
+  { name: 'XRAY Cross', model_id: 27021 },
+  // Largus
+  { name: 'Largus', model_id: 27030 },
+  { name: 'Largus Universal', model_id: 27031 },
+  { name: 'Largus Cross', model_id: 27032 },
+  { name: 'Largus Фургон', model_id: 27033 },
+  // Niva
+  { name: 'Niva', model_id: 27040 },
+  { name: 'Niva Legend', model_id: 27041 },
+  { name: 'Niva Travel', model_id: 27042 },
+  { name: 'Niva 4x4', model_id: 27043 },
+  { name: 'Niva 4x4 Urban', model_id: 27044 },
+  { name: 'Niva 4x4 Bronto', model_id: 27045 },
+  // Классика
+  { name: '2101 (Копейка)', model_id: 27050 },
+  { name: '2102', model_id: 27051 },
+  { name: '2103', model_id: 27052 },
+  { name: '2104', model_id: 27053 },
+  { name: '2105', model_id: 27054 },
+  { name: '2106', model_id: 27055 },
+  { name: '2107', model_id: 27056 },
+  // Samara
+  { name: '2108 (Восьмёрка)', model_id: 27060 },
+  { name: '2109 (Девятка)', model_id: 27061 },
+  { name: '21099', model_id: 27062 },
+  { name: '2113', model_id: 27063 },
+  { name: '2114', model_id: 27064 },
+  { name: '2115', model_id: 27065 },
+  // Priora
+  { name: 'Priora', model_id: 27070 },
+  { name: 'Priora Sedan', model_id: 27071 },
+  { name: 'Priora Hatchback', model_id: 27072 },
+  { name: 'Priora Universal', model_id: 27073 },
+  { name: 'Priora Coupe', model_id: 27074 },
+  // Kalina
+  { name: 'Kalina', model_id: 27080 },
+  { name: 'Kalina Sedan', model_id: 27081 },
+  { name: 'Kalina Hatchback', model_id: 27082 },
+  { name: 'Kalina Universal', model_id: 27083 },
+  { name: 'Kalina Sport', model_id: 27084 },
+  { name: 'Kalina Cross', model_id: 27085 },
+  { name: 'Kalina 2', model_id: 27086 },
+  // 110 серия
+  { name: '2110', model_id: 27090 },
+  { name: '2111', model_id: 27091 },
+  { name: '2112', model_id: 27092 },
+  // Oka
+  { name: '1111 Oka', model_id: 27100 },
+  { name: '11113 Oka', model_id: 27101 },
+  // Старые модели
+  { name: '2121 (Нива)', model_id: 27110 },
+  { name: '21213', model_id: 27111 },
+  { name: '21214', model_id: 27112 },
+  { name: '2131', model_id: 27113 },
+  // Другие
+  { name: 'Другая модель', model_id: 27999 },
+];
+
 // Объединённые данные марок и моделей
 const ALL_BRANDS: Brand[] = [
   { name: 'Mercedes-Benz', make_id: 449 },
