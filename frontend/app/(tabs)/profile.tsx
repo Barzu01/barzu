@@ -25,11 +25,11 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      'Выход',
-      'Вы уверены, что хотите выйти?',
+      t('auth.logout'),
+      t('profile.confirmLogout'),
       [
-        { text: 'Отмена', style: 'cancel' },
-        { text: 'Выйти', style: 'destructive', onPress: logout },
+        { text: t('actions.cancel'), style: 'cancel' },
+        { text: t('auth.logout'), style: 'destructive', onPress: logout },
       ]
     );
   };
@@ -41,16 +41,16 @@ export default function ProfileScreen() {
 
   const handleSaveName = async () => {
     if (!newName.trim()) {
-      Alert.alert('Ошибка', 'Введите имя');
+      Alert.alert(t('messages.error'), t('profile.enterName'));
       return;
     }
 
     try {
       await updateUserProfile(newName.trim());
       setEditModalVisible(false);
-      Alert.alert('Успешно', 'Имя обновлено');
+      Alert.alert(t('messages.success'), t('profile.nameUpdated'));
     } catch (error) {
-      Alert.alert('Ошибка', 'Не удалось обновить имя');
+      Alert.alert(t('messages.error'), t('profile.nameUpdateFailed'));
     }
   };
 
@@ -110,7 +110,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
           
-          <Text style={styles.userName}>{user?.name || 'Пользователь'}</Text>
+          <Text style={styles.userName}>{user?.name || t('profile.user')}</Text>
           <Text style={styles.userPhone}>{user?.phone}</Text>
           
           <TouchableOpacity 
@@ -118,7 +118,7 @@ export default function ProfileScreen() {
             onPress={handleEditProfile}
           >
             <Ionicons name="create-outline" size={18} color="#0066FF" />
-            <Text style={styles.editProfileText}>Редактировать профиль</Text>
+            <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -132,19 +132,19 @@ export default function ProfileScreen() {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Редактировать имя</Text>
+                <Text style={styles.modalTitle}>{t('profile.editName')}</Text>
                 <TouchableOpacity onPress={() => setEditModalVisible(false)}>
                   <Ionicons name="close" size={28} color="#0F172A" />
                 </TouchableOpacity>
               </View>
               
               <View style={styles.modalBody}>
-                <Text style={styles.inputLabel}>Ваше имя</Text>
+                <Text style={styles.inputLabel}>{t('profile.yourName')}</Text>
                 <TextInput
                   style={styles.input}
                   value={newName}
                   onChangeText={setNewName}
-                  placeholder="Введите ваше имя"
+                  placeholder={t('profile.enterYourName')}
                   placeholderTextColor="#94A3B8"
                   autoFocus
                 />
@@ -154,14 +154,14 @@ export default function ProfileScreen() {
                     style={styles.cancelButton}
                     onPress={() => setEditModalVisible(false)}
                   >
-                    <Text style={styles.cancelButtonText}>Отмена</Text>
+                    <Text style={styles.cancelButtonText}>{t('actions.cancel')}</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity 
                     style={styles.saveButton}
                     onPress={handleSaveName}
                   >
-                    <Text style={styles.saveButtonText}>Сохранить</Text>
+                    <Text style={styles.saveButtonText}>{t('actions.save')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -171,20 +171,20 @@ export default function ProfileScreen() {
 
         {/* Menu Sections */}
         <View style={styles.menuSection}>
-          <Text style={styles.sectionLabel}>МОИ ОБЪЯВЛЕНИЯ</Text>
+          <Text style={styles.sectionLabel}>{t('profile.myListingsSection')}</Text>
           <View style={styles.menuCard}>
             <MenuItem
               icon="car"
-              title="Мои объявления"
-              subtitle="Управление объявлениями"
+              title={t('profile.myListings')}
+              subtitle={t('profile.manageListings')}
               onPress={() => router.push('/profile/my-listings')}
               iconBg="#E8F1FF"
             />
             <View style={styles.menuDivider} />
             <MenuItem
               icon="time"
-              title="Недавно просмотренные"
-              subtitle="История просмотров"
+              title={t('profile.recentlyViewed')}
+              subtitle={t('profile.viewHistory')}
               onPress={() => router.push('/profile/recently-viewed')}
               iconBg="#F0FDF4"
               iconColor="#10B981"
@@ -192,8 +192,8 @@ export default function ProfileScreen() {
             <View style={styles.menuDivider} />
             <MenuItem
               icon="git-compare"
-              title="Сравнение авто"
-              subtitle="Сравните характеристики"
+              title={t('profile.compareCars')}
+              subtitle={t('profile.compareSpecs')}
               onPress={() => router.push('/compare')}
               iconBg="#FEF3C7"
               iconColor="#F59E0B"
@@ -202,12 +202,12 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
-          <Text style={styles.sectionLabel}>ПОИСК</Text>
+          <Text style={styles.sectionLabel}>{t('profile.searchSection')}</Text>
           <View style={styles.menuCard}>
             <MenuItem
               icon="options"
-              title="Расширенный поиск"
-              subtitle="Фильтры по всем параметрам"
+              title={t('profile.advancedSearch')}
+              subtitle={t('profile.filterByAllParams')}
               onPress={() => router.push('/search/advanced')}
               iconBg="#EDE9FE"
               iconColor="#8B5CF6"
@@ -216,20 +216,20 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
-          <Text style={styles.sectionLabel}>НАСТРОЙКИ</Text>
+          <Text style={styles.sectionLabel}>{t('profile.settingsSection')}</Text>
           <View style={styles.menuCard}>
             <MenuItem
               icon="language"
-              title="Язык"
+              title={t('profile.language')}
               subtitle={i18n.language === 'ru' ? 'Русский' : 'Тоҷикӣ'}
               onPress={() => {
                 Alert.alert(
-                  'Язык',
-                  'Выберите язык приложения',
+                  t('profile.language'),
+                  t('profile.selectLanguage'),
                   [
                     { text: 'Русский', onPress: () => changeLanguage('ru') },
                     { text: 'Тоҷикӣ', onPress: () => changeLanguage('tg') },
-                    { text: 'Отмена', style: 'cancel' },
+                    { text: t('actions.cancel'), style: 'cancel' },
                   ]
                 );
               }}
@@ -239,8 +239,8 @@ export default function ProfileScreen() {
             <View style={styles.menuDivider} />
             <MenuItem
               icon="notifications"
-              title="Уведомления"
-              subtitle="Настройки уведомлений"
+              title={t('profile.notifications')}
+              subtitle={t('profile.notificationSettings')}
               onPress={() => router.push('/notifications')}
               iconBg="#FEF3C7"
               iconColor="#F59E0B"
@@ -250,12 +250,12 @@ export default function ProfileScreen() {
 
         {user?.isAdmin && (
           <View style={styles.menuSection}>
-            <Text style={styles.sectionLabel}>АДМИНИСТРИРОВАНИЕ</Text>
+            <Text style={styles.sectionLabel}>{t('profile.adminSection')}</Text>
             <View style={styles.menuCard}>
               <MenuItem
                 icon="shield-checkmark"
-                title="Панель модерации"
-                subtitle="Управление объявлениями"
+                title={t('admin.moderation')}
+                subtitle={t('profile.manageListings')}
                 onPress={() => router.push('/admin/moderation')}
                 iconBg="#FEE2E2"
                 iconColor="#EF4444"
@@ -268,7 +268,7 @@ export default function ProfileScreen() {
           <View style={styles.menuCard}>
             <MenuItem
               icon="information-circle"
-              title="О приложении"
+              title={t('profile.about')}
               subtitle="SafedAuto v1.0.0"
               iconBg="#F1F5F9"
               iconColor="#64748B"
@@ -284,7 +284,7 @@ export default function ProfileScreen() {
           activeOpacity={0.8}
         >
           <Ionicons name="log-out-outline" size={22} color="#EF4444" />
-          <Text style={styles.logoutText}>Выйти из аккаунта</Text>
+          <Text style={styles.logoutText}>{t('profile.logoutButton')}</Text>
         </TouchableOpacity>
 
         <View style={{ height: 40 }} />
