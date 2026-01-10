@@ -279,6 +279,79 @@ export default function ProfileScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      {/* Language Modal */}
+      <Modal
+        visible={languageModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLanguageModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.alertContent}>
+            <Text style={styles.alertTitle}>{t('profile.language')}</Text>
+            <Text style={styles.alertMessage}>{t('profile.selectLanguage')}</Text>
+            
+            <TouchableOpacity 
+              style={[styles.langOption, i18n.language === 'ru' && styles.langOptionActive]}
+              onPress={() => changeLanguage('ru')}
+            >
+              <Text style={[styles.langOptionText, i18n.language === 'ru' && styles.langOptionTextActive]}>
+                🇷🇺 Русский
+              </Text>
+              {i18n.language === 'ru' && <Ionicons name="checkmark" size={20} color="#0066FF" />}
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[styles.langOption, i18n.language === 'tg' && styles.langOptionActive]}
+              onPress={() => changeLanguage('tg')}
+            >
+              <Text style={[styles.langOptionText, i18n.language === 'tg' && styles.langOptionTextActive]}>
+                🇹🇯 Тоҷикӣ
+              </Text>
+              {i18n.language === 'tg' && <Ionicons name="checkmark" size={20} color="#0066FF" />}
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.alertCancelButton}
+              onPress={() => setLanguageModalVisible(false)}
+            >
+              <Text style={styles.alertCancelText}>{t('actions.cancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        visible={logoutModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLogoutModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.alertContent}>
+            <Text style={styles.alertTitle}>{t('auth.logout')}</Text>
+            <Text style={styles.alertMessage}>{t('profile.confirmLogout')}</Text>
+            
+            <View style={styles.alertButtons}>
+              <TouchableOpacity 
+                style={styles.alertCancelButton}
+                onPress={() => setLogoutModalVisible(false)}
+              >
+                <Text style={styles.alertCancelText}>{t('actions.cancel')}</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.alertConfirmButton}
+                onPress={confirmLogout}
+              >
+                <Text style={styles.alertConfirmText}>{t('auth.logout')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
