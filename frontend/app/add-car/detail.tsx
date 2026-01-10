@@ -4391,6 +4391,7 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Aston Martin': 'https://cdn.freebiesupply.com/logos/large/2x/aston-martin-logo-png-transparent.png',
   'McLaren': 'https://cdn.freebiesupply.com/logos/large/2x/mclaren-logo-png-transparent.png',
   'Lotus': 'https://cdn.freebiesupply.com/logos/large/2x/lotus-1-logo-png-transparent.png',
+  'Другая марка': 'https://cdn-icons-png.flaticon.com/512/2176/2176826.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
