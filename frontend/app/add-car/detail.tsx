@@ -890,24 +890,44 @@ export default function AddCarDetailScreen() {
 
         {/* Brand & Model */}
         <View style={styles.card}>
-          <SectionHeader title="🚗 Mercedes-Benz" required />
-          <View style={styles.brandHeader}>
-            <Image 
-              source={{ uri: 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png' }} 
-              style={styles.brandHeaderLogo}
-              resizeMode="contain"
-            />
-            <Text style={styles.brandHeaderText}>Mercedes-Benz</Text>
-          </View>
+          <SectionHeader title="🚗 Марка и модель" required />
+          
+          {/* Brand Selection */}
+          <Text style={styles.fieldLabel}>Марка</Text>
+          <TouchableOpacity
+            style={styles.selectField}
+            onPress={() => setBrandModalVisible(true)}
+          >
+            {selectedBrand ? (
+              <View style={styles.brandSelectedRow}>
+                <Image 
+                  source={{ uri: selectedBrand.name === 'Mercedes-Benz' 
+                    ? 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png'
+                    : 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png'
+                  }} 
+                  style={styles.brandSelectLogo}
+                  resizeMode="contain"
+                />
+                <Text style={styles.selectFieldText}>{selectedBrand.name}</Text>
+              </View>
+            ) : (
+              <Text style={[styles.selectFieldText, styles.placeholder]}>
+                Выберите марку
+              </Text>
+            )}
+            <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
+          </TouchableOpacity>
           
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Модель</Text>
           <SearchableSelect
-            title="Выберите модель Mercedes-Benz"
-            placeholder="Например: E 200, S 500, GLC 300..."
+            title={selectedBrand ? `Модели ${selectedBrand.name}` : "Выберите модель"}
+            placeholder="Выберите модель"
             value={formData.model}
             options={modelOptions}
             onSelect={handleModelSelect}
             loading={modelsLoading}
+            disabled={!selectedBrand}
+            disabledPlaceholder="Сначала выберите марку"
             emptyText="Модели не найдены"
           />
         </View>
