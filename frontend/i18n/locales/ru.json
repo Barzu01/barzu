@@ -130,7 +130,17 @@
     "allBrands": "Все марки",
     "allModels": "Все модели",
     "allRegions": "Все регионы",
-    "results": "Результаты"
+    "results": "Результаты",
+    "findPerfectCar": "Найдите идеальный автомобиль",
+    "searchingCars": "Ищем автомобили...",
+    "tryChangingParams": "Попробуйте изменить параметры поиска",
+    "found": "Найдено",
+    "listings": "объявлений",
+    "popularBrands": "Популярные марки",
+    "searchTips": "Советы по поиску",
+    "tipBrand": "Введите марку: «Toyota»",
+    "tipBrandModel": "Марку и модель: «Toyota Camry»",
+    "tipModel": "Только модель: «Camry»"
   },
   "profile": {
     "myProfile": "Мой профиль",

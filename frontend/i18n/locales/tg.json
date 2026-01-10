@@ -130,7 +130,17 @@
     "allBrands": "Ҳамаи брендҳо",
     "allModels": "Ҳамаи моделҳо",
     "allRegions": "Ҳамаи минтақаҳо",
-    "results": "Натиҷаҳо"
+    "results": "Натиҷаҳо",
+    "findPerfectCar": "Мошини идеалиро ёбед",
+    "searchingCars": "Мошинҳоро меҷӯем...",
+    "tryChangingParams": "Параметрҳои ҷустуҷӯро тағйир диҳед",
+    "found": "Ёфт шуд",
+    "listings": "эълон",
+    "popularBrands": "Брендҳои машҳур",
+    "searchTips": "Маслиҳатҳо барои ҷустуҷӯ",
+    "tipBrand": "Брендро ворид кунед: «Toyota»",
+    "tipBrandModel": "Бренд ва модел: «Toyota Camry»",
+    "tipModel": "Танҳо модел: «Camry»"
   },
   "profile": {
     "myProfile": "Профили ман",
