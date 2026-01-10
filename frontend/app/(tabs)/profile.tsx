@@ -28,6 +28,7 @@ export default function ProfileScreen() {
   const [languageModalVisible, setLanguageModalVisible] = React.useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = React.useState(false);
   const [newName, setNewName] = React.useState('');
+  const [saving, setSaving] = React.useState(false);
 
   const handleLogout = () => {
     setLogoutModalVisible(true);
@@ -49,11 +50,16 @@ export default function ProfileScreen() {
       return;
     }
 
+    setSaving(true);
     try {
+      console.log('Saving name:', newName.trim(), 'for user:', user?.phone);
       await updateUserProfile(newName.trim());
+      console.log('Name saved successfully');
       setEditModalVisible(false);
     } catch (error) {
-      console.error('Error updating name:', error);
+      console.error('Error saving name:', error);
+    } finally {
+      setSaving(false);
     }
   };
 
