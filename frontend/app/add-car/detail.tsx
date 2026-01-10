@@ -4965,7 +4965,7 @@ export default function AddCarDetailScreen() {
             style={[styles.input, styles.textArea]}
             value={formData.description}
             onChangeText={(text) => setFormData({ ...formData, description: text })}
-            placeholder="Расскажите о состоянии автомобиля, истории обслуживания, причине продажи..."
+            placeholder={t('addCar.descriptionPlaceholder')}
             placeholderTextColor="#94A3B8"
             multiline
             numberOfLines={5}
