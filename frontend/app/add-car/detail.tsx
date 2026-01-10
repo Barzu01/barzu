@@ -1459,6 +1459,615 @@ const KIA_MODELS: CarModel[] = [
   { name: 'Другая модель', model_id: 6999 },
 ];
 
+// Все модели Nissan
+const NISSAN_MODELS: CarModel[] = [
+  // Almera / Sunny
+  { name: 'Almera', model_id: 7001 },
+  { name: 'Almera 1.5', model_id: 7002 },
+  { name: 'Almera 1.6', model_id: 7003 },
+  { name: 'Almera 1.8', model_id: 7004 },
+  { name: 'Almera Classic', model_id: 7005 },
+  { name: 'Sunny', model_id: 7006 },
+  // Sentra
+  { name: 'Sentra', model_id: 7010 },
+  { name: 'Sentra 1.6', model_id: 7011 },
+  { name: 'Sentra 1.8', model_id: 7012 },
+  { name: 'Sentra 2.0', model_id: 7013 },
+  // Altima
+  { name: 'Altima', model_id: 7020 },
+  { name: 'Altima 2.0', model_id: 7021 },
+  { name: 'Altima 2.5', model_id: 7022 },
+  { name: 'Altima 3.5', model_id: 7023 },
+  // Maxima
+  { name: 'Maxima', model_id: 7030 },
+  { name: 'Maxima 2.0', model_id: 7031 },
+  { name: 'Maxima 3.0', model_id: 7032 },
+  { name: 'Maxima 3.5', model_id: 7033 },
+  // Teana
+  { name: 'Teana', model_id: 7040 },
+  { name: 'Teana 2.0', model_id: 7041 },
+  { name: 'Teana 2.3', model_id: 7042 },
+  { name: 'Teana 2.5', model_id: 7043 },
+  { name: 'Teana 3.5', model_id: 7044 },
+  // Note
+  { name: 'Note', model_id: 7050 },
+  { name: 'Note 1.2', model_id: 7051 },
+  { name: 'Note 1.4', model_id: 7052 },
+  { name: 'Note 1.5 dCi', model_id: 7053 },
+  { name: 'Note 1.6', model_id: 7054 },
+  { name: 'Note e-Power', model_id: 7055 },
+  // Micra / March
+  { name: 'Micra', model_id: 7060 },
+  { name: 'Micra 1.0', model_id: 7061 },
+  { name: 'Micra 1.2', model_id: 7062 },
+  { name: 'Micra 1.4', model_id: 7063 },
+  { name: 'March', model_id: 7064 },
+  // Tiida
+  { name: 'Tiida', model_id: 7070 },
+  { name: 'Tiida 1.6', model_id: 7071 },
+  { name: 'Tiida 1.8', model_id: 7072 },
+  // Versa
+  { name: 'Versa', model_id: 7075 },
+  // Juke
+  { name: 'Juke', model_id: 7080 },
+  { name: 'Juke 1.0', model_id: 7081 },
+  { name: 'Juke 1.2', model_id: 7082 },
+  { name: 'Juke 1.5 dCi', model_id: 7083 },
+  { name: 'Juke 1.6', model_id: 7084 },
+  { name: 'Juke Nismo', model_id: 7085 },
+  // Kicks
+  { name: 'Kicks', model_id: 7090 },
+  { name: 'Kicks 1.6', model_id: 7091 },
+  { name: 'Kicks e-Power', model_id: 7092 },
+  // Qashqai
+  { name: 'Qashqai', model_id: 7100 },
+  { name: 'Qashqai 1.2', model_id: 7101 },
+  { name: 'Qashqai 1.3', model_id: 7102 },
+  { name: 'Qashqai 1.5 dCi', model_id: 7103 },
+  { name: 'Qashqai 1.6', model_id: 7104 },
+  { name: 'Qashqai 2.0', model_id: 7105 },
+  { name: 'Qashqai e-Power', model_id: 7106 },
+  // X-Trail / Rogue
+  { name: 'X-Trail', model_id: 7110 },
+  { name: 'X-Trail 1.6 dCi', model_id: 7111 },
+  { name: 'X-Trail 2.0', model_id: 7112 },
+  { name: 'X-Trail 2.5', model_id: 7113 },
+  { name: 'X-Trail e-Power', model_id: 7114 },
+  { name: 'Rogue', model_id: 7115 },
+  // Murano
+  { name: 'Murano', model_id: 7120 },
+  { name: 'Murano 2.5', model_id: 7121 },
+  { name: 'Murano 3.5', model_id: 7122 },
+  // Pathfinder
+  { name: 'Pathfinder', model_id: 7130 },
+  { name: 'Pathfinder 2.5 dCi', model_id: 7131 },
+  { name: 'Pathfinder 3.0 dCi', model_id: 7132 },
+  { name: 'Pathfinder 3.5', model_id: 7133 },
+  { name: 'Pathfinder 4.0', model_id: 7134 },
+  // Patrol
+  { name: 'Patrol', model_id: 7140 },
+  { name: 'Patrol 3.0', model_id: 7141 },
+  { name: 'Patrol 4.0', model_id: 7142 },
+  { name: 'Patrol 4.8', model_id: 7143 },
+  { name: 'Patrol 5.6', model_id: 7144 },
+  // Armada
+  { name: 'Armada', model_id: 7150 },
+  { name: 'Armada 5.6', model_id: 7151 },
+  // Terra
+  { name: 'Terra', model_id: 7155 },
+  // Navara / Frontier
+  { name: 'Navara', model_id: 7160 },
+  { name: 'Navara 2.3 dCi', model_id: 7161 },
+  { name: 'Navara 2.5', model_id: 7162 },
+  { name: 'Navara 3.0', model_id: 7163 },
+  { name: 'Frontier', model_id: 7164 },
+  // Titan
+  { name: 'Titan', model_id: 7170 },
+  { name: 'Titan 5.0', model_id: 7171 },
+  { name: 'Titan 5.6', model_id: 7172 },
+  // GT-R
+  { name: 'GT-R', model_id: 7180 },
+  { name: 'GT-R Nismo', model_id: 7181 },
+  // 370Z / 350Z
+  { name: '370Z', model_id: 7190 },
+  { name: '370Z Nismo', model_id: 7191 },
+  { name: '350Z', model_id: 7192 },
+  { name: 'Z', model_id: 7193 },
+  // Leaf
+  { name: 'Leaf', model_id: 7200 },
+  { name: 'Leaf 40 kWh', model_id: 7201 },
+  { name: 'Leaf 62 kWh', model_id: 7202 },
+  // Ariya
+  { name: 'Ariya', model_id: 7210 },
+  // Serena
+  { name: 'Serena', model_id: 7220 },
+  { name: 'Serena 2.0', model_id: 7221 },
+  { name: 'Serena e-Power', model_id: 7222 },
+  // Elgrand
+  { name: 'Elgrand', model_id: 7230 },
+  { name: 'Elgrand 2.5', model_id: 7231 },
+  { name: 'Elgrand 3.5', model_id: 7232 },
+  // Primera
+  { name: 'Primera', model_id: 7240 },
+  { name: 'Primera 1.6', model_id: 7241 },
+  { name: 'Primera 1.8', model_id: 7242 },
+  { name: 'Primera 2.0', model_id: 7243 },
+  // Другие
+  { name: 'Другая модель', model_id: 7999 },
+];
+
+// Все модели Honda
+const HONDA_MODELS: CarModel[] = [
+  // Civic
+  { name: 'Civic', model_id: 8001 },
+  { name: 'Civic 1.4', model_id: 8002 },
+  { name: 'Civic 1.5', model_id: 8003 },
+  { name: 'Civic 1.5T', model_id: 8004 },
+  { name: 'Civic 1.6', model_id: 8005 },
+  { name: 'Civic 1.8', model_id: 8006 },
+  { name: 'Civic 2.0', model_id: 8007 },
+  { name: 'Civic Type R', model_id: 8008 },
+  { name: 'Civic Si', model_id: 8009 },
+  { name: 'Civic Hybrid', model_id: 8010 },
+  { name: 'Civic Hatchback', model_id: 8011 },
+  // Accord
+  { name: 'Accord', model_id: 8020 },
+  { name: 'Accord 1.5T', model_id: 8021 },
+  { name: 'Accord 2.0', model_id: 8022 },
+  { name: 'Accord 2.0T', model_id: 8023 },
+  { name: 'Accord 2.4', model_id: 8024 },
+  { name: 'Accord 3.0', model_id: 8025 },
+  { name: 'Accord 3.5', model_id: 8026 },
+  { name: 'Accord Hybrid', model_id: 8027 },
+  // City
+  { name: 'City', model_id: 8030 },
+  { name: 'City 1.5', model_id: 8031 },
+  { name: 'City Hybrid', model_id: 8032 },
+  // Fit / Jazz
+  { name: 'Fit', model_id: 8040 },
+  { name: 'Jazz', model_id: 8041 },
+  { name: 'Jazz 1.2', model_id: 8042 },
+  { name: 'Jazz 1.3', model_id: 8043 },
+  { name: 'Jazz 1.4', model_id: 8044 },
+  { name: 'Jazz 1.5', model_id: 8045 },
+  { name: 'Jazz e:HEV', model_id: 8046 },
+  // Insight
+  { name: 'Insight', model_id: 8050 },
+  { name: 'Insight Hybrid', model_id: 8051 },
+  // HR-V
+  { name: 'HR-V', model_id: 8060 },
+  { name: 'HR-V 1.5', model_id: 8061 },
+  { name: 'HR-V 1.8', model_id: 8062 },
+  { name: 'HR-V e:HEV', model_id: 8063 },
+  // Vezel
+  { name: 'Vezel', model_id: 8065 },
+  // CR-V
+  { name: 'CR-V', model_id: 8070 },
+  { name: 'CR-V 1.5T', model_id: 8071 },
+  { name: 'CR-V 2.0', model_id: 8072 },
+  { name: 'CR-V 2.4', model_id: 8073 },
+  { name: 'CR-V Hybrid', model_id: 8074 },
+  { name: 'CR-V e:HEV', model_id: 8075 },
+  // Passport
+  { name: 'Passport', model_id: 8080 },
+  { name: 'Passport 3.5', model_id: 8081 },
+  // Pilot
+  { name: 'Pilot', model_id: 8090 },
+  { name: 'Pilot 3.0', model_id: 8091 },
+  { name: 'Pilot 3.5', model_id: 8092 },
+  // ZR-V
+  { name: 'ZR-V', model_id: 8095 },
+  // Odyssey
+  { name: 'Odyssey', model_id: 8100 },
+  { name: 'Odyssey 2.4', model_id: 8101 },
+  { name: 'Odyssey 3.5', model_id: 8102 },
+  // Stepwgn
+  { name: 'Stepwgn', model_id: 8110 },
+  { name: 'Stepwgn 1.5T', model_id: 8111 },
+  { name: 'Stepwgn 2.0', model_id: 8112 },
+  { name: 'Stepwgn e:HEV', model_id: 8113 },
+  // Freed
+  { name: 'Freed', model_id: 8120 },
+  { name: 'Freed 1.5', model_id: 8121 },
+  { name: 'Freed e:HEV', model_id: 8122 },
+  // Stream
+  { name: 'Stream', model_id: 8130 },
+  { name: 'Stream 1.8', model_id: 8131 },
+  { name: 'Stream 2.0', model_id: 8132 },
+  // Legend
+  { name: 'Legend', model_id: 8140 },
+  { name: 'Legend 3.5', model_id: 8141 },
+  // Ridgeline
+  { name: 'Ridgeline', model_id: 8150 },
+  { name: 'Ridgeline 3.5', model_id: 8151 },
+  // NSX
+  { name: 'NSX', model_id: 8160 },
+  { name: 'NSX Type S', model_id: 8161 },
+  // S2000
+  { name: 'S2000', model_id: 8170 },
+  // Prelude
+  { name: 'Prelude', model_id: 8180 },
+  // Element
+  { name: 'Element', model_id: 8190 },
+  // e
+  { name: 'Honda e', model_id: 8200 },
+  // Prologue
+  { name: 'Prologue', model_id: 8210 },
+  // Другие
+  { name: 'Другая модель', model_id: 8999 },
+];
+
+// Все модели Lexus
+const LEXUS_MODELS: CarModel[] = [
+  // IS
+  { name: 'IS', model_id: 9001 },
+  { name: 'IS 200', model_id: 9002 },
+  { name: 'IS 200t', model_id: 9003 },
+  { name: 'IS 250', model_id: 9004 },
+  { name: 'IS 300', model_id: 9005 },
+  { name: 'IS 300h', model_id: 9006 },
+  { name: 'IS 350', model_id: 9007 },
+  { name: 'IS 500', model_id: 9008 },
+  { name: 'IS F', model_id: 9009 },
+  // ES
+  { name: 'ES', model_id: 9010 },
+  { name: 'ES 250', model_id: 9011 },
+  { name: 'ES 300', model_id: 9012 },
+  { name: 'ES 300h', model_id: 9013 },
+  { name: 'ES 330', model_id: 9014 },
+  { name: 'ES 350', model_id: 9015 },
+  // GS
+  { name: 'GS', model_id: 9020 },
+  { name: 'GS 200t', model_id: 9021 },
+  { name: 'GS 250', model_id: 9022 },
+  { name: 'GS 300', model_id: 9023 },
+  { name: 'GS 300h', model_id: 9024 },
+  { name: 'GS 350', model_id: 9025 },
+  { name: 'GS 430', model_id: 9026 },
+  { name: 'GS 450h', model_id: 9027 },
+  { name: 'GS 460', model_id: 9028 },
+  { name: 'GS F', model_id: 9029 },
+  // LS
+  { name: 'LS', model_id: 9030 },
+  { name: 'LS 400', model_id: 9031 },
+  { name: 'LS 430', model_id: 9032 },
+  { name: 'LS 460', model_id: 9033 },
+  { name: 'LS 500', model_id: 9034 },
+  { name: 'LS 500h', model_id: 9035 },
+  { name: 'LS 600h', model_id: 9036 },
+  // UX
+  { name: 'UX', model_id: 9040 },
+  { name: 'UX 200', model_id: 9041 },
+  { name: 'UX 250h', model_id: 9042 },
+  { name: 'UX 300e', model_id: 9043 },
+  // NX
+  { name: 'NX', model_id: 9050 },
+  { name: 'NX 200', model_id: 9051 },
+  { name: 'NX 200t', model_id: 9052 },
+  { name: 'NX 250', model_id: 9053 },
+  { name: 'NX 300', model_id: 9054 },
+  { name: 'NX 300h', model_id: 9055 },
+  { name: 'NX 350', model_id: 9056 },
+  { name: 'NX 350h', model_id: 9057 },
+  { name: 'NX 450h+', model_id: 9058 },
+  // RX
+  { name: 'RX', model_id: 9060 },
+  { name: 'RX 270', model_id: 9061 },
+  { name: 'RX 300', model_id: 9062 },
+  { name: 'RX 330', model_id: 9063 },
+  { name: 'RX 350', model_id: 9064 },
+  { name: 'RX 350h', model_id: 9065 },
+  { name: 'RX 400h', model_id: 9066 },
+  { name: 'RX 450h', model_id: 9067 },
+  { name: 'RX 450h+', model_id: 9068 },
+  { name: 'RX 500h', model_id: 9069 },
+  // GX
+  { name: 'GX', model_id: 9070 },
+  { name: 'GX 460', model_id: 9071 },
+  { name: 'GX 470', model_id: 9072 },
+  { name: 'GX 550', model_id: 9073 },
+  // LX
+  { name: 'LX', model_id: 9080 },
+  { name: 'LX 450', model_id: 9081 },
+  { name: 'LX 470', model_id: 9082 },
+  { name: 'LX 570', model_id: 9083 },
+  { name: 'LX 600', model_id: 9084 },
+  // RC
+  { name: 'RC', model_id: 9090 },
+  { name: 'RC 200t', model_id: 9091 },
+  { name: 'RC 300', model_id: 9092 },
+  { name: 'RC 300h', model_id: 9093 },
+  { name: 'RC 350', model_id: 9094 },
+  { name: 'RC F', model_id: 9095 },
+  // LC
+  { name: 'LC', model_id: 9100 },
+  { name: 'LC 500', model_id: 9101 },
+  { name: 'LC 500h', model_id: 9102 },
+  // LFA
+  { name: 'LFA', model_id: 9110 },
+  // CT
+  { name: 'CT', model_id: 9120 },
+  { name: 'CT 200h', model_id: 9121 },
+  // HS
+  { name: 'HS', model_id: 9130 },
+  { name: 'HS 250h', model_id: 9131 },
+  // RZ
+  { name: 'RZ', model_id: 9140 },
+  { name: 'RZ 450e', model_id: 9141 },
+  // Другие
+  { name: 'Другая модель', model_id: 9999 },
+];
+
+// Все модели Ford
+const FORD_MODELS: CarModel[] = [
+  // Fiesta
+  { name: 'Fiesta', model_id: 10001 },
+  { name: 'Fiesta 1.0', model_id: 10002 },
+  { name: 'Fiesta 1.0 EcoBoost', model_id: 10003 },
+  { name: 'Fiesta 1.25', model_id: 10004 },
+  { name: 'Fiesta 1.4', model_id: 10005 },
+  { name: 'Fiesta 1.5 TDCi', model_id: 10006 },
+  { name: 'Fiesta 1.6', model_id: 10007 },
+  { name: 'Fiesta ST', model_id: 10008 },
+  // Focus
+  { name: 'Focus', model_id: 10010 },
+  { name: 'Focus 1.0 EcoBoost', model_id: 10011 },
+  { name: 'Focus 1.5', model_id: 10012 },
+  { name: 'Focus 1.5 TDCi', model_id: 10013 },
+  { name: 'Focus 1.6', model_id: 10014 },
+  { name: 'Focus 1.6 TDCi', model_id: 10015 },
+  { name: 'Focus 2.0', model_id: 10016 },
+  { name: 'Focus 2.0 TDCi', model_id: 10017 },
+  { name: 'Focus ST', model_id: 10018 },
+  { name: 'Focus RS', model_id: 10019 },
+  // Mondeo / Fusion
+  { name: 'Mondeo', model_id: 10020 },
+  { name: 'Mondeo 1.5 EcoBoost', model_id: 10021 },
+  { name: 'Mondeo 2.0', model_id: 10022 },
+  { name: 'Mondeo 2.0 TDCi', model_id: 10023 },
+  { name: 'Mondeo 2.5', model_id: 10024 },
+  { name: 'Mondeo Hybrid', model_id: 10025 },
+  { name: 'Fusion', model_id: 10026 },
+  { name: 'Fusion 1.5 EcoBoost', model_id: 10027 },
+  { name: 'Fusion 2.0 EcoBoost', model_id: 10028 },
+  { name: 'Fusion 2.5', model_id: 10029 },
+  { name: 'Fusion Hybrid', model_id: 10030 },
+  // Taurus
+  { name: 'Taurus', model_id: 10035 },
+  { name: 'Taurus 2.0 EcoBoost', model_id: 10036 },
+  { name: 'Taurus 3.5', model_id: 10037 },
+  { name: 'Taurus SHO', model_id: 10038 },
+  // Mustang
+  { name: 'Mustang', model_id: 10040 },
+  { name: 'Mustang 2.3 EcoBoost', model_id: 10041 },
+  { name: 'Mustang 3.7', model_id: 10042 },
+  { name: 'Mustang 5.0 GT', model_id: 10043 },
+  { name: 'Mustang Shelby GT350', model_id: 10044 },
+  { name: 'Mustang Shelby GT500', model_id: 10045 },
+  { name: 'Mustang Mach-E', model_id: 10046 },
+  { name: 'Mustang Mach 1', model_id: 10047 },
+  { name: 'Mustang Dark Horse', model_id: 10048 },
+  // EcoSport
+  { name: 'EcoSport', model_id: 10050 },
+  { name: 'EcoSport 1.0 EcoBoost', model_id: 10051 },
+  { name: 'EcoSport 1.5', model_id: 10052 },
+  { name: 'EcoSport 2.0', model_id: 10053 },
+  // Puma
+  { name: 'Puma', model_id: 10055 },
+  { name: 'Puma 1.0 EcoBoost', model_id: 10056 },
+  { name: 'Puma ST', model_id: 10057 },
+  // Kuga / Escape
+  { name: 'Kuga', model_id: 10060 },
+  { name: 'Kuga 1.5 EcoBoost', model_id: 10061 },
+  { name: 'Kuga 1.5 TDCi', model_id: 10062 },
+  { name: 'Kuga 2.0 TDCi', model_id: 10063 },
+  { name: 'Kuga 2.5 Hybrid', model_id: 10064 },
+  { name: 'Kuga PHEV', model_id: 10065 },
+  { name: 'Escape', model_id: 10066 },
+  { name: 'Escape 1.5 EcoBoost', model_id: 10067 },
+  { name: 'Escape 2.0 EcoBoost', model_id: 10068 },
+  { name: 'Escape Hybrid', model_id: 10069 },
+  // Edge
+  { name: 'Edge', model_id: 10070 },
+  { name: 'Edge 2.0 EcoBoost', model_id: 10071 },
+  { name: 'Edge 2.7 EcoBoost', model_id: 10072 },
+  { name: 'Edge 3.5', model_id: 10073 },
+  { name: 'Edge ST', model_id: 10074 },
+  // Explorer
+  { name: 'Explorer', model_id: 10080 },
+  { name: 'Explorer 2.3 EcoBoost', model_id: 10081 },
+  { name: 'Explorer 3.0 EcoBoost', model_id: 10082 },
+  { name: 'Explorer 3.3 Hybrid', model_id: 10083 },
+  { name: 'Explorer 3.5', model_id: 10084 },
+  { name: 'Explorer ST', model_id: 10085 },
+  // Expedition
+  { name: 'Expedition', model_id: 10090 },
+  { name: 'Expedition 3.5 EcoBoost', model_id: 10091 },
+  { name: 'Expedition MAX', model_id: 10092 },
+  // Bronco
+  { name: 'Bronco', model_id: 10100 },
+  { name: 'Bronco 2.3 EcoBoost', model_id: 10101 },
+  { name: 'Bronco 2.7 EcoBoost', model_id: 10102 },
+  { name: 'Bronco Sport', model_id: 10103 },
+  { name: 'Bronco Raptor', model_id: 10104 },
+  // Ranger
+  { name: 'Ranger', model_id: 10110 },
+  { name: 'Ranger 2.0', model_id: 10111 },
+  { name: 'Ranger 2.2 TDCi', model_id: 10112 },
+  { name: 'Ranger 2.3 EcoBoost', model_id: 10113 },
+  { name: 'Ranger 3.2 TDCi', model_id: 10114 },
+  { name: 'Ranger Raptor', model_id: 10115 },
+  // F-150
+  { name: 'F-150', model_id: 10120 },
+  { name: 'F-150 2.7 EcoBoost', model_id: 10121 },
+  { name: 'F-150 3.0 Diesel', model_id: 10122 },
+  { name: 'F-150 3.5 EcoBoost', model_id: 10123 },
+  { name: 'F-150 5.0', model_id: 10124 },
+  { name: 'F-150 Raptor', model_id: 10125 },
+  { name: 'F-150 Lightning', model_id: 10126 },
+  // F-250 / F-350 Super Duty
+  { name: 'F-250', model_id: 10130 },
+  { name: 'F-350', model_id: 10131 },
+  { name: 'Super Duty', model_id: 10132 },
+  // Maverick
+  { name: 'Maverick', model_id: 10140 },
+  { name: 'Maverick 2.0 EcoBoost', model_id: 10141 },
+  { name: 'Maverick Hybrid', model_id: 10142 },
+  // Transit
+  { name: 'Transit', model_id: 10150 },
+  { name: 'Transit Custom', model_id: 10151 },
+  { name: 'Transit Connect', model_id: 10152 },
+  { name: 'Tourneo', model_id: 10153 },
+  { name: 'Tourneo Custom', model_id: 10154 },
+  { name: 'Tourneo Connect', model_id: 10155 },
+  // S-MAX / Galaxy
+  { name: 'S-MAX', model_id: 10160 },
+  { name: 'Galaxy', model_id: 10161 },
+  // C-MAX
+  { name: 'C-MAX', model_id: 10165 },
+  { name: 'Grand C-MAX', model_id: 10166 },
+  // GT
+  { name: 'GT', model_id: 10170 },
+  // Другие
+  { name: 'Другая модель', model_id: 10999 },
+];
+
+// Все модели Chevrolet
+const CHEVROLET_MODELS: CarModel[] = [
+  // Spark
+  { name: 'Spark', model_id: 11001 },
+  { name: 'Spark 0.8', model_id: 11002 },
+  { name: 'Spark 1.0', model_id: 11003 },
+  { name: 'Spark 1.2', model_id: 11004 },
+  // Aveo / Sonic
+  { name: 'Aveo', model_id: 11010 },
+  { name: 'Aveo 1.2', model_id: 11011 },
+  { name: 'Aveo 1.4', model_id: 11012 },
+  { name: 'Aveo 1.6', model_id: 11013 },
+  { name: 'Sonic', model_id: 11014 },
+  // Cruze
+  { name: 'Cruze', model_id: 11020 },
+  { name: 'Cruze 1.4', model_id: 11021 },
+  { name: 'Cruze 1.4 Turbo', model_id: 11022 },
+  { name: 'Cruze 1.6', model_id: 11023 },
+  { name: 'Cruze 1.8', model_id: 11024 },
+  { name: 'Cruze 2.0 Diesel', model_id: 11025 },
+  // Malibu
+  { name: 'Malibu', model_id: 11030 },
+  { name: 'Malibu 1.5 Turbo', model_id: 11031 },
+  { name: 'Malibu 2.0 Turbo', model_id: 11032 },
+  { name: 'Malibu 2.4', model_id: 11033 },
+  { name: 'Malibu 2.5', model_id: 11034 },
+  // Impala
+  { name: 'Impala', model_id: 11040 },
+  { name: 'Impala 2.5', model_id: 11041 },
+  { name: 'Impala 3.6', model_id: 11042 },
+  // Camaro
+  { name: 'Camaro', model_id: 11050 },
+  { name: 'Camaro 2.0 Turbo', model_id: 11051 },
+  { name: 'Camaro 3.6', model_id: 11052 },
+  { name: 'Camaro SS 6.2', model_id: 11053 },
+  { name: 'Camaro ZL1', model_id: 11054 },
+  { name: 'Camaro Z/28', model_id: 11055 },
+  // Corvette
+  { name: 'Corvette', model_id: 11060 },
+  { name: 'Corvette Stingray', model_id: 11061 },
+  { name: 'Corvette Z06', model_id: 11062 },
+  { name: 'Corvette ZR1', model_id: 11063 },
+  { name: 'Corvette E-Ray', model_id: 11064 },
+  // Trax / Tracker
+  { name: 'Trax', model_id: 11070 },
+  { name: 'Trax 1.4 Turbo', model_id: 11071 },
+  { name: 'Tracker', model_id: 11072 },
+  { name: 'Tracker 1.0 Turbo', model_id: 11073 },
+  { name: 'Tracker 1.2 Turbo', model_id: 11074 },
+  // Trailblazer
+  { name: 'Trailblazer', model_id: 11080 },
+  { name: 'Trailblazer 1.2 Turbo', model_id: 11081 },
+  { name: 'Trailblazer 1.3 Turbo', model_id: 11082 },
+  { name: 'Trailblazer 2.5', model_id: 11083 },
+  { name: 'Trailblazer 2.8 Diesel', model_id: 11084 },
+  // Equinox
+  { name: 'Equinox', model_id: 11090 },
+  { name: 'Equinox 1.5 Turbo', model_id: 11091 },
+  { name: 'Equinox 2.0 Turbo', model_id: 11092 },
+  { name: 'Equinox 2.4', model_id: 11093 },
+  // Blazer
+  { name: 'Blazer', model_id: 11100 },
+  { name: 'Blazer 2.0 Turbo', model_id: 11101 },
+  { name: 'Blazer 2.5', model_id: 11102 },
+  { name: 'Blazer 3.6', model_id: 11103 },
+  { name: 'Blazer EV', model_id: 11104 },
+  // Traverse
+  { name: 'Traverse', model_id: 11110 },
+  { name: 'Traverse 2.0 Turbo', model_id: 11111 },
+  { name: 'Traverse 3.6', model_id: 11112 },
+  // Tahoe
+  { name: 'Tahoe', model_id: 11120 },
+  { name: 'Tahoe 5.3', model_id: 11121 },
+  { name: 'Tahoe 6.2', model_id: 11122 },
+  { name: 'Tahoe 3.0 Diesel', model_id: 11123 },
+  // Suburban
+  { name: 'Suburban', model_id: 11130 },
+  { name: 'Suburban 5.3', model_id: 11131 },
+  { name: 'Suburban 6.2', model_id: 11132 },
+  // Captiva
+  { name: 'Captiva', model_id: 11140 },
+  { name: 'Captiva 2.0 Diesel', model_id: 11141 },
+  { name: 'Captiva 2.2 Diesel', model_id: 11142 },
+  { name: 'Captiva 2.4', model_id: 11143 },
+  { name: 'Captiva 3.0', model_id: 11144 },
+  { name: 'Captiva 3.2', model_id: 11145 },
+  // Orlando
+  { name: 'Orlando', model_id: 11150 },
+  { name: 'Orlando 1.4 Turbo', model_id: 11151 },
+  { name: 'Orlando 1.8', model_id: 11152 },
+  { name: 'Orlando 2.0 Diesel', model_id: 11153 },
+  // Colorado
+  { name: 'Colorado', model_id: 11160 },
+  { name: 'Colorado 2.5', model_id: 11161 },
+  { name: 'Colorado 2.8 Diesel', model_id: 11162 },
+  { name: 'Colorado 3.6', model_id: 11163 },
+  { name: 'Colorado ZR2', model_id: 11164 },
+  // Silverado
+  { name: 'Silverado', model_id: 11170 },
+  { name: 'Silverado 2.7 Turbo', model_id: 11171 },
+  { name: 'Silverado 3.0 Diesel', model_id: 11172 },
+  { name: 'Silverado 5.3', model_id: 11173 },
+  { name: 'Silverado 6.2', model_id: 11174 },
+  { name: 'Silverado EV', model_id: 11175 },
+  { name: 'Silverado HD', model_id: 11176 },
+  // Bolt
+  { name: 'Bolt EV', model_id: 11180 },
+  { name: 'Bolt EUV', model_id: 11181 },
+  // Lacetti / Optra
+  { name: 'Lacetti', model_id: 11190 },
+  { name: 'Lacetti 1.4', model_id: 11191 },
+  { name: 'Lacetti 1.6', model_id: 11192 },
+  { name: 'Lacetti 1.8', model_id: 11193 },
+  { name: 'Optra', model_id: 11194 },
+  // Epica
+  { name: 'Epica', model_id: 11200 },
+  { name: 'Epica 2.0', model_id: 11201 },
+  { name: 'Epica 2.5', model_id: 11202 },
+  // Niva
+  { name: 'Niva', model_id: 11210 },
+  { name: 'Niva 1.7', model_id: 11211 },
+  // Lanos
+  { name: 'Lanos', model_id: 11220 },
+  { name: 'Lanos 1.5', model_id: 11221 },
+  { name: 'Lanos 1.6', model_id: 11222 },
+  // Cobalt
+  { name: 'Cobalt', model_id: 11230 },
+  { name: 'Cobalt 1.5', model_id: 11231 },
+  // Onix
+  { name: 'Onix', model_id: 11240 },
+  { name: 'Onix 1.0', model_id: 11241 },
+  { name: 'Onix 1.0 Turbo', model_id: 11242 },
+  // Другие
+  { name: 'Другая модель', model_id: 11999 },
+];
+
 // Объединённые данные марок и моделей
 const ALL_BRANDS: Brand[] = [
   { name: 'Mercedes-Benz', make_id: 449 },
@@ -1468,6 +2077,11 @@ const ALL_BRANDS: Brand[] = [
   { name: 'Toyota', make_id: 455 },
   { name: 'Hyundai', make_id: 200 },
   { name: 'Kia', make_id: 456 },
+  { name: 'Nissan', make_id: 457 },
+  { name: 'Honda', make_id: 458 },
+  { name: 'Lexus', make_id: 459 },
+  { name: 'Ford', make_id: 460 },
+  { name: 'Chevrolet', make_id: 461 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
@@ -1478,6 +2092,11 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   455: TOYOTA_MODELS,   // Toyota
   200: HYUNDAI_MODELS,  // Hyundai
   456: KIA_MODELS,      // Kia
+  457: NISSAN_MODELS,   // Nissan
+  458: HONDA_MODELS,    // Honda
+  459: LEXUS_MODELS,    // Lexus
+  460: FORD_MODELS,     // Ford
+  461: CHEVROLET_MODELS, // Chevrolet
 };
 
 // Логотипы брендов
@@ -1489,6 +2108,11 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Toyota': 'https://www.carlogos.org/car-logos/toyota-logo-2019-3700x1200.png',
   'Hyundai': 'https://www.carlogos.org/car-logos/hyundai-logo-2011-1920x1080.png',
   'Kia': 'https://www.carlogos.org/car-logos/kia-logo-2021-2560x1440.png',
+  'Nissan': 'https://www.carlogos.org/car-logos/nissan-logo-2020-black.png',
+  'Honda': 'https://www.carlogos.org/car-logos/honda-logo-1700x1150.png',
+  'Lexus': 'https://www.carlogos.org/car-logos/lexus-logo-1988-1920x1080.png',
+  'Ford': 'https://www.carlogos.org/car-logos/ford-logo-2017-1500x1101.png',
+  'Chevrolet': 'https://www.carlogos.org/car-logos/chevrolet-logo-2013-2560x1440.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
