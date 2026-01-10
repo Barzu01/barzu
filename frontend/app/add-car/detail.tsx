@@ -4912,14 +4912,14 @@ export default function AddCarDetailScreen() {
 
         {/* Features */}
         <View style={styles.card}>
-          <SectionHeader title="✅ Опции и комплектация" />
+          <SectionHeader title={`✅ ${t('car.features')}`} />
           <TouchableOpacity
             style={styles.selectField}
             onPress={() => setFeaturesModalVisible(true)}
           >
             <Text style={[styles.selectFieldText, formData.features.length === 0 && styles.placeholder]}>
               {formData.features.length > 0 
-                ? `Выбрано: ${formData.features.length} опций`
+                ? `${t('addCar.optionsSelected')}: ${formData.features.length}`
                 : t('addCar.selectOptions')}
             </Text>
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
@@ -4985,7 +4985,7 @@ export default function AddCarDetailScreen() {
           ) : (
             <>
               <Ionicons name="cloud-upload" size={24} color="#FFFFFF" />
-              <Text style={styles.submitText}>Опубликовать объявление</Text>
+              <Text style={styles.submitText}>{submitting ? t('addCar.publishing') : t('addCar.publish')}</Text>
             </>
           )}
         </TouchableOpacity>
@@ -5166,7 +5166,7 @@ export default function AddCarDetailScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { maxHeight: '85%' }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Опции ({formData.features.length})</Text>
+              <Text style={styles.modalTitle}>{t('car.features')} ({formData.features.length})</Text>
               <TouchableOpacity onPress={() => setFeaturesModalVisible(false)}>
                 <Ionicons name="close" size={28} color="#0F172A" />
               </TouchableOpacity>
