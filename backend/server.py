@@ -233,10 +233,24 @@ class SearchFilters(BaseModel):
     sortBy: Optional[Literal['newest', 'priceAsc', 'priceDesc']] = 'newest'
 
 
+# Helper to normalize phone number
+def normalize_phone(phone: str) -> str:
+    """Normalize phone number - replace spaces with + and clean up"""
+    phone = phone.strip()
+    # Replace leading space with +
+    if phone.startswith(' '):
+        phone = '+' + phone[1:]
+    # Ensure it starts with +
+    if not phone.startswith('+') and phone[0].isdigit():
+        phone = '+' + phone
+    return phone
+
+
 # ===== USER ENDPOINTS =====
 @api_router.post("/users", response_model=UserResponse)
 async def create_or_get_user(phone: str):
     """Create or get user by phone number"""
+    phone = normalize_phone(phone)
     existing_user = await db.users.find_one({"phone": phone})
     if existing_user:
         return serialize_doc(existing_user)
@@ -250,6 +264,7 @@ async def create_or_get_user(phone: str):
 @api_router.get("/users/{phone}", response_model=UserResponse)
 async def get_user(phone: str):
     """Get user by phone"""
+    phone = normalize_phone(phone)
     user = await db.users.find_one({"phone": phone})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -259,6 +274,7 @@ async def get_user(phone: str):
 @api_router.put("/users/{phone}", response_model=UserResponse)
 async def update_user(phone: str, name: Optional[str] = None):
     """Update user profile"""
+    phone = normalize_phone(phone)
     update_data = {}
     if name is not None:
         update_data["name"] = name
