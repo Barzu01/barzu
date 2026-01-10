@@ -222,17 +222,7 @@ export default function ProfileScreen() {
               icon="language"
               title={t('profile.language')}
               subtitle={i18n.language === 'ru' ? 'Русский' : 'Тоҷикӣ'}
-              onPress={() => {
-                Alert.alert(
-                  t('profile.language'),
-                  t('profile.selectLanguage'),
-                  [
-                    { text: 'Русский', onPress: () => changeLanguage('ru') },
-                    { text: 'Тоҷикӣ', onPress: () => changeLanguage('tg') },
-                    { text: t('actions.cancel'), style: 'cancel' },
-                  ]
-                );
-              }}
+              onPress={() => setLanguageModalVisible(true)}
               iconBg="#F0FDF4"
               iconColor="#10B981"
             />
