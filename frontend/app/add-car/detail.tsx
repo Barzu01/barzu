@@ -1441,25 +1441,29 @@ export default function AddCarDetailScreen() {
             <FlatList
               data={brands}
               keyExtractor={(item) => item.make_id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[styles.modalItem, styles.brandModalItem]}
-                  onPress={() => handleBrandSelect(item)}
-                >
-                  <Image 
-                    source={{ uri: item.name === 'Mercedes-Benz' 
-                      ? 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png'
-                      : 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png'
-                    }} 
-                    style={styles.brandModalLogo}
-                    resizeMode="contain"
-                  />
-                  <Text style={styles.brandModalText}>{item.name}</Text>
-                  {selectedBrand?.make_id === item.make_id && (
-                    <Ionicons name="checkmark-circle" size={24} color="#0066FF" />
-                  )}
-                </TouchableOpacity>
-              )}
+              renderItem={({ item }) => {
+                const logoUrl = item.name === 'Mercedes-Benz' 
+                  ? 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png'
+                  : item.name === 'BMW'
+                  ? 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png'
+                  : 'https://www.carlogos.org/car-logos/hyundai-logo-2011-1920x1080.png';
+                return (
+                  <TouchableOpacity
+                    style={[styles.modalItem, styles.brandModalItem]}
+                    onPress={() => handleBrandSelect(item)}
+                  >
+                    <Image 
+                      source={{ uri: logoUrl }} 
+                      style={styles.brandModalLogo}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.brandModalText}>{item.name}</Text>
+                    {selectedBrand?.make_id === item.make_id && (
+                      <Ionicons name="checkmark-circle" size={24} color="#0066FF" />
+                    )}
+                  </TouchableOpacity>
+                );
+              }}
             />
           </View>
         </View>
