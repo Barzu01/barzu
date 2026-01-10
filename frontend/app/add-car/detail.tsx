@@ -4410,6 +4410,9 @@ export default function AddCarDetailScreen() {
   const [engineVolumeModalVisible, setEngineVolumeModalVisible] = useState(false);
   const [featuresModalVisible, setFeaturesModalVisible] = useState(false);
   const [brandModalVisible, setBrandModalVisible] = useState(false);
+  const [customBrandModalVisible, setCustomBrandModalVisible] = useState(false);
+  const [customBrand, setCustomBrand] = useState('');
+  const [customModel, setCustomModel] = useState('');
 
   // Brands and Models state
   const [brands] = useState<Brand[]>(ALL_BRANDS);
