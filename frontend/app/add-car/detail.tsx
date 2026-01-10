@@ -3517,6 +3517,8 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   473: ACURA_MODELS,    // Acura
   474: CADILLAC_MODELS, // Cadillac
   475: GENESIS_MODELS,  // Genesis
+  476: OPEL_MODELS,     // Opel
+  477: LADA_MODELS,     // Lada
 };
 
 // Логотипы брендов
