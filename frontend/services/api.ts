@@ -14,15 +14,15 @@ const api = axios.create({
 // User APIs
 export const userAPI = {
   createOrGet: async (phone: string) => {
-    const response = await api.post(`/users?phone=${phone}`);
+    const response = await api.post(`/users?phone=${encodeURIComponent(phone)}`);
     return response.data;
   },
   getUser: async (phone: string) => {
-    const response = await api.get(`/users/${phone}`);
+    const response = await api.get(`/users/${encodeURIComponent(phone)}`);
     return response.data;
   },
   updateUser: async (phone: string, name?: string) => {
-    const response = await api.put(`/users/${phone}?name=${name || ''}`);
+    const response = await api.put(`/users/${encodeURIComponent(phone)}?name=${encodeURIComponent(name || '')}`);
     return response.data;
   },
 };
