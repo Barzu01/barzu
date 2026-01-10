@@ -3549,6 +3549,8 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Acura': 'https://www.carlogos.org/car-logos/acura-logo-1990-1920x1080.png',
   'Cadillac': 'https://www.carlogos.org/car-logos/cadillac-logo-2014-1920x1080.png',
   'Genesis': 'https://www.carlogos.org/car-logos/genesis-logo-2020-1920x1080.png',
+  'Opel': 'https://www.carlogos.org/car-logos/opel-logo-2017-1920x1080.png',
+  'Lada': 'https://www.carlogos.org/car-logos/lada-logo-2015-1920x1080.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
