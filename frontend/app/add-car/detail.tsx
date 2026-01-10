@@ -4262,6 +4262,7 @@ const ALL_BRANDS: Brand[] = [
   { name: 'Aston Martin', make_id: 507 },
   { name: 'McLaren', make_id: 508 },
   { name: 'Lotus', make_id: 509 },
+  { name: 'Другая марка', make_id: 999 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
