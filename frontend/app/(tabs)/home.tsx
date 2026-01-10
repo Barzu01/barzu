@@ -171,12 +171,12 @@ export default function HomeScreen() {
   };
 
   const categories = [
-    { id: 'all', name: 'Все', icon: '🚙', gradient: ['#6366F1', '#8B5CF6'] },
-    { id: 'cars', name: 'Авто', icon: '🚗', gradient: ['#0066FF', '#00D4FF'] },
-    { id: 'electric', name: 'Электро', icon: '⚡', gradient: ['#10B981', '#34D399'] },
-    { id: 'motorcycles', name: 'Мото', icon: '🏍️', gradient: ['#F59E0B', '#FBBF24'] },
-    { id: 'trucks', name: 'Грузовики', icon: '🚚', gradient: ['#EF4444', '#F87171'] },
-    { id: 'rent', name: 'Аренда', icon: '🔑', gradient: ['#8B5CF6', '#A78BFA'] },
+    { id: 'all', name: t('categories.all'), icon: '🚙', gradient: ['#6366F1', '#8B5CF6'] },
+    { id: 'cars', name: t('categories.cars'), icon: '🚗', gradient: ['#0066FF', '#00D4FF'] },
+    { id: 'electric', name: t('categories.electric'), icon: '⚡', gradient: ['#10B981', '#34D399'] },
+    { id: 'motorcycles', name: t('categories.motorcycles'), icon: '🏍️', gradient: ['#F59E0B', '#FBBF24'] },
+    { id: 'trucks', name: t('categories.trucks'), icon: '🚚', gradient: ['#EF4444', '#F87171'] },
+    { id: 'rent', name: t('categories.rent'), icon: '🔑', gradient: ['#8B5CF6', '#A78BFA'] },
   ];
 
   const filteredCars = selectedCategory && selectedCategory !== 'all'
@@ -256,7 +256,7 @@ export default function HomeScreen() {
         {/* Condition badge */}
         {item.condition === 'new' && (
           <View style={styles.newBadge}>
-            <Text style={styles.newBadgeText}>Новый</Text>
+            <Text style={styles.newBadgeText}>{t('car.new')}</Text>
           </View>
         )}
       </View>
@@ -317,7 +317,7 @@ export default function HomeScreen() {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#0066FF" />
-        <Text style={styles.loadingText}>Загрузка объявлений...</Text>
+        <Text style={styles.loadingText}>{t('messages.loading')}</Text>
       </View>
     );
   }
@@ -327,7 +327,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerGreeting}>Добро пожаловать 👋</Text>
+          <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
           <Text style={styles.headerTitle}>SafedAuto</Text>
         </View>
         <TouchableOpacity 
@@ -350,7 +350,7 @@ export default function HomeScreen() {
         activeOpacity={0.8}
       >
         <Ionicons name="search" size={20} color="#94A3B8" />
-        <Text style={styles.searchPlaceholder}>Поиск по марке или модели...</Text>
+        <Text style={styles.searchPlaceholder}>{t('search.searchCars')}...</Text>
       </TouchableOpacity>
 
       {/* Categories */}
@@ -370,7 +370,7 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>
           {selectedCategory && selectedCategory !== 'all' 
             ? categories.find(c => c.id === selectedCategory)?.name 
-            : 'Все объявления'}
+            : t('categories.allListings')}
         </Text>
         <Text style={styles.sectionCount}>{filteredCars.length}</Text>
       </View>
@@ -394,9 +394,9 @@ export default function HomeScreen() {
             <View style={styles.emptyIcon}>
               <Ionicons name="car-sport-outline" size={48} color="#94A3B8" />
             </View>
-            <Text style={styles.emptyTitle}>Нет объявлений</Text>
+            <Text style={styles.emptyTitle}>{t('messages.noResults')}</Text>
             <Text style={styles.emptySubtitle}>
-              В этой категории пока нет автомобилей
+              {t('messages.noCarsInCategory')}
             </Text>
           </View>
         }
