@@ -4377,7 +4377,7 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Exeed': 'https://www.carlogos.org/car-logos/exeed-logo.png',
   'OMODA': 'https://www.carlogos.org/car-logos/omoda-logo.png',
   'Jetour': 'https://www.carlogos.org/car-logos/jetour-logo.png',
-  'Suzuki': 'https://logos-world.net/wp-content/uploads/2020/05/Suzuki-Logo.png',
+  'Suzuki': 'https://www.carlogos.org/car-logos/suzuki-logo.png',
   'Daihatsu': 'https://www.carlogos.org/car-logos/daihatsu-logo.png',
   'УАЗ': 'https://www.carlogos.org/car-logos/uaz-logo.png',
   'ГАЗ': 'https://www.carlogos.org/car-logos/gaz-logo.png',
