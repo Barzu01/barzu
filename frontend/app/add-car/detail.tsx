@@ -3315,6 +3315,14 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   465: PORSCHE_MODELS,  // Porsche
   466: LAND_ROVER_MODELS, // Land Rover
   467: JEEP_MODELS,     // Jeep
+  468: VOLVO_MODELS,    // Volvo
+  469: PEUGEOT_MODELS,  // Peugeot
+  470: RENAULT_MODELS,  // Renault
+  471: SKODA_MODELS,    // Skoda
+  472: INFINITI_MODELS, // Infiniti
+  473: ACURA_MODELS,    // Acura
+  474: CADILLAC_MODELS, // Cadillac
+  475: GENESIS_MODELS,  // Genesis
 };
 
 // Логотипы брендов
@@ -3337,6 +3345,14 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'Porsche': 'https://www.carlogos.org/car-logos/porsche-logo-2014-1920x1080.png',
   'Land Rover': 'https://www.carlogos.org/car-logos/land-rover-logo-2020-green.png',
   'Jeep': 'https://www.carlogos.org/car-logos/jeep-logo-1993-1920x1080.png',
+  'Volvo': 'https://www.carlogos.org/car-logos/volvo-logo-2014-1920x1080.png',
+  'Peugeot': 'https://www.carlogos.org/car-logos/peugeot-logo-2010-1920x1080.png',
+  'Renault': 'https://www.carlogos.org/car-logos/renault-logo-2021-1920x1080.png',
+  'Skoda': 'https://www.carlogos.org/car-logos/skoda-logo-2016-1920x1080.png',
+  'Infiniti': 'https://www.carlogos.org/car-logos/infiniti-logo-1989-1920x1080.png',
+  'Acura': 'https://www.carlogos.org/car-logos/acura-logo-1990-1920x1080.png',
+  'Cadillac': 'https://www.carlogos.org/car-logos/cadillac-logo-2014-1920x1080.png',
+  'Genesis': 'https://www.carlogos.org/car-logos/genesis-logo-2020-1920x1080.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
