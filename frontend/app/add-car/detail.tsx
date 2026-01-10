@@ -3486,6 +3486,8 @@ const ALL_BRANDS: Brand[] = [
   { name: 'Acura', make_id: 473 },
   { name: 'Cadillac', make_id: 474 },
   { name: 'Genesis', make_id: 475 },
+  { name: 'Opel', make_id: 476 },
+  { name: 'Lada', make_id: 477 },
 ];
 
 const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
