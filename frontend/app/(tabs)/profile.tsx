@@ -133,44 +133,49 @@ export default function ProfileScreen() {
           animationType="slide"
           onRequestClose={() => setEditModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{t('profile.editName')}</Text>
-                <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                  <Ionicons name="close" size={28} color="#0F172A" />
-                </TouchableOpacity>
-              </View>
-              
-              <View style={styles.modalBody}>
-                <Text style={styles.inputLabel}>{t('profile.yourName')}</Text>
-                <TextInput
-                  style={styles.input}
-                  value={newName}
-                  onChangeText={setNewName}
-                  placeholder={t('profile.enterYourName')}
-                  placeholderTextColor="#94A3B8"
-                  autoFocus
-                />
-                
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity 
-                    style={styles.cancelButton}
-                    onPress={() => setEditModalVisible(false)}
-                  >
-                    <Text style={styles.cancelButtonText}>{t('actions.cancel')}</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity 
-                    style={styles.saveButton}
-                    onPress={handleSaveName}
-                  >
-                    <Text style={styles.saveButtonText}>{t('actions.save')}</Text>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView 
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.modalOverlay}
+            >
+              <View style={styles.modalContentCenter}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>{t('profile.editName')}</Text>
+                  <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                    <Ionicons name="close" size={28} color="#0F172A" />
                   </TouchableOpacity>
                 </View>
+                
+                <View style={styles.modalBody}>
+                  <Text style={styles.inputLabel}>{t('profile.yourName')}</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={newName}
+                    onChangeText={setNewName}
+                    placeholder={t('profile.enterYourName')}
+                    placeholderTextColor="#94A3B8"
+                    autoFocus
+                  />
+                  
+                  <View style={styles.modalButtons}>
+                    <TouchableOpacity 
+                      style={styles.cancelButton}
+                      onPress={() => setEditModalVisible(false)}
+                    >
+                      <Text style={styles.cancelButtonText}>{t('actions.cancel')}</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity 
+                      style={styles.saveButton}
+                      onPress={handleSaveName}
+                    >
+                      <Text style={styles.saveButtonText}>{t('actions.save')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
         </Modal>
 
         {/* Menu Sections */}
