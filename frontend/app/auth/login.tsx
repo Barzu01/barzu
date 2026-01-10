@@ -30,7 +30,7 @@ export default function LoginScreen() {
 
   const handleSendCode = () => {
     if (!phone || phone.length < 9) {
-      Alert.alert(t('messages.error'), 'Введите корректный номер телефона');
+      Alert.alert(t('messages.error'), t('auth.enterValidPhone'));
       return;
     }
     setShowCode(true);
@@ -39,7 +39,7 @@ export default function LoginScreen() {
 
   const handleVerifyCode = async () => {
     if (code !== TEST_CODE) {
-      Alert.alert(t('messages.error'), 'Неверный код. Попробуйте снова.');
+      Alert.alert(t('messages.error'), t('auth.wrongCode'));
       return;
     }
 
@@ -48,7 +48,7 @@ export default function LoginScreen() {
       await login(phone);
       router.replace('/(tabs)/home');
     } catch (error) {
-      Alert.alert(t('messages.error'), 'Ошибка входа. Попробуйте снова.');
+      Alert.alert(t('messages.error'), t('auth.loginError'));
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ export default function LoginScreen() {
                 </TouchableOpacity>
 
                 <Text style={styles.infoText}>
-                  Войдите с номером телефона для доступа ко всем функциям
+                  {t('auth.loginInfo')}
                 </Text>
               </>
             ) : (
@@ -100,14 +100,14 @@ export default function LoginScreen() {
                   <View style={styles.codeDisplay}>
                     <Ionicons name="mail-open" size={24} color="#0066CC" />
                     <Text style={styles.codeText}>
-                      Ваш код: <Text style={styles.codeBold}>{TEST_CODE}</Text>
+                      {t('auth.yourCode')}: <Text style={styles.codeBold}>{TEST_CODE}</Text>
                     </Text>
                   </View>
                 )}
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Введите код"
+                  placeholder={t('auth.enterCodePlaceholder')}
                   value={code}
                   onChangeText={setCode}
                   keyboardType="number-pad"
@@ -135,11 +135,11 @@ export default function LoginScreen() {
                     setShowCode(false);
                   }}
                 >
-                  <Text style={styles.backLinkText}>← Изменить номер</Text>
+                  <Text style={styles.backLinkText}>← {t('auth.changeNumber')}</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.infoText}>
-                  🧪 Тестовый режим: Код отображается на экране
+                  🧪 {t('auth.testMode')}
                 </Text>
               </>
             )}
