@@ -4723,8 +4723,8 @@ export default function AddCarDetailScreen() {
           
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.model')}</Text>
           <SearchableSelect
-            title={selectedBrand ? `Модели ${selectedBrand.name}` : "Выберите модель"}
-            placeholder="Выберите модель"
+            title={selectedBrand ? `${t('addCar.modelsOf')} ${selectedBrand.name}` : t('addCar.selectModel')}
+            placeholder={t('addCar.selectModel')}
             value={formData.model}
             options={modelOptions}
             onSelect={handleModelSelect}
@@ -4741,7 +4741,7 @@ export default function AddCarDetailScreen() {
           
           <View style={styles.row}>
             <View style={styles.halfField}>
-              <Text style={styles.fieldLabel}>Год выпуска</Text>
+              <Text style={styles.fieldLabel}>{t('addCar.yearOfManufacture')}</Text>
               <TextInput
                 style={styles.input}
                 value={formData.year}
@@ -4752,7 +4752,7 @@ export default function AddCarDetailScreen() {
               />
             </View>
             <View style={styles.halfField}>
-              <Text style={styles.fieldLabel}>Пробег (км)</Text>
+              <Text style={styles.fieldLabel}>{t('addCar.mileageKm')}</Text>
               <TextInput
                 style={styles.input}
                 value={formData.mileage}
@@ -4764,7 +4764,7 @@ export default function AddCarDetailScreen() {
             </View>
           </View>
 
-          <Text style={styles.fieldLabel}>Цена (TJS)</Text>
+          <Text style={styles.fieldLabel}>{t('addCar.priceTJS')}</Text>
           <View style={styles.priceInputContainer}>
             <TextInput
               style={[styles.input, styles.priceInput]}
@@ -4785,19 +4785,19 @@ export default function AddCarDetailScreen() {
           <SectionHeader title="⚙️ Технические данные" />
           
           {/* Body Type */}
-          <Text style={styles.fieldLabel}>Тип кузова</Text>
+          <Text style={styles.fieldLabel}>{t('car.bodyType')}</Text>
           <TouchableOpacity
             style={styles.selectField}
             onPress={() => setBodyTypeModalVisible(true)}
           >
             <Text style={[styles.selectFieldText, !formData.bodyType && styles.placeholder]}>
-              {formData.bodyType ? BODY_TYPES.find(b => b.value === formData.bodyType)?.label : 'Выберите тип кузова'}
+              {formData.bodyType ? BODY_TYPES.find(b => b.value === formData.bodyType)?.label : t('addCar.selectBodyType')}
             </Text>
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
 
           {/* Engine Type */}
-          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Тип двигателя</Text>
+          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.engineType')}</Text>
           <View style={styles.chipContainer}>
             {[
               { value: 'petrol', label: 'Бензин', icon: '⛽' },
@@ -4821,13 +4821,13 @@ export default function AddCarDetailScreen() {
           {/* Engine Volume */}
           {formData.engineType !== 'electric' && (
             <>
-              <Text style={[styles.fieldLabel, { marginTop: 16 }]}>Объём двигателя</Text>
+              <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.engineVolume')}</Text>
               <TouchableOpacity
                 style={styles.selectField}
                 onPress={() => setEngineVolumeModalVisible(true)}
               >
                 <Text style={[styles.selectFieldText, !formData.engineVolume && styles.placeholder]}>
-                  {formData.engineVolume ? `${formData.engineVolume} л` : 'Выберите объём'}
+                  {formData.engineVolume ? `${formData.engineVolume} ${t('car.liters')}` : t('addCar.selectEngineVolume')}
                 </Text>
                 <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
               </TouchableOpacity>
