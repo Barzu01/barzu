@@ -4382,13 +4382,13 @@ const BRAND_LOGOS: { [key: string]: string } = {
   'УАЗ': 'https://www.carlogos.org/car-logos/uaz-logo.png',
   'ГАЗ': 'https://www.carlogos.org/car-logos/gaz-logo.png',
   'Ferrari': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ferrari-Logo.svg/200px-Ferrari-Logo.svg.png',
-  'Lamborghini': 'https://logos-world.net/wp-content/uploads/2020/04/Lamborghini-Logo.png',
-  'Maserati': 'https://logos-world.net/wp-content/uploads/2020/04/Maserati-Logo.png',
-  'Bentley': 'https://logos-world.net/wp-content/uploads/2020/04/Bentley-Logo.png',
-  'Rolls-Royce': 'https://logos-world.net/wp-content/uploads/2020/04/Rolls-Royce-Logo.png',
-  'Aston Martin': 'https://logos-world.net/wp-content/uploads/2020/04/Aston-Martin-Logo.png',
-  'McLaren': 'https://logos-world.net/wp-content/uploads/2020/05/McLaren-Logo.png',
-  'Lotus': 'https://logos-world.net/wp-content/uploads/2021/04/Lotus-Logo.png',
+  'Lamborghini': 'https://www.carlogos.org/car-logos/lamborghini-logo.png',
+  'Maserati': 'https://www.carlogos.org/car-logos/maserati-logo.png',
+  'Bentley': 'https://www.carlogos.org/car-logos/bentley-logo.png',
+  'Rolls-Royce': 'https://www.carlogos.org/car-logos/rolls-royce-logo.png',
+  'Aston Martin': 'https://www.carlogos.org/car-logos/aston-martin-logo.png',
+  'McLaren': 'https://www.carlogos.org/car-logos/mclaren-logo.png',
+  'Lotus': 'https://www.carlogos.org/car-logos/lotus-logo.png',
 };
 
 const getBrandLogo = (brandName: string): string => {
