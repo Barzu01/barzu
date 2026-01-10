@@ -195,9 +195,18 @@ export default function HomeScreen() {
         onPress={() => setSelectedCategory(item.id === 'all' ? null : item.id)}
         activeOpacity={0.8}
       >
-        <View style={[styles.categoryIconWrapper, isSelected && styles.categoryIconWrapperActive]}>
-          <Text style={styles.categoryIcon}>{item.icon}</Text>
-        </View>
+        <LinearGradient
+          colors={isSelected ? item.gradient : ['#F1F5F9', '#F8FAFC']}
+          style={[styles.categoryIconWrapper, isSelected && styles.categoryIconWrapperActive]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Ionicons 
+            name={item.icon} 
+            size={26} 
+            color={isSelected ? '#FFFFFF' : '#64748B'} 
+          />
+        </LinearGradient>
         <Text style={[styles.categoryName, isSelected && styles.categoryNameActive]}>
           {item.name}
         </Text>
