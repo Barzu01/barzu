@@ -1480,6 +1480,21 @@ const MODELS_BY_BRAND: { [key: number]: CarModel[] } = {
   456: KIA_MODELS,      // Kia
 };
 
+// Логотипы брендов
+const BRAND_LOGOS: { [key: string]: string } = {
+  'Mercedes-Benz': 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png',
+  'BMW': 'https://www.carlogos.org/car-logos/bmw-logo-2020-grey.png',
+  'Audi': 'https://www.carlogos.org/car-logos/audi-logo-2016.png',
+  'Volkswagen': 'https://www.carlogos.org/car-logos/volkswagen-logo-2019-1500x1500.png',
+  'Toyota': 'https://www.carlogos.org/car-logos/toyota-logo-2019-3700x1200.png',
+  'Hyundai': 'https://www.carlogos.org/car-logos/hyundai-logo-2011-1920x1080.png',
+  'Kia': 'https://www.carlogos.org/car-logos/kia-logo-2021-2560x1440.png',
+};
+
+const getBrandLogo = (brandName: string): string => {
+  return BRAND_LOGOS[brandName] || 'https://www.carlogos.org/car-logos/car-logo.png';
+};
+
 export default function AddCarDetailScreen() {
   const { user } = useAuth();
   const router = useRouter();
