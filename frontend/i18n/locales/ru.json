@@ -296,7 +296,29 @@
     "motorcycles": "Мотоциклы",
     "trucks": "Грузовики",
     "specialEquipment": "Спецтехника",
-    "selectMultipleFuels": "Можно выбрать несколько типов топлива"
+    "selectMultipleFuels": "Можно выбрать несколько типов топлива",
+    "autoParts": "Запчасти и аксессуары",
+    "selectSubcategory": "Выберите подкатегорию",
+    "partName": "Название товара",
+    "partNamePlaceholder": "Например: Тормозные колодки Toyota",
+    "partsDescription": "Описание товара",
+    "partsDescriptionPlaceholder": "Опишите товар подробно..."
+  },
+  "parts": {
+    "title": "Автозапчасти и аксессуары",
+    "autoParts": "Автозапчасти",
+    "motoParts": "Мотозапчасти",
+    "tiresWheels": "Шины и диски",
+    "oilsChemistry": "Автомасла и автохимия",
+    "accessories": "Аксессуары для авто",
+    "audioVideo": "Автозвук и видео",
+    "gpsVideo": "GPS и видеорегистраторы",
+    "roofRacks": "Багажники и фаркопы",
+    "antiTheft": "Противоугонные устройства",
+    "specialParts": "Запчасти для спецтехники",
+    "motoAccessories": "Мотоаксессуары",
+    "forParts": "Транспорт на запчасти",
+    "licensePlates": "Гос. номера"
   },
   "carDetails": {
     "specifications": "Характеристики",
