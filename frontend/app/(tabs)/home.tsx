@@ -350,12 +350,9 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
-          <Text style={styles.headerTitle}>SafedAuto</Text>
-        </View>
+      {/* Sticky Header - Always visible */}
+      <View style={styles.stickyHeader}>
+        <Text style={styles.headerTitle}>SafedAuto</Text>
         <TouchableOpacity 
           style={styles.notificationButton}
           onPress={() => router.push('/notifications')}
@@ -369,27 +366,32 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <TouchableOpacity 
-        style={styles.searchBar}
-        onPress={() => router.push('/(tabs)/search')}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="search" size={20} color="#94A3B8" />
-        <Text style={styles.searchPlaceholder}>{t('search.searchCars')}...</Text>
-      </TouchableOpacity>
+      {/* Expandable Header - Hides on scroll */}
+      <Animated.View style={[styles.expandableHeader, { height: expandableHeaderHeight, opacity: expandableHeaderOpacity }]}>
+        <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
+        
+        {/* Search Bar */}
+        <TouchableOpacity 
+          style={styles.searchBar}
+          onPress={() => router.push('/(tabs)/search')}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="search" size={20} color="#94A3B8" />
+          <Text style={styles.searchPlaceholder}>{t('search.searchCars')}...</Text>
+        </TouchableOpacity>
 
-      {/* Categories */}
-      <View style={styles.categoriesSection}>
-        <FlatList
-          horizontal
-          data={categories}
-          renderItem={renderCategory}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContainer}
-        />
-      </View>
+        {/* Categories */}
+        <View style={styles.categoriesSection}>
+          <FlatList
+            horizontal
+            data={categories}
+            renderItem={renderCategory}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoriesContainer}
+          />
+        </View>
+      </Animated.View>
 
       {/* Section title */}
       <View style={styles.sectionHeader}>
@@ -402,12 +404,17 @@ export default function HomeScreen() {
       </View>
 
       {/* Car List */}
-      <FlatList
+      <Animated.FlatList
         data={filteredCars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
         refreshControl={
           <RefreshControl 
             refreshing={refreshing} 
