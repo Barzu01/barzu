@@ -443,6 +443,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8FAFC',
   },
+  stickyHeader: {
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  expandableHeader: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    overflow: 'hidden',
+  },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
