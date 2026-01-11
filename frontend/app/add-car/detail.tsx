@@ -5994,4 +5994,66 @@ const styles = StyleSheet.create({
     top: 8,
     right: 8,
   },
+  // Message Modal styles
+  messageModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  messageModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    width: '100%',
+    maxWidth: 320,
+    alignItems: 'center',
+  },
+  messageModalIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  messageModalIconSuccess: {
+    backgroundColor: '#ECFDF5',
+  },
+  messageModalIconError: {
+    backgroundColor: '#FEF2F2',
+  },
+  messageModalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  messageModalText: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  messageModalButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 48,
+    borderRadius: 12,
+    width: '100%',
+  },
+  messageModalButtonSuccess: {
+    backgroundColor: '#10B981',
+  },
+  messageModalButtonError: {
+    backgroundColor: '#0066FF',
+  },
+  messageModalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
 });
