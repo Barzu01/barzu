@@ -170,7 +170,6 @@ export default function HomeScreen() {
       console.error('Error loading cars:', error);
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   };
 
