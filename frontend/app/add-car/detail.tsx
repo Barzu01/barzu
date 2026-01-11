@@ -4678,7 +4678,7 @@ export default function AddCarDetailScreen() {
           region: formData.region,
           category: 'auto_parts',
           subcategory: formData.subcategory,
-          description: formData.description,
+          description: formData.description || '',
           features: [],
           photos,
           sellerPhone: user.phone,
@@ -4686,28 +4686,36 @@ export default function AddCarDetailScreen() {
           status: 'pending' as const,
         };
 
+        console.log('Submitting part data:', JSON.stringify(partData, null, 2).substring(0, 500));
         await carAPI.create(partData as any);
       } else {
         // Для авто - стандартная логика
         const carData = {
           brand: formData.brand,
           model: formData.model,
-          year: parseInt(formData.year),
-          price: parseFloat(formData.price),
-          mileage: parseInt(formData.mileage),
-          engineType: formData.engineTypes[0] || 'petrol', // Берём первый тип из массива
-          engineVolume: formData.engineVolume,
-          transmission: formData.transmission,
-          driveType: formData.driveType,
-          bodyType: formData.bodyType,
-          condition: formData.condition,
-          color: formData.color,
-          region: formData.region,
-          category: formData.category,
-          description: formData.description,
-          features: formData.features,
+          year: parseInt(formData.year) || new Date().getFullYear(),
+          price: parseFloat(formData.price) || 0,
+          mileage: parseInt(formData.mileage) || 0,
+          engineType: formData.engineTypes[0] || 'petrol',
+          engineVolume: formData.engineVolume || null,
+          transmission: formData.transmission || 'automatic',
+          driveType: formData.driveType || 'front',
+          bodyType: formData.bodyType || null,
+          condition: formData.condition || 'used',
+          color: formData.color || '',
+          region: formData.region || 'dushanbe',
+          category: formData.category || 'cars',
+          description: formData.description || '',
+          features: formData.features || [],
           photos,
           sellerPhone: user.phone,
+          sellerId: user._id || user.phone,
+          status: 'pending' as const,
+        };
+
+        console.log('Submitting car data:', JSON.stringify({...carData, photos: [`${carData.photos.length} photos`]}, null, 2));
+        await carAPI.create(carData as any);
+      }
           sellerId: user._id || user.phone,
           status: 'pending' as const,
         };
