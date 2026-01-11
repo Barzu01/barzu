@@ -4963,6 +4963,7 @@ export default function AddCarDetailScreen() {
             ))}
           </View>
         </View>
+        )}
 
         {/* Condition & Color */}
         <View style={styles.card}>
