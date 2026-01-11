@@ -5842,4 +5842,51 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  // Стили для подкатегорий запчастей
+  subcategoryCard: {
+    width: '47%',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+  },
+  subcategoryCardActive: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#0066FF',
+  },
+  subcategoryIconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  subcategoryIconWrapActive: {
+    backgroundColor: '#0066FF',
+  },
+  subcategoryText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#334155',
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  subcategoryTextActive: {
+    color: '#0066FF',
+  },
+  subcategoryCheck: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+  },
 });
