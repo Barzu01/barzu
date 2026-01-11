@@ -4853,7 +4853,8 @@ export default function AddCarDetailScreen() {
           </View>
         </View>
 
-        {/* Technical Specs */}
+        {/* Technical Specs - только для авто */}
+        {!isPartsCategory && (
         <View style={styles.card}>
           <SectionHeader title="⚙️ Технические данные" />
           
