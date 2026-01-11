@@ -294,7 +294,8 @@
     "cars": "Мошинҳо",
     "motorcycles": "Мотосиклҳо",
     "trucks": "Боркашҳо",
-    "specialEquipment": "Техникаи махсус"
+    "specialEquipment": "Техникаи махсус",
+    "selectMultipleFuels": "Чанд навъи сӯзишворӣ интихоб кардан мумкин аст"
   },
   "carDetails": {
     "specifications": "Тавсифот",

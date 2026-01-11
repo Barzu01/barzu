@@ -294,7 +294,8 @@
     "cars": "Автомобили",
     "motorcycles": "Мотоциклы",
     "trucks": "Грузовики",
-    "specialEquipment": "Спецтехника"
+    "specialEquipment": "Спецтехника",
+    "selectMultipleFuels": "Можно выбрать несколько типов топлива"
   },
   "carDetails": {
     "specifications": "Характеристики",
