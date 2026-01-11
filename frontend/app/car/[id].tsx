@@ -500,230 +500,89 @@ export default function CarDetailsScreen() {
         transparent 
         animationType="fade"
         statusBarTranslucent
+        onRequestClose={closeFullScreen}
       >
         <View style={styles.fullScreenOverlay}>
-          <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.95)" />
+          <StatusBar barStyle="light-content" backgroundColor="#000000" />
           
-          {/* Close button */}
-          <SafeAreaView style={styles.fullScreenHeader} edges={['top']}>
-            <TouchableOpacity onPress={closeFullScreen} style={styles.fullScreenCloseBtn}>
-              <Ionicons name="close" size={28} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.fullScreenCounter}>
-              {fullScreenIndex + 1} / {car?.photos?.length || 0}
-            </Text>
-            <View style={{ width: 44 }} />
-          </SafeAreaView>
-
-          {/* Image Gallery with Zoom */}
-          <FlatList
-            data={car?.photos || []}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            initialScrollIndex={fullScreenIndex}
-            getItemLayout={(data, index) => ({
-              length: width,
-              offset: width * index,
-              index,
-            })}
-            onMomentumScrollEnd={(e) => {
-              const index = Math.round(e.nativeEvent.contentOffset.x / width);
-              setFullScreenIndex(index);
-            }}
-            keyExtractor={(item, index) => `fullscreen-${index}`}
-            renderItem={({ item: photo }) => (
-              <ZoomableImage 
-                uri={photo} 
-                onClose={closeFullScreen}
-              />
+          {/* Image Viewer with Zoom - как на auto.ru */}
+          <ImageViewer
+            imageUrls={(car?.photos || []).map(url => ({ url }))}
+            index={fullScreenIndex}
+            onChange={(index) => setFullScreenIndex(index || 0)}
+            enableSwipeDown={true}
+            onSwipeDown={closeFullScreen}
+            saveToLocalByLongPress={false}
+            backgroundColor="rgba(0,0,0,0.95)"
+            enablePreload={true}
+            maxOverflow={300}
+            flipThreshold={60}
+            swipeDownThreshold={80}
+            doubleClickInterval={250}
+            minScale={0.6}
+            maxScale={3}
+            renderIndicator={(currentIndex, allSize) => (
+              <View style={styles.imageViewerIndicator}>
+                <Text style={styles.imageViewerIndicatorText}>
+                  {(currentIndex || 0) + 1} / {allSize}
+                </Text>
+              </View>
             )}
+            renderHeader={() => (
+              <SafeAreaView style={styles.imageViewerHeader} edges={['top']}>
+                <TouchableOpacity 
+                  onPress={closeFullScreen} 
+                  style={styles.imageViewerCloseBtn}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="close" size={28} color="#FFFFFF" />
+                </TouchableOpacity>
+              </SafeAreaView>
+            )}
+            renderFooter={(currentIndex) => (
+              <View style={styles.imageViewerFooter}>
+                {/* Миниатюры фото как на auto.ru */}
+                <ScrollView 
+                  horizontal 
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.thumbnailsContainer}
+                >
+                  {car?.photos?.map((photo, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setFullScreenIndex(index)}
+                      style={[
+                        styles.thumbnailWrapper,
+                        currentIndex === index && styles.thumbnailWrapperActive
+                      ]}
+                    >
+                      <Image
+                        source={{ uri: photo }}
+                        style={styles.thumbnail}
+                        resizeMode="cover"
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+                
+                {/* Подсказка */}
+                <Text style={styles.imageViewerHint}>
+                  Сведите пальцы для увеличения • Потяните вниз для закрытия
+                </Text>
+              </View>
+            )}
+            loadingRender={() => (
+              <View style={styles.imageLoading}>
+                <ActivityIndicator size="large" color="#FFFFFF" />
+              </View>
+            )}
+            failImageSource={{ url: 'https://via.placeholder.com/400x300?text=Ошибка' }}
           />
-
-          {/* Thumbnail indicators */}
-          {(car?.photos?.length || 0) > 1 && (
-            <View style={styles.fullScreenPagination}>
-              {car?.photos?.map((_, index) => (
-                <View 
-                  key={index} 
-                  style={[
-                    styles.fullScreenDot, 
-                    fullScreenIndex === index && styles.fullScreenDotActive
-                  ]} 
-                />
-              ))}
-            </View>
-          )}
         </View>
       </Modal>
     </View>
   );
 }
-
-// Компонент для зума изображения с улучшенным функционалом
-const ZoomableImage = ({ uri, onClose }: { uri: string; onClose: () => void }) => {
-  const scale = useSharedValue(1);
-  const savedScale = useSharedValue(1);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const savedTranslateX = useSharedValue(0);
-  const savedTranslateY = useSharedValue(0);
-  const opacity = useSharedValue(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const lastTap = useSharedValue(0);
-  const tapCount = useSharedValue(0);
-
-  const { height } = Dimensions.get('window');
-  const MAX_SCALE = 3; // Максимальное увеличение 3x
-  const DOUBLE_TAP_SCALE = 2.5; // Увеличение при double tap
-
-  // Pinch для зума
-  const pinchHandler = useAnimatedGestureHandler({
-    onStart: () => {
-      savedScale.value = scale.value;
-    },
-    onActive: (event) => {
-      scale.value = Math.max(0.5, Math.min(savedScale.value * event.scale, MAX_SCALE));
-    },
-    onEnd: () => {
-      if (scale.value < 1) {
-        scale.value = withSpring(1);
-        translateX.value = withSpring(0);
-        translateY.value = withSpring(0);
-      } else if (scale.value > MAX_SCALE) {
-        scale.value = withSpring(MAX_SCALE);
-      }
-      savedScale.value = scale.value;
-    },
-  });
-
-  // Pan для перемещения и swipe down для закрытия
-  const panHandler = useAnimatedGestureHandler({
-    onStart: () => {
-      savedTranslateX.value = translateX.value;
-      savedTranslateY.value = translateY.value;
-    },
-    onActive: (event) => {
-      if (scale.value > 1) {
-        // При увеличении - перемещаем фото
-        translateX.value = savedTranslateX.value + event.translationX;
-        translateY.value = savedTranslateY.value + event.translationY;
-      } else {
-        // При обычном размере - swipe down для закрытия
-        if (event.translationY > 0) {
-          translateY.value = event.translationY;
-          opacity.value = 1 - (event.translationY / 300);
-        }
-      }
-    },
-    onEnd: (event) => {
-      if (scale.value <= 1) {
-        // Swipe down - закрыть если потянули достаточно
-        if (event.translationY > 100 || event.velocityY > 500) {
-          translateY.value = withTiming(height, { duration: 200 });
-          opacity.value = withTiming(0, { duration: 200 });
-          runOnJS(onClose)();
-        } else {
-          translateY.value = withSpring(0);
-          opacity.value = withSpring(1);
-        }
-      } else {
-        // При увеличении - ограничиваем границы
-        const maxTranslateX = (width * (scale.value - 1)) / 2;
-        const maxTranslateY = (height * (scale.value - 1)) / 4;
-        
-        if (Math.abs(translateX.value) > maxTranslateX) {
-          translateX.value = withSpring(translateX.value > 0 ? maxTranslateX : -maxTranslateX);
-        }
-        if (Math.abs(translateY.value) > maxTranslateY) {
-          translateY.value = withSpring(translateY.value > 0 ? maxTranslateY : -maxTranslateY);
-        }
-      }
-    },
-  });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
-    ],
-    opacity: opacity.value,
-  }));
-
-  const containerStyle = useAnimatedStyle(() => ({
-    backgroundColor: `rgba(0, 0, 0, ${opacity.value * 0.95})`,
-  }));
-
-  // Double tap для увеличения/сброса
-  const handleTap = () => {
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300;
-    
-    if (now - lastTap.value < DOUBLE_TAP_DELAY) {
-      // Double tap detected
-      if (scale.value > 1) {
-        // Сброс к исходному размеру
-        scale.value = withSpring(1);
-        translateX.value = withSpring(0);
-        translateY.value = withSpring(0);
-        savedScale.value = 1;
-      } else {
-        // Увеличение
-        scale.value = withSpring(DOUBLE_TAP_SCALE);
-        savedScale.value = DOUBLE_TAP_SCALE;
-      }
-      tapCount.value = 0;
-    } else {
-      tapCount.value = 1;
-    }
-    lastTap.value = now;
-  };
-
-  return (
-    <GestureHandlerRootView style={{ width, height: height }}>
-      <Animated.View style={[{ flex: 1 }, containerStyle]}>
-        <PanGestureHandler 
-          onGestureEvent={panHandler}
-          minDist={10}
-        >
-          <Animated.View style={{ flex: 1 }}>
-            <PinchGestureHandler onGestureEvent={pinchHandler}>
-              <Animated.View style={[styles.zoomContainer, animatedStyle]}>
-                <TouchableOpacity 
-                  activeOpacity={1} 
-                  onPress={handleTap}
-                  style={styles.zoomTouchable}
-                >
-                  {/* Loading indicator */}
-                  {isLoading && (
-                    <View style={styles.imageLoadingContainer}>
-                      <ActivityIndicator size="large" color="#FFFFFF" />
-                    </View>
-                  )}
-                  <Image
-                    source={{ uri }}
-                    style={[styles.zoomImage, isLoading && { opacity: 0 }]}
-                    resizeMode="contain"
-                    onLoadStart={() => setIsLoading(true)}
-                    onLoadEnd={() => setIsLoading(false)}
-                  />
-                </TouchableOpacity>
-              </Animated.View>
-            </PinchGestureHandler>
-          </Animated.View>
-        </PanGestureHandler>
-        
-        {/* Hints */}
-        <View style={styles.zoomHint}>
-          <Text style={styles.zoomHintText}>
-            {scale.value > 1 ? 'Двигайте пальцем для перемещения' : '⬇ Потяните вниз для закрытия • Дважды нажмите для увеличения'}
-          </Text>
-        </View>
-      </Animated.View>
-    </GestureHandlerRootView>
-  );
-};
 
 const SpecItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
   <View style={styles.specItem}>
