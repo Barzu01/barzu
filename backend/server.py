@@ -156,7 +156,7 @@ class CarListing(BaseModel):
     year: int
     price: float
     mileage: int
-    engineType: Literal['petrol', 'diesel', 'electric', 'hybrid']
+    engineType: Literal['petrol', 'diesel', 'electric', 'hybrid', 'gas']
     engineVolume: Optional[float] = None  # Объем двигателя в литрах
     transmission: Literal['manual', 'automatic']
     driveType: Literal['front', 'rear', 'awd']
