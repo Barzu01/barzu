@@ -731,10 +731,6 @@ const ZoomableImage = ({ uri, onClose }: { uri: string; onClose: () => void }) =
     </GestureHandlerRootView>
   );
 };
-      </View>
-    </GestureHandlerRootView>
-  );
-};
 
 const SpecItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
   <View style={styles.specItem}>
