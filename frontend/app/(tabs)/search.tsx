@@ -359,7 +359,13 @@ export default function SearchScreen() {
                     setTimeout(() => handleSearch(), 100);
                   }}
                 >
-                  <Text style={styles.brandIcon}>{brand.icon}</Text>
+                  <View style={styles.brandLogoContainer}>
+                    <Image 
+                      source={{ uri: brand.logo }} 
+                      style={styles.brandLogo}
+                      resizeMode="contain"
+                    />
+                  </View>
                   <Text style={styles.brandName}>{brand.name}</Text>
                 </TouchableOpacity>
               ))}
