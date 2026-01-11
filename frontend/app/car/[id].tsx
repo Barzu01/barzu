@@ -668,89 +668,84 @@ const styles = StyleSheet.create({
   shareLabel: { fontSize: 14, fontWeight: '600', color: '#0F172A' },
   reportOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
   reportOptionText: { fontSize: 16, color: '#0F172A' },
-  // Fullscreen image gallery styles
+  // Image Viewer styles (как на auto.ru)
   fullScreenOverlay: { 
     flex: 1, 
-    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    backgroundColor: '#000000',
   },
-  fullScreenHeader: {
+  imageViewerHeader: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    zIndex: 100,
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 16,
+    paddingTop: Platform.OS === 'ios' ? 0 : 16,
+    paddingBottom: 8,
   },
-  fullScreenCloseBtn: {
+  imageViewerCloseBtn: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fullScreenCounter: {
+  imageViewerIndicator: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 70,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  imageViewerIndicatorText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
-  fullScreenPagination: {
+  imageViewerFooter: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 0,
     left: 0,
     right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  thumbnailsContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     gap: 8,
   },
-  fullScreenDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  thumbnailWrapper: {
+    width: 60,
+    height: 45,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    overflow: 'hidden',
+    marginRight: 8,
   },
-  fullScreenDotActive: {
-    backgroundColor: '#FFFFFF',
-    width: 24,
+  thumbnailWrapperActive: {
+    borderColor: '#0066FF',
   },
-  // Zoom styles
-  zoomContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  zoomTouchable: {
+  thumbnail: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  zoomImage: {
-    width: width,
-    height: '100%',
-  },
-  zoomHint: {
-    position: 'absolute',
-    bottom: 80,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  zoomHintText: {
+  imageViewerHint: {
+    textAlign: 'center',
     color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: 13,
+    fontSize: 12,
+    paddingBottom: 8,
   },
-  imageLoadingContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  imageLoading: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
