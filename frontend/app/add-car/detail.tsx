@@ -5399,6 +5399,12 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginBottom: 8,
   },
+  fieldHint: {
+    fontSize: 12,
+    color: '#94A3B8',
+    marginBottom: 10,
+    fontStyle: 'italic',
+  },
   input: {
     backgroundColor: '#F8FAFC',
     borderRadius: 12,
