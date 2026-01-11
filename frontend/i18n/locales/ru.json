@@ -10,7 +10,27 @@
     "motorcycles": "Мото",
     "trucks": "Грузовики",
     "rent": "Аренда",
-    "allListings": "Все объявления"
+    "allListings": "Все объявления",
+    "autoParts": "Запчасти и аксессуары"
+  },
+  "parts": {
+    "title": "Автозапчасти и аксессуары",
+    "selectSubcategory": "Выберите подкатегорию",
+    "productName": "Название товара",
+    "productNamePlaceholder": "Например: Тормозные колодки Toyota Camry",
+    "autoParts": "Автозапчасти",
+    "motoParts": "Мотозапчасти",
+    "tiresWheels": "Шины и диски",
+    "oilsChemistry": "Автомасла и автохимия",
+    "accessories": "Аксессуары для авто",
+    "audioVideo": "Автозвук и видео",
+    "gpsVideo": "GPS и видеорегистраторы",
+    "roofRacks": "Багажники и фаркопы",
+    "antiTheft": "Противоугонные устройства",
+    "specialParts": "Запчасти для спецтехники",
+    "motoAccessories": "Мотоаксессуары",
+    "forParts": "Транспорт на запчасти",
+    "licensePlates": "Гос. номера"
   },
   "auth": {
     "phoneNumber": "Номер телефона",
