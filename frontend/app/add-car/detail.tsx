@@ -4616,19 +4616,19 @@ export default function AddCarDetailScreen() {
     // Для запчастей
     if (isPartsCategory) {
       if (!formData.subcategory) {
-        Alert.alert(t('messages.error'), 'Выберите подкатегорию');
+        showMessage('error', t('messages.error'), 'Выберите подкатегорию');
         return false;
       }
       if (!formData.productName || formData.productName.trim() === '') {
-        Alert.alert(t('messages.error'), 'Введите название товара');
+        showMessage('error', t('messages.error'), 'Введите название товара');
         return false;
       }
       if (!formData.price || parseFloat(formData.price) <= 0) {
-        Alert.alert(t('messages.error'), 'Укажите корректную цену');
+        showMessage('error', t('messages.error'), 'Укажите корректную цену');
         return false;
       }
       if (photos.length === 0) {
-        Alert.alert(t('messages.error'), 'Добавьте хотя бы одну фотографию');
+        showMessage('error', t('messages.error'), 'Добавьте хотя бы одну фотографию');
         return false;
       }
       return true;
@@ -4636,19 +4636,19 @@ export default function AddCarDetailScreen() {
     
     // Для авто
     if (!formData.brand || !formData.model) {
-      Alert.alert(t('messages.error'), 'Заполните марку и модель');
+      showMessage('error', t('messages.error'), 'Заполните марку и модель');
       return false;
     }
     if (!formData.price || parseFloat(formData.price) <= 0) {
-      Alert.alert(t('messages.error'), 'Укажите корректную цену');
+      showMessage('error', t('messages.error'), 'Укажите корректную цену');
       return false;
     }
     if (!formData.mileage || parseInt(formData.mileage) < 0) {
-      Alert.alert(t('messages.error'), 'Укажите корректный пробег');
+      showMessage('error', t('messages.error'), 'Укажите корректный пробег');
       return false;
     }
     if (photos.length === 0) {
-      Alert.alert(t('messages.error'), 'Добавьте хотя бы одну фотографию');
+      showMessage('error', t('messages.error'), 'Добавьте хотя бы одну фотографию');
       return false;
     }
     return true;
