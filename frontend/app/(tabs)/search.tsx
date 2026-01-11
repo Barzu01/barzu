@@ -171,13 +171,27 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
+  // Логотипы популярных брендов
+  const BRAND_LOGOS: { [key: string]: string } = {
+    'Toyota': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/200px-Toyota.svg.png',
+    'Mercedes-Benz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/200px-Mercedes-Logo.svg.png',
+    'BMW': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png',
+    'Hyundai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png',
+    'Honda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png',
+    'Lada': 'https://cdn.freebiesupply.com/logos/large/2x/lada-logo-png-transparent.png',
+    'Kia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/200px-Kia-logo.svg.png',
+    'Lexus': 'https://cdn.freebiesupply.com/logos/large/2x/lexus-logo-png-transparent.png',
+  };
+
   const popularBrands = [
-    { name: 'Toyota', icon: '🚗' },
-    { name: 'Mercedes-Benz', icon: '⭐' },
-    { name: 'BMW', icon: '🔵' },
-    { name: 'Hyundai', icon: '🚙' },
-    { name: 'Honda', icon: '🏎️' },
-    { name: 'Lada', icon: '🚘' },
+    { name: 'Toyota', logo: BRAND_LOGOS['Toyota'] },
+    { name: 'Mercedes-Benz', logo: BRAND_LOGOS['Mercedes-Benz'] },
+    { name: 'BMW', logo: BRAND_LOGOS['BMW'] },
+    { name: 'Hyundai', logo: BRAND_LOGOS['Hyundai'] },
+    { name: 'Honda', logo: BRAND_LOGOS['Honda'] },
+    { name: 'Lada', logo: BRAND_LOGOS['Lada'] },
+    { name: 'Kia', logo: BRAND_LOGOS['Kia'] },
+    { name: 'Lexus', logo: BRAND_LOGOS['Lexus'] },
   ];
 
   const FilterChip = ({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) => (
