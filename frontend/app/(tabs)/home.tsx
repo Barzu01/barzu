@@ -174,12 +174,18 @@ export default function HomeScreen() {
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    loadCars();
-    if (user) {
-      loadUnreadCount();
-      loadFavorites();
+    try {
+      await loadCars();
+      if (user) {
+        await loadUnreadCount();
+        await loadFavorites();
+      }
+    } catch (error) {
+      console.error('Error refreshing:', error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
