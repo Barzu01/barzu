@@ -4559,13 +4559,13 @@ export default function AddCarDetailScreen() {
 
   const pickImage = async () => {
     if (photos.length >= 10) {
-      Alert.alert(t('messages.error'), 'Максимум 10 фотографий');
+      showMessage('error', t('messages.error'), 'Максимум 10 фотографий');
       return;
     }
 
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert(t('messages.error'), 'Нужно разрешение на доступ к галерее');
+      showMessage('error', t('messages.error'), 'Нужно разрешение на доступ к галерее');
       return;
     }
 
@@ -4573,8 +4573,9 @@ export default function AddCarDetailScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.7,
+      quality: 0.5, // Уменьшаем качество для быстрой загрузки
       base64: true,
+      exif: false,
     });
 
     if (!result.canceled && result.assets[0].base64) {
