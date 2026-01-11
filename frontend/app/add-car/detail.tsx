@@ -4427,8 +4427,25 @@ export default function AddCarDetailScreen() {
     { value: 'electric', label: t('categories.electric'), icon: '⚡' },
     { value: 'motorcycles', label: t('addCar.motorcycles'), icon: '🏍️' },
     { value: 'trucks', label: t('addCar.trucks'), icon: '🚚' },
-    { value: 'parts', label: t('car.features'), icon: '🔧' },
+    { value: 'auto_parts', label: t('categories.autoParts'), icon: '🔧' },
     { value: 'rent', label: t('categories.rent'), icon: '🔑' },
+  ];
+
+  // Подкатегории для автозапчастей и аксессуаров
+  const partsSubcategories = [
+    { value: 'auto_parts', label: t('parts.autoParts'), icon: 'construct' },
+    { value: 'moto_parts', label: t('parts.motoParts'), icon: 'bicycle' },
+    { value: 'tires_wheels', label: t('parts.tiresWheels'), icon: 'ellipse-outline' },
+    { value: 'oils_chemistry', label: t('parts.oilsChemistry'), icon: 'water' },
+    { value: 'accessories', label: t('parts.accessories'), icon: 'car' },
+    { value: 'audio_video', label: t('parts.audioVideo'), icon: 'musical-notes' },
+    { value: 'gps_video', label: t('parts.gpsVideo'), icon: 'navigate' },
+    { value: 'roof_racks', label: t('parts.roofRacks'), icon: 'cube' },
+    { value: 'anti_theft', label: t('parts.antiTheft'), icon: 'lock-closed' },
+    { value: 'special_parts', label: t('parts.specialParts'), icon: 'cog' },
+    { value: 'moto_accessories', label: t('parts.motoAccessories'), icon: 'speedometer' },
+    { value: 'for_parts', label: t('parts.forParts'), icon: 'car-sport' },
+    { value: 'license_plates', label: t('parts.licensePlates'), icon: 'card' },
   ];
 
   const [formData, setFormData] = useState({
