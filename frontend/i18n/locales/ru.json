@@ -10,7 +10,8 @@
     "motorcycles": "Мото",
     "trucks": "Грузовики",
     "rent": "Аренда",
-    "allListings": "Все объявления"
+    "allListings": "Все объявления",
+    "autoParts": "Запчасти и аксессуары"
   },
   "auth": {
     "phoneNumber": "Номер телефона",
