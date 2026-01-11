@@ -12,6 +12,8 @@ import {
   Dimensions,
   Share,
   Modal,
+  FlatList,
+  StatusBar,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +24,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView, PinchGestureHandler, PanGestureHandler, State } from 'react-native-gesture-handler';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring,
+  withTiming,
+  useAnimatedGestureHandler,
+  runOnJS,
+} from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 const COMPARE_STORAGE_KEY = 'compare_cars';
