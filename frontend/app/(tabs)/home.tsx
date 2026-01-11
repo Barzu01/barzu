@@ -411,6 +411,10 @@ export default function HomeScreen() {
             refreshing={refreshing} 
             onRefresh={onRefresh}
             tintColor="#0066FF"
+            colors={['#0066FF', '#10B981', '#F59E0B']}
+            progressBackgroundColor="#FFFFFF"
+            title="Обновление..."
+            titleColor="#64748B"
           />
         }
         ListEmptyComponent={
