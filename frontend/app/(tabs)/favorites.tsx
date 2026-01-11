@@ -45,9 +45,13 @@ export default function FavoritesScreen() {
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    loadFavorites();
+    try {
+      await loadFavorites();
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const removeFavorite = async (carId: string) => {
