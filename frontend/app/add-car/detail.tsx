@@ -4423,12 +4423,12 @@ export default function AddCarDetailScreen() {
   const [modelsLoading] = useState(false);
 
   const categories = [
-    { value: 'cars', label: 'Автомобили', icon: '🚗' },
-    { value: 'electric', label: 'Электромобили', icon: '⚡' },
-    { value: 'motorcycles', label: 'Мотоциклы', icon: '🏍️' },
-    { value: 'trucks', label: 'Грузовики', icon: '🚚' },
-    { value: 'parts', label: 'Запчасти', icon: '🔧' },
-    { value: 'rent', label: 'Аренда авто', icon: '🔑' },
+    { value: 'cars', label: t('addCar.cars'), icon: '🚗' },
+    { value: 'electric', label: t('categories.electric'), icon: '⚡' },
+    { value: 'motorcycles', label: t('addCar.motorcycles'), icon: '🏍️' },
+    { value: 'trucks', label: t('addCar.trucks'), icon: '🚚' },
+    { value: 'parts', label: t('car.features'), icon: '🔧' },
+    { value: 'rent', label: t('categories.rent'), icon: '🔑' },
   ];
 
   const [formData, setFormData] = useState({
