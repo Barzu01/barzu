@@ -4716,9 +4716,55 @@ export default function AddCarDetailScreen() {
             </View>
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
+
+          {/* Подкатегория для запчастей */}
+          {isPartsCategory && (
+            <>
+              <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('addCar.selectSubcategory')}</Text>
+              <TouchableOpacity
+                style={styles.selectField}
+                onPress={() => setSubcategoryModalVisible(true)}
+              >
+                <View style={styles.selectFieldContent}>
+                  {formData.subcategory ? (
+                    <>
+                      <Ionicons 
+                        name={partsSubcategories.find(s => s.value === formData.subcategory)?.icon as any} 
+                        size={20} 
+                        color="#0066FF" 
+                      />
+                      <Text style={[styles.selectFieldText, { marginLeft: 8 }]}>
+                        {partsSubcategories.find(s => s.value === formData.subcategory)?.label}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text style={[styles.selectFieldText, styles.placeholder]}>
+                      {t('addCar.selectSubcategory')}
+                    </Text>
+                  )}
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
-        {/* Brand & Model */}
+        {/* Название товара (для запчастей) */}
+        {isPartsCategory && (
+          <View style={styles.card}>
+            <SectionHeader title={`🏷️ ${t('addCar.partName')}`} required />
+            <TextInput
+              style={styles.input}
+              value={formData.partName}
+              onChangeText={(text) => setFormData({ ...formData, partName: text })}
+              placeholder={t('addCar.partNamePlaceholder')}
+              placeholderTextColor="#94A3B8"
+            />
+          </View>
+        )}
+
+        {/* Brand & Model (только для авто) */}
+        {!isPartsCategory && (
         <View style={styles.card}>
           <SectionHeader title={t('addCar.brandModelSection')} required />
           
