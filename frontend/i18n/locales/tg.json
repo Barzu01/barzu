@@ -10,7 +10,27 @@
     "motorcycles": "Мотосикл",
     "trucks": "Боркаш",
     "rent": "Иҷора",
-    "allListings": "Ҳамаи эълонҳо"
+    "allListings": "Ҳамаи эълонҳо",
+    "autoParts": "Қисмҳо ва аксессуарҳо"
+  },
+  "parts": {
+    "title": "Қисмҳо ва аксессуарҳо",
+    "selectSubcategory": "Зеркатегорияро интихоб кунед",
+    "productName": "Номи мол",
+    "productNamePlaceholder": "Масалан: Колодкаҳои тормоз Toyota Camry",
+    "autoParts": "Автозапчастҳо",
+    "motoParts": "Мотозапчастҳо",
+    "tiresWheels": "Шинаҳо ва дискҳо",
+    "oilsChemistry": "Равғанҳо ва автохимия",
+    "accessories": "Аксессуарҳо барои мошин",
+    "audioVideo": "Автозвук ва видео",
+    "gpsVideo": "GPS ва видеорегистраторҳо",
+    "roofRacks": "Багажникҳо ва фаркопҳо",
+    "antiTheft": "Зидди дуздӣ",
+    "specialParts": "Қисмҳо барои техникаи махсус",
+    "motoAccessories": "Мотоаксессуарҳо",
+    "forParts": "Нақлиёт барои қисмҳо",
+    "licensePlates": "Рақамҳои давлатӣ"
   },
   "auth": {
     "phoneNumber": "Рақами телефон",
