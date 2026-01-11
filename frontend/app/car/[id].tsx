@@ -251,12 +251,17 @@ export default function CarDetailsScreen() {
               scrollEventThrottle={16}
             >
               {car.photos.map((photo, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: photo }}
-                  style={styles.carImage}
-                  resizeMode="cover"
-                />
+                <TouchableOpacity 
+                  key={index} 
+                  activeOpacity={0.95}
+                  onPress={() => openFullScreen(index)}
+                >
+                  <Image
+                    source={{ uri: photo }}
+                    style={styles.carImage}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
               ))}
             </ScrollView>
             
