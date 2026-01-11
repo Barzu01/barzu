@@ -8,7 +8,7 @@ import {
   Image,
   ActivityIndicator,
   RefreshControl,
-  Alert,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,6 +23,12 @@ export default function AdminModerationScreen() {
   const [stats, setStats] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const router = useRouter();
+  
+  // Modal states
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [modalAction, setModalAction] = useState<'approve' | 'reject' | null>(null);
+  const [selectedCar, setSelectedCar] = useState<{ id: string; title: string } | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -49,49 +55,31 @@ export default function AdminModerationScreen() {
     loadData();
   };
 
-  const handleApprove = async (carId: string, carTitle: string) => {
-    Alert.alert(
-      'Одобрить объявление',
-      `Одобрить "${carTitle}"?`,
-      [
-        { text: 'Отмена', style: 'cancel' },
-        {
-          text: 'Одобрить',
-          onPress: async () => {
-            try {
-              await adminAPI.approveCar(carId);
-              setCars(cars.filter(car => car._id !== carId));
-              Alert.alert('Успешно', 'Объявление одобрено');
-            } catch (error) {
-              Alert.alert('Ошибка', 'Не удалось одобрить объявление');
-            }
-          }
-        }
-      ]
-    );
+  const openConfirmModal = (action: 'approve' | 'reject', carId: string, carTitle: string) => {
+    setModalAction(action);
+    setSelectedCar({ id: carId, title: carTitle });
+    setConfirmModal(true);
   };
 
-  const handleReject = async (carId: string, carTitle: string) => {
-    Alert.alert(
-      'Отклонить объявление',
-      `Отклонить "${carTitle}"?`,
-      [
-        { text: 'Отмена', style: 'cancel' },
-        {
-          text: 'Отклонить',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await adminAPI.rejectCar(carId);
-              setCars(cars.filter(car => car._id !== carId));
-              Alert.alert('Успешно', 'Объявление отклонено');
-            } catch (error) {
-              Alert.alert('Ошибка', 'Не удалось отклонить объявление');
-            }
-          }
-        }
-      ]
-    );
+  const handleConfirmAction = async () => {
+    if (!selectedCar || !modalAction) return;
+    
+    setActionLoading(true);
+    try {
+      if (modalAction === 'approve') {
+        await adminAPI.approveCar(selectedCar.id);
+      } else {
+        await adminAPI.rejectCar(selectedCar.id);
+      }
+      setCars(cars.filter(car => car._id !== selectedCar.id));
+      setConfirmModal(false);
+      // Reload stats
+      loadData();
+    } catch (error) {
+      console.error('Error performing action:', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const formatPrice = (price: number) => `${price.toLocaleString()} TJS`;
@@ -125,7 +113,7 @@ export default function AdminModerationScreen() {
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.approveButton}
-          onPress={() => handleApprove(item._id!, `${item.brand} ${item.model}`)}
+          onPress={() => openConfirmModal('approve', item._id!, `${item.brand} ${item.model}`)}
         >
           <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
           <Text style={styles.approveButtonText}>Одобрить</Text>
@@ -133,7 +121,7 @@ export default function AdminModerationScreen() {
         
         <TouchableOpacity
           style={styles.rejectButton}
-          onPress={() => handleReject(item._id!, `${item.brand} ${item.model}`)}
+          onPress={() => openConfirmModal('reject', item._id!, `${item.brand} ${item.model}`)}
         >
           <Ionicons name="close-circle" size={20} color="#FFFFFF" />
           <Text style={styles.rejectButtonText}>Отклонить</Text>
@@ -200,6 +188,54 @@ export default function AdminModerationScreen() {
           </View>
         }
       />
+
+      {/* Confirmation Modal */}
+      <Modal visible={confirmModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIconContainer}>
+              <Ionicons 
+                name={modalAction === 'approve' ? 'checkmark-circle' : 'close-circle'} 
+                size={48} 
+                color={modalAction === 'approve' ? '#10B981' : '#EF4444'} 
+              />
+            </View>
+            <Text style={styles.modalTitle}>
+              {modalAction === 'approve' ? 'Одобрить объявление?' : 'Отклонить объявление?'}
+            </Text>
+            <Text style={styles.modalSubtitle}>
+              {selectedCar?.title}
+            </Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={styles.modalCancelButton}
+                onPress={() => setConfirmModal(false)}
+                disabled={actionLoading}
+              >
+                <Text style={styles.modalCancelText}>Отмена</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[
+                  styles.modalConfirmButton,
+                  { backgroundColor: modalAction === 'approve' ? '#10B981' : '#EF4444' }
+                ]}
+                onPress={handleConfirmAction}
+                disabled={actionLoading}
+              >
+                {actionLoading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.modalConfirmText}>
+                    {modalAction === 'approve' ? 'Одобрить' : 'Отклонить'}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -278,6 +314,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 3,
+    marginBottom: 12,
   },
   cardContent: {
     flexDirection: 'row',
@@ -366,5 +403,71 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748B',
     marginTop: 4,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+    alignItems: 'center',
+  },
+  modalIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#F1F5F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+  },
+  modalCancelButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  modalConfirmButton: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalConfirmText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
