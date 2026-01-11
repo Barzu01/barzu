@@ -400,7 +400,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Car List */}
-      <Animated.FlatList
+      <FlatList
         data={filteredCars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
@@ -416,10 +416,7 @@ export default function HomeScreen() {
             refreshing={refreshing} 
             onRefresh={onRefresh}
             tintColor="#0066FF"
-            colors={['#0066FF', '#10B981', '#F59E0B']}
-            progressBackgroundColor="#FFFFFF"
-            title="Обновление..."
-            titleColor="#64748B"
+            colors={['#0066FF', '#10B981']}
           />
         }
         ListEmptyComponent={
