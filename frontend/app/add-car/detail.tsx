@@ -5036,6 +5036,7 @@ export default function AddCarDetailScreen() {
             </View>
           )}
         </View>
+        )}
 
         {/* Location */}
         <View style={styles.card}>
