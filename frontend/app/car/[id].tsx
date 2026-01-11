@@ -500,6 +500,69 @@ export default function CarDetailsScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Full Screen Image Gallery Modal */}
+      <Modal 
+        visible={fullScreenVisible} 
+        transparent 
+        animationType="fade"
+        statusBarTranslucent
+      >
+        <View style={styles.fullScreenOverlay}>
+          <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.95)" />
+          
+          {/* Close button */}
+          <SafeAreaView style={styles.fullScreenHeader} edges={['top']}>
+            <TouchableOpacity onPress={closeFullScreen} style={styles.fullScreenCloseBtn}>
+              <Ionicons name="close" size={28} color="#FFFFFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullScreenCounter}>
+              {fullScreenIndex + 1} / {car?.photos?.length || 0}
+            </Text>
+            <View style={{ width: 44 }} />
+          </SafeAreaView>
+
+          {/* Image Gallery with Zoom */}
+          <FlatList
+            data={car?.photos || []}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            initialScrollIndex={fullScreenIndex}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+            onMomentumScrollEnd={(e) => {
+              const index = Math.round(e.nativeEvent.contentOffset.x / width);
+              setFullScreenIndex(index);
+            }}
+            keyExtractor={(item, index) => `fullscreen-${index}`}
+            renderItem={({ item: photo }) => (
+              <ZoomableImage 
+                uri={photo} 
+                onClose={closeFullScreen}
+              />
+            )}
+          />
+
+          {/* Thumbnail indicators */}
+          {(car?.photos?.length || 0) > 1 && (
+            <View style={styles.fullScreenPagination}>
+              {car?.photos?.map((_, index) => (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.fullScreenDot, 
+                    fullScreenIndex === index && styles.fullScreenDotActive
+                  ]} 
+                />
+              ))}
+            </View>
+          )}
+        </View>
+      </Modal>
     </View>
   );
 }
