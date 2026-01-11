@@ -824,6 +824,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
+  brandLogoContainer: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  brandLogo: {
+    width: 36,
+    height: 36,
+  },
   brandIcon: {
     fontSize: 28,
     marginBottom: 8,
