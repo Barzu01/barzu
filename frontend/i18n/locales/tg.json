@@ -284,7 +284,17 @@
     "customBrand": "Бренди дигар",
     "addCustomBrand": "Илова кардани бренди худ",
     "brandName": "Номи бренд",
-    "modelName": "Номи модел"
+    "modelName": "Номи модел",
+    "required": "Ҳатмӣ",
+    "camera": "Камера",
+    "gallery": "Галерея",
+    "photos": "сурат",
+    "selectBrandFirst": "Аввал брендро интихоб кунед",
+    "mainSpecs": "Хусусиятҳои асосӣ",
+    "cars": "Мошинҳо",
+    "motorcycles": "Мотосиклҳо",
+    "trucks": "Боркашҳо",
+    "specialEquipment": "Техникаи махсус"
   },
   "carDetails": {
     "specifications": "Тавсифот",
