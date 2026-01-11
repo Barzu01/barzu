@@ -41,7 +41,6 @@ export default function FavoritesScreen() {
       console.error('Error loading favorites:', error);
     } finally {
       setLoading(false);
-      setRefreshing(false);
     }
   };
 
