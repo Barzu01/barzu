@@ -21,7 +21,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
-const HEADER_MAX_HEIGHT = 200; // Max height of expandable header
+const HEADER_MAX_HEIGHT = 100; // Max height for categories section
 const HEADER_MIN_HEIGHT = 0; // Min height (collapsed)
 
 // Логотипы автопроизводителей
