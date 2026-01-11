@@ -4437,7 +4437,7 @@ export default function AddCarDetailScreen() {
     year: new Date().getFullYear().toString(),
     price: '',
     mileage: '',
-    engineType: 'petrol',
+    engineTypes: ['petrol'] as string[],
     engineVolume: null as number | null,
     bodyType: '',
     transmission: 'automatic',
