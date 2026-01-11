@@ -47,6 +47,8 @@ export default function CarDetailsScreen() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [shareModalVisible, setShareModalVisible] = useState(false);
   const [reportModalVisible, setReportModalVisible] = useState(false);
+  const [fullScreenVisible, setFullScreenVisible] = useState(false);
+  const [fullScreenIndex, setFullScreenIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const router = useRouter();
   const { t } = useTranslation();
