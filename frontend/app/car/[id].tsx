@@ -567,6 +567,102 @@ export default function CarDetailsScreen() {
   );
 }
 
+// Компонент для зума изображения
+const ZoomableImage = ({ uri, onClose }: { uri: string; onClose: () => void }) => {
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const savedTranslateX = useSharedValue(0);
+  const savedTranslateY = useSharedValue(0);
+
+  const { height } = Dimensions.get('window');
+
+  const pinchHandler = useAnimatedGestureHandler({
+    onStart: () => {
+      savedScale.value = scale.value;
+    },
+    onActive: (event) => {
+      scale.value = Math.max(1, Math.min(savedScale.value * event.scale, 5));
+    },
+    onEnd: () => {
+      if (scale.value < 1) {
+        scale.value = withSpring(1);
+      }
+      savedScale.value = scale.value;
+    },
+  });
+
+  const panHandler = useAnimatedGestureHandler({
+    onStart: () => {
+      savedTranslateX.value = translateX.value;
+      savedTranslateY.value = translateY.value;
+    },
+    onActive: (event) => {
+      if (scale.value > 1) {
+        translateX.value = savedTranslateX.value + event.translationX;
+        translateY.value = savedTranslateY.value + event.translationY;
+      }
+    },
+    onEnd: (event) => {
+      // Reset position if scale is 1
+      if (scale.value <= 1) {
+        translateX.value = withSpring(0);
+        translateY.value = withSpring(0);
+      }
+    },
+  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value },
+    ],
+  }));
+
+  const handleDoubleTap = () => {
+    if (scale.value > 1) {
+      scale.value = withSpring(1);
+      translateX.value = withSpring(0);
+      translateY.value = withSpring(0);
+      savedScale.value = 1;
+    } else {
+      scale.value = withSpring(2.5);
+      savedScale.value = 2.5;
+    }
+  };
+
+  return (
+    <GestureHandlerRootView style={{ width, height: height }}>
+      <PanGestureHandler onGestureEvent={panHandler}>
+        <Animated.View style={{ flex: 1 }}>
+          <PinchGestureHandler onGestureEvent={pinchHandler}>
+            <Animated.View style={[styles.zoomContainer, animatedStyle]}>
+              <TouchableOpacity 
+                activeOpacity={1} 
+                onPress={handleDoubleTap}
+                style={styles.zoomTouchable}
+              >
+                <Image
+                  source={{ uri }}
+                  style={styles.zoomImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          </PinchGestureHandler>
+        </Animated.View>
+      </PanGestureHandler>
+      
+      {/* Hint */}
+      <View style={styles.zoomHint}>
+        <Text style={styles.zoomHintText}>Нажмите дважды для увеличения</Text>
+      </View>
+    </GestureHandlerRootView>
+  );
+};
+
 const SpecItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
   <View style={styles.specItem}>
     <View style={styles.specIconWrapper}>
