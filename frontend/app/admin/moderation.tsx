@@ -112,6 +112,14 @@ export default function AdminModerationScreen() {
       
       <View style={styles.actions}>
         <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => router.push({ pathname: '/admin/edit/[id]', params: { id: item._id } })}
+        >
+          <Ionicons name="create" size={20} color="#FFFFFF" />
+          <Text style={styles.editButtonText}>Редактировать</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
           style={styles.approveButton}
           onPress={() => openConfirmModal('approve', item._id!, `${item.brand} ${item.model}`)}
         >
