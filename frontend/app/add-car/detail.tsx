@@ -4967,7 +4967,7 @@ export default function AddCarDetailScreen() {
 
         {/* Condition & Color */}
         <View style={styles.card}>
-          <SectionHeader title={t('addCar.conditionColorSection')} />
+          <SectionHeader title={isPartsCategory ? t('car.condition') : t('addCar.conditionColorSection')} />
           
           <Text style={styles.fieldLabel}>{t('car.condition')}</Text>
           <View style={styles.toggleContainer}>
@@ -4976,7 +4976,7 @@ export default function AddCarDetailScreen() {
               onPress={() => setFormData({ ...formData, condition: 'new' })}
             >
               <Text style={[styles.toggleText, formData.condition === 'new' && styles.toggleTextActive]}>
-                ✨ Новый
+                ✨ {t('car.new')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -4984,11 +4984,13 @@ export default function AddCarDetailScreen() {
               onPress={() => setFormData({ ...formData, condition: 'used' })}
             >
               <Text style={[styles.toggleText, formData.condition === 'used' && styles.toggleTextActive]}>
-                С пробегом
+                {t('car.used')}
               </Text>
             </TouchableOpacity>
           </View>
 
+          {!isPartsCategory && (
+          <>
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.color')}</Text>
           <TextInput
             style={styles.input}
@@ -4997,9 +4999,12 @@ export default function AddCarDetailScreen() {
             placeholder="Например: Белый, Чёрный металлик"
             placeholderTextColor="#94A3B8"
           />
+          </>
+          )}
         </View>
 
-        {/* Features */}
+        {/* Features - только для авто */}
+        {!isPartsCategory && (
         <View style={styles.card}>
           <SectionHeader title={`✅ ${t('car.features')}`} />
           <TouchableOpacity
@@ -5031,6 +5036,7 @@ export default function AddCarDetailScreen() {
             </View>
           )}
         </View>
+        )}
 
         {/* Location */}
         <View style={styles.card}>
