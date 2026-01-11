@@ -564,11 +564,6 @@ export default function CarDetailsScreen() {
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
-                
-                {/* Подсказка */}
-                <Text style={styles.imageViewerHint}>
-                  Сведите пальцы для увеличения • Потяните вниз для закрытия
-                </Text>
               </View>
             )}
             loadingRender={() => (
