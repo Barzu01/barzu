@@ -5144,7 +5144,7 @@ export default function AddCarDetailScreen() {
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => {
-                    setFormData({ ...formData, category: item.value });
+                    setFormData({ ...formData, category: item.value, subcategory: '' });
                     setCategoryModalVisible(false);
                   }}
                 >
@@ -5152,6 +5152,60 @@ export default function AddCarDetailScreen() {
                   <Text style={styles.modalItemText}>{item.label}</Text>
                   {formData.category === item.value && (
                     <Ionicons name="checkmark-circle" size={24} color="#0066FF" />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Subcategory Modal for Parts */}
+      <Modal visible={subcategoryModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { maxHeight: '80%' }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('parts.selectSubcategory')}</Text>
+              <TouchableOpacity onPress={() => setSubcategoryModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={partsSubcategories}
+              keyExtractor={(item) => item.value}
+              numColumns={2}
+              columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 8 }}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.subcategoryCard,
+                    formData.subcategory === item.value && styles.subcategoryCardActive
+                  ]}
+                  onPress={() => {
+                    setFormData({ ...formData, subcategory: item.value });
+                    setSubcategoryModalVisible(false);
+                  }}
+                >
+                  <View style={[
+                    styles.subcategoryIconWrap,
+                    formData.subcategory === item.value && styles.subcategoryIconWrapActive
+                  ]}>
+                    <Ionicons 
+                      name={item.icon as any} 
+                      size={28} 
+                      color={formData.subcategory === item.value ? '#FFFFFF' : '#0066FF'} 
+                    />
+                  </View>
+                  <Text style={[
+                    styles.subcategoryText,
+                    formData.subcategory === item.value && styles.subcategoryTextActive
+                  ]} numberOfLines={2}>
+                    {item.label}
+                  </Text>
+                  {formData.subcategory === item.value && (
+                    <View style={styles.subcategoryCheck}>
+                      <Ionicons name="checkmark-circle" size={18} color="#0066FF" />
+                    </View>
                   )}
                 </TouchableOpacity>
               )}
