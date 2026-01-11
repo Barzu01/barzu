@@ -4716,12 +4716,6 @@ export default function AddCarDetailScreen() {
         console.log('Submitting car data:', JSON.stringify({...carData, photos: [`${carData.photos.length} photos`]}, null, 2));
         await carAPI.create(carData as any);
       }
-          sellerId: user._id || user.phone,
-          status: 'pending' as const,
-        };
-
-        await carAPI.create(carData as any);
-      }
       
       showMessage(
         'success',
@@ -4729,9 +4723,10 @@ export default function AddCarDetailScreen() {
         t('messages.sentToModeration'),
         () => router.replace('/(tabs)/home')
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating listing:', error);
-      showMessage('error', t('messages.error'), 'Не удалось создать объявление');
+      const errorMessage = error?.response?.data?.detail || error?.message || 'Не удалось создать объявление';
+      showMessage('error', t('messages.error'), errorMessage);
     } finally {
       setLoading(false);
     }
