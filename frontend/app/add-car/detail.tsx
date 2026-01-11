@@ -4701,14 +4701,15 @@ export default function AddCarDetailScreen() {
         await carAPI.create(carData as any);
       }
       
-      Alert.alert(
+      showMessage(
+        'success',
         t('messages.success'),
         t('messages.sentToModeration'),
-        [{ text: 'OK', onPress: () => router.replace('/(tabs)/home') }]
+        () => router.replace('/(tabs)/home')
       );
     } catch (error) {
       console.error('Error creating listing:', error);
-      Alert.alert(t('messages.error'), 'Не удалось создать объявление');
+      showMessage('error', t('messages.error'), 'Не удалось создать объявление');
     } finally {
       setLoading(false);
     }
