@@ -4618,7 +4618,7 @@ export default function AddCarDetailScreen() {
   const SectionHeader = ({ title, required = false }: { title: string; required?: boolean }) => (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      {required && <Text style={styles.requiredBadge}>Обязательно</Text>}
+      {required && <Text style={styles.requiredBadge}>{t('addCar.required')}</Text>}
     </View>
   );
 
@@ -4633,7 +4633,7 @@ export default function AddCarDetailScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#0F172A" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Новое объявление</Text>
+        <Text style={styles.headerTitle}>{t('addCar.title')}</Text>
         <View style={{ width: 44 }} />
       </View>
 
@@ -4660,11 +4660,11 @@ export default function AddCarDetailScreen() {
               <>
                 <TouchableOpacity style={styles.addPhotoButton} onPress={takePhoto}>
                   <Ionicons name="camera" size={28} color="#0066FF" />
-                  <Text style={styles.addPhotoText}>Камера</Text>
+                  <Text style={styles.addPhotoText}>{t('addCar.camera')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.addPhotoButton} onPress={pickImage}>
                   <Ionicons name="images" size={28} color="#0066FF" />
-                  <Text style={styles.addPhotoText}>Галерея</Text>
+                  <Text style={styles.addPhotoText}>{t('addCar.gallery')}</Text>
                 </TouchableOpacity>
               </>
             )}
@@ -4672,12 +4672,12 @@ export default function AddCarDetailScreen() {
           <View style={styles.photoProgress}>
             <View style={[styles.photoProgressBar, { width: `${(photos.length / 10) * 100}%` }]} />
           </View>
-          <Text style={styles.photoCount}>{photos.length}/10 фото</Text>
+          <Text style={styles.photoCount}>{photos.length}/10 {t('addCar.photos')}</Text>
         </View>
 
         {/* Category */}
         <View style={styles.card}>
-          <SectionHeader title="📁 Категория" required />
+          <SectionHeader title={`📁 ${t('addCar.category')}`} required />
           <TouchableOpacity
             style={styles.selectField}
             onPress={() => setCategoryModalVisible(true)}
@@ -4730,14 +4730,14 @@ export default function AddCarDetailScreen() {
             onSelect={handleModelSelect}
             loading={modelsLoading}
             disabled={!selectedBrand}
-            disabledPlaceholder="Сначала выберите марку"
+            disabledPlaceholder={t('addCar.selectBrandFirst')}
             emptyText="Модели не найдены"
           />
         </View>
 
         {/* Main Specs */}
         <View style={styles.card}>
-          <SectionHeader title="📊 Основные характеристики" required />
+          <SectionHeader title={`📊 ${t('addCar.mainSpecs')}`} required />
           
           <View style={styles.row}>
             <View style={styles.halfField}>
