@@ -134,7 +134,14 @@ export default function FavoritesScreen() {
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0066FF" />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor="#0066FF"
+            colors={['#0066FF', '#10B981']}
+            title="Обновление..."
+            titleColor="#64748B"
+          />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
