@@ -4589,6 +4589,28 @@ export default function AddCarDetailScreen() {
   };
 
   const validateForm = () => {
+    // Для запчастей
+    if (isPartsCategory) {
+      if (!formData.subcategory) {
+        Alert.alert(t('messages.error'), 'Выберите подкатегорию');
+        return false;
+      }
+      if (!formData.partName || formData.partName.trim() === '') {
+        Alert.alert(t('messages.error'), 'Введите название товара');
+        return false;
+      }
+      if (!formData.price || parseFloat(formData.price) <= 0) {
+        Alert.alert(t('messages.error'), 'Укажите корректную цену');
+        return false;
+      }
+      if (photos.length === 0) {
+        Alert.alert(t('messages.error'), 'Добавьте хотя бы одну фотографию');
+        return false;
+      }
+      return true;
+    }
+    
+    // Для авто
     if (!formData.brand || !formData.model) {
       Alert.alert(t('messages.error'), 'Заполните марку и модель');
       return false;
@@ -4614,21 +4636,50 @@ export default function AddCarDetailScreen() {
 
     setLoading(true);
     try {
-      const carData = {
-        ...formData,
-        year: parseInt(formData.year),
-        price: parseFloat(formData.price),
-        mileage: parseInt(formData.mileage),
-        photos,
-        sellerPhone: user.phone,
-        sellerId: user._id || user.phone,
-        status: 'pending' as const,
-      };
+      // Для запчастей формируем другой объект данных
+      if (isPartsCategory) {
+        const partData = {
+          brand: formData.partName, // Используем partName как "бренд" для совместимости
+          model: partsSubcategories.find(s => s.value === formData.subcategory)?.label || '', // Подкатегория как "модель"
+          year: new Date().getFullYear(),
+          price: parseFloat(formData.price),
+          mileage: 0,
+          engineType: 'petrol', // Значение по умолчанию для совместимости
+          transmission: 'manual',
+          driveType: 'front',
+          condition: formData.condition,
+          color: '',
+          region: formData.region,
+          category: 'auto_parts',
+          subcategory: formData.subcategory,
+          description: formData.description,
+          features: [],
+          photos,
+          sellerPhone: user.phone,
+          sellerId: user._id || user.phone,
+          status: 'pending' as const,
+        };
 
-      await carAPI.create(carData as any);
+        await carAPI.create(partData as any);
+      } else {
+        // Для авто - стандартная логика
+        const carData = {
+          ...formData,
+          year: parseInt(formData.year),
+          price: parseFloat(formData.price),
+          mileage: parseInt(formData.mileage),
+          photos,
+          sellerPhone: user.phone,
+          sellerId: user._id || user.phone,
+          status: 'pending' as const,
+        };
+
+        await carAPI.create(carData as any);
+      }
+      
       Alert.alert(
         t('messages.success'),
-        'Объявление отправлено на модерацию',
+        t('messages.sentToModeration'),
         [{ text: 'OK', onPress: () => router.replace('/(tabs)/home') }]
       );
     } catch (error) {
