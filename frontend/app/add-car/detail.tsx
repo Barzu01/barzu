@@ -4586,21 +4586,22 @@ export default function AddCarDetailScreen() {
 
   const takePhoto = async () => {
     if (photos.length >= 10) {
-      Alert.alert(t('messages.error'), 'Максимум 10 фотографий');
+      showMessage('error', t('messages.error'), 'Максимум 10 фотографий');
       return;
     }
 
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert(t('messages.error'), 'Нужно разрешение на доступ к камере');
+      showMessage('error', t('messages.error'), 'Нужно разрешение на доступ к камере');
       return;
     }
 
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.7,
+      quality: 0.5, // Уменьшаем качество для быстрой загрузки
       base64: true,
+      exif: false,
     });
 
     if (!result.canceled && result.assets[0].base64) {
