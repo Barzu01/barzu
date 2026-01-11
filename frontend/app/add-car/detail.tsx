@@ -4427,25 +4427,8 @@ export default function AddCarDetailScreen() {
     { value: 'electric', label: t('categories.electric'), icon: '⚡' },
     { value: 'motorcycles', label: t('addCar.motorcycles'), icon: '🏍️' },
     { value: 'trucks', label: t('addCar.trucks'), icon: '🚚' },
-    { value: 'auto_parts', label: t('categories.autoParts'), icon: '🔧' },
+    { value: 'parts', label: t('car.features'), icon: '🔧' },
     { value: 'rent', label: t('categories.rent'), icon: '🔑' },
-  ];
-
-  // Подкатегории для автозапчастей и аксессуаров
-  const partsSubcategories = [
-    { value: 'auto_parts', label: t('parts.autoParts'), icon: 'construct' },
-    { value: 'moto_parts', label: t('parts.motoParts'), icon: 'bicycle' },
-    { value: 'tires_wheels', label: t('parts.tiresWheels'), icon: 'ellipse-outline' },
-    { value: 'oils_chemistry', label: t('parts.oilsChemistry'), icon: 'water' },
-    { value: 'accessories', label: t('parts.accessories'), icon: 'car' },
-    { value: 'audio_video', label: t('parts.audioVideo'), icon: 'musical-notes' },
-    { value: 'gps_video', label: t('parts.gpsVideo'), icon: 'navigate' },
-    { value: 'roof_racks', label: t('parts.roofRacks'), icon: 'cube' },
-    { value: 'anti_theft', label: t('parts.antiTheft'), icon: 'lock-closed' },
-    { value: 'special_parts', label: t('parts.specialParts'), icon: 'cog' },
-    { value: 'moto_accessories', label: t('parts.motoAccessories'), icon: 'speedometer' },
-    { value: 'for_parts', label: t('parts.forParts'), icon: 'car-sport' },
-    { value: 'license_plates', label: t('parts.licensePlates'), icon: 'card' },
   ];
 
   const [formData, setFormData] = useState({
@@ -4463,16 +4446,9 @@ export default function AddCarDetailScreen() {
     color: '',
     region: 'dushanbe',
     category: 'cars',
-    subcategory: '', // Подкатегория для запчастей
-    partName: '', // Название товара для запчастей
     description: '',
     features: [] as string[],
   });
-
-  const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
-
-  // Проверяем, является ли категория "Запчасти"
-  const isPartsCategory = formData.category === 'auto_parts';
 
   const handleBrandSelect = (brand: Brand) => {
     if (brand.make_id === 999) {
@@ -4589,28 +4565,6 @@ export default function AddCarDetailScreen() {
   };
 
   const validateForm = () => {
-    // Для запчастей
-    if (isPartsCategory) {
-      if (!formData.subcategory) {
-        Alert.alert(t('messages.error'), 'Выберите подкатегорию');
-        return false;
-      }
-      if (!formData.partName || formData.partName.trim() === '') {
-        Alert.alert(t('messages.error'), 'Введите название товара');
-        return false;
-      }
-      if (!formData.price || parseFloat(formData.price) <= 0) {
-        Alert.alert(t('messages.error'), 'Укажите корректную цену');
-        return false;
-      }
-      if (photos.length === 0) {
-        Alert.alert(t('messages.error'), 'Добавьте хотя бы одну фотографию');
-        return false;
-      }
-      return true;
-    }
-    
-    // Для авто
     if (!formData.brand || !formData.model) {
       Alert.alert(t('messages.error'), 'Заполните марку и модель');
       return false;
@@ -4636,50 +4590,21 @@ export default function AddCarDetailScreen() {
 
     setLoading(true);
     try {
-      // Для запчастей формируем другой объект данных
-      if (isPartsCategory) {
-        const partData = {
-          brand: formData.partName, // Используем partName как "бренд" для совместимости
-          model: partsSubcategories.find(s => s.value === formData.subcategory)?.label || '', // Подкатегория как "модель"
-          year: new Date().getFullYear(),
-          price: parseFloat(formData.price),
-          mileage: 0,
-          engineType: 'petrol', // Значение по умолчанию для совместимости
-          transmission: 'manual',
-          driveType: 'front',
-          condition: formData.condition,
-          color: '',
-          region: formData.region,
-          category: 'auto_parts',
-          subcategory: formData.subcategory,
-          description: formData.description,
-          features: [],
-          photos,
-          sellerPhone: user.phone,
-          sellerId: user._id || user.phone,
-          status: 'pending' as const,
-        };
+      const carData = {
+        ...formData,
+        year: parseInt(formData.year),
+        price: parseFloat(formData.price),
+        mileage: parseInt(formData.mileage),
+        photos,
+        sellerPhone: user.phone,
+        sellerId: user._id || user.phone,
+        status: 'pending' as const,
+      };
 
-        await carAPI.create(partData as any);
-      } else {
-        // Для авто - стандартная логика
-        const carData = {
-          ...formData,
-          year: parseInt(formData.year),
-          price: parseFloat(formData.price),
-          mileage: parseInt(formData.mileage),
-          photos,
-          sellerPhone: user.phone,
-          sellerId: user._id || user.phone,
-          status: 'pending' as const,
-        };
-
-        await carAPI.create(carData as any);
-      }
-      
+      await carAPI.create(carData as any);
       Alert.alert(
         t('messages.success'),
-        t('messages.sentToModeration'),
+        'Объявление отправлено на модерацию',
         [{ text: 'OK', onPress: () => router.replace('/(tabs)/home') }]
       );
     } catch (error) {
@@ -4767,55 +4692,9 @@ export default function AddCarDetailScreen() {
             </View>
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
-
-          {/* Подкатегория для запчастей */}
-          {isPartsCategory && (
-            <>
-              <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('addCar.selectSubcategory')}</Text>
-              <TouchableOpacity
-                style={styles.selectField}
-                onPress={() => setSubcategoryModalVisible(true)}
-              >
-                <View style={styles.selectFieldContent}>
-                  {formData.subcategory ? (
-                    <>
-                      <Ionicons 
-                        name={partsSubcategories.find(s => s.value === formData.subcategory)?.icon as any} 
-                        size={20} 
-                        color="#0066FF" 
-                      />
-                      <Text style={[styles.selectFieldText, { marginLeft: 8 }]}>
-                        {partsSubcategories.find(s => s.value === formData.subcategory)?.label}
-                      </Text>
-                    </>
-                  ) : (
-                    <Text style={[styles.selectFieldText, styles.placeholder]}>
-                      {t('addCar.selectSubcategory')}
-                    </Text>
-                  )}
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
-              </TouchableOpacity>
-            </>
-          )}
         </View>
 
-        {/* Название товара (для запчастей) */}
-        {isPartsCategory && (
-          <View style={styles.card}>
-            <SectionHeader title={`🏷️ ${t('addCar.partName')}`} required />
-            <TextInput
-              style={styles.input}
-              value={formData.partName}
-              onChangeText={(text) => setFormData({ ...formData, partName: text })}
-              placeholder={t('addCar.partNamePlaceholder')}
-              placeholderTextColor="#94A3B8"
-            />
-          </View>
-        )}
-
-        {/* Brand & Model (только для авто) */}
-        {!isPartsCategory && (
+        {/* Brand & Model */}
         <View style={styles.card}>
           <SectionHeader title={t('addCar.brandModelSection')} required />
           
@@ -4855,13 +4734,11 @@ export default function AddCarDetailScreen() {
             emptyText="Модели не найдены"
           />
         </View>
-        )}
 
-        {/* Main Specs - для авто: год, пробег, цена; для запчастей: только цена */}
+        {/* Main Specs */}
         <View style={styles.card}>
-          <SectionHeader title={`📊 ${isPartsCategory ? t('addCar.priceTJS') : t('addCar.mainSpecs')}`} required />
+          <SectionHeader title={`📊 ${t('addCar.mainSpecs')}`} required />
           
-          {!isPartsCategory && (
           <View style={styles.row}>
             <View style={styles.halfField}>
               <Text style={styles.fieldLabel}>{t('addCar.yearOfManufacture')}</Text>
@@ -4886,7 +4763,6 @@ export default function AddCarDetailScreen() {
               />
             </View>
           </View>
-          )}
 
           <Text style={styles.fieldLabel}>{t('addCar.priceTJS')}</Text>
           <View style={styles.priceInputContainer}>
@@ -4904,8 +4780,7 @@ export default function AddCarDetailScreen() {
           </View>
         </View>
 
-        {/* Technical Specs - только для авто */}
-        {!isPartsCategory && (
+        {/* Technical Specs */}
         <View style={styles.card}>
           <SectionHeader title="⚙️ Технические данные" />
           
@@ -5014,11 +4889,10 @@ export default function AddCarDetailScreen() {
             ))}
           </View>
         </View>
-        )}
 
         {/* Condition & Color */}
         <View style={styles.card}>
-          <SectionHeader title={isPartsCategory ? t('car.condition') : t('addCar.conditionColorSection')} />
+          <SectionHeader title={t('addCar.conditionColorSection')} />
           
           <Text style={styles.fieldLabel}>{t('car.condition')}</Text>
           <View style={styles.toggleContainer}>
@@ -5027,7 +4901,7 @@ export default function AddCarDetailScreen() {
               onPress={() => setFormData({ ...formData, condition: 'new' })}
             >
               <Text style={[styles.toggleText, formData.condition === 'new' && styles.toggleTextActive]}>
-                ✨ {t('car.new')}
+                ✨ Новый
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -5035,13 +4909,11 @@ export default function AddCarDetailScreen() {
               onPress={() => setFormData({ ...formData, condition: 'used' })}
             >
               <Text style={[styles.toggleText, formData.condition === 'used' && styles.toggleTextActive]}>
-                {t('car.used')}
+                С пробегом
               </Text>
             </TouchableOpacity>
           </View>
 
-          {!isPartsCategory && (
-          <>
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.color')}</Text>
           <TextInput
             style={styles.input}
@@ -5050,12 +4922,9 @@ export default function AddCarDetailScreen() {
             placeholder="Например: Белый, Чёрный металлик"
             placeholderTextColor="#94A3B8"
           />
-          </>
-          )}
         </View>
 
-        {/* Features - только для авто */}
-        {!isPartsCategory && (
+        {/* Features */}
         <View style={styles.card}>
           <SectionHeader title={`✅ ${t('car.features')}`} />
           <TouchableOpacity
@@ -5087,7 +4956,6 @@ export default function AddCarDetailScreen() {
             </View>
           )}
         </View>
-        )}
 
         {/* Location */}
         <View style={styles.card}>
@@ -5195,7 +5063,7 @@ export default function AddCarDetailScreen() {
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => {
-                    setFormData({ ...formData, category: item.value, subcategory: '' });
+                    setFormData({ ...formData, category: item.value });
                     setCategoryModalVisible(false);
                   }}
                 >
@@ -5203,60 +5071,6 @@ export default function AddCarDetailScreen() {
                   <Text style={styles.modalItemText}>{item.label}</Text>
                   {formData.category === item.value && (
                     <Ionicons name="checkmark-circle" size={24} color="#0066FF" />
-                  )}
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </View>
-      </Modal>
-
-      {/* Subcategory Modal for Parts */}
-      <Modal visible={subcategoryModalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { maxHeight: '80%' }]}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('addCar.selectSubcategory')}</Text>
-              <TouchableOpacity onPress={() => setSubcategoryModalVisible(false)}>
-                <Ionicons name="close" size={28} color="#0F172A" />
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={partsSubcategories}
-              keyExtractor={(item) => item.value}
-              numColumns={2}
-              columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 8 }}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.subcategoryCard,
-                    formData.subcategory === item.value && styles.subcategoryCardActive
-                  ]}
-                  onPress={() => {
-                    setFormData({ ...formData, subcategory: item.value });
-                    setSubcategoryModalVisible(false);
-                  }}
-                >
-                  <View style={[
-                    styles.subcategoryIconWrap,
-                    formData.subcategory === item.value && styles.subcategoryIconWrapActive
-                  ]}>
-                    <Ionicons 
-                      name={item.icon as any} 
-                      size={28} 
-                      color={formData.subcategory === item.value ? '#FFFFFF' : '#0066FF'} 
-                    />
-                  </View>
-                  <Text style={[
-                    styles.subcategoryText,
-                    formData.subcategory === item.value && styles.subcategoryTextActive
-                  ]} numberOfLines={2}>
-                    {item.label}
-                  </Text>
-                  {formData.subcategory === item.value && (
-                    <View style={styles.subcategoryCheck}>
-                      <Ionicons name="checkmark-circle" size={18} color="#0066FF" />
-                    </View>
                   )}
                 </TouchableOpacity>
               )}
@@ -5892,52 +5706,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
-  },
-  // Стили для подкатегорий запчастей
-  subcategoryCard: {
-    width: '47%',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
-  },
-  subcategoryCardActive: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#0066FF',
-  },
-  subcategoryIconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-    shadowColor: '#0066FF',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  subcategoryIconWrapActive: {
-    backgroundColor: '#0066FF',
-  },
-  subcategoryText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#334155',
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  subcategoryTextActive: {
-    color: '#0066FF',
-  },
-  subcategoryCheck: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
   },
 });

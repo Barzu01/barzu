@@ -165,7 +165,6 @@ class CarListing(BaseModel):
     color: str
     region: str
     category: str = 'cars'
-    subcategory: Optional[str] = None  # Подкатегория для запчастей
     description: str
     features: List[str] = Field(default_factory=list)  # Дополнительные опции
     photos: List[str] = Field(default_factory=list, max_length=10)

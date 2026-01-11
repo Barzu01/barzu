@@ -10,8 +10,7 @@
     "motorcycles": "Мотосикл",
     "trucks": "Боркаш",
     "rent": "Иҷора",
-    "allListings": "Ҳамаи эълонҳо",
-    "autoParts": "Қисмҳо ва аксессуарҳо"
+    "allListings": "Ҳамаи эълонҳо"
   },
   "auth": {
     "phoneNumber": "Рақами телефон",
@@ -296,29 +295,7 @@
     "motorcycles": "Мотосиклҳо",
     "trucks": "Боркашҳо",
     "specialEquipment": "Техникаи махсус",
-    "selectMultipleFuels": "Чанд навъи сӯзишворӣ интихоб кардан мумкин аст",
-    "autoParts": "Қисмҳо ва аксессуарҳо",
-    "selectSubcategory": "Зеркатегорияро интихоб кунед",
-    "partName": "Номи мол",
-    "partNamePlaceholder": "Масалан: Колодкаҳои тормоз Toyota",
-    "partsDescription": "Тавсифи мол",
-    "partsDescriptionPlaceholder": "Молро муфассал тавсиф кунед..."
-  },
-  "parts": {
-    "title": "Қисмҳо ва аксессуарҳо",
-    "autoParts": "Автозапчастҳо",
-    "motoParts": "Мотозапчастҳо",
-    "tiresWheels": "Шинаҳо ва дискҳо",
-    "oilsChemistry": "Равғанҳо ва автохимия",
-    "accessories": "Аксессуарҳо барои мошин",
-    "audioVideo": "Автозвук ва видео",
-    "gpsVideo": "GPS ва видеорегистраторҳо",
-    "roofRacks": "Багажникҳо ва фаркопҳо",
-    "antiTheft": "Зидди дуздӣ",
-    "specialParts": "Қисмҳо барои техникаи махсус",
-    "motoAccessories": "Мотоаксессуарҳо",
-    "forParts": "Нақлиёт барои қисмҳо",
-    "licensePlates": "Рақамҳои давлатӣ"
+    "selectMultipleFuels": "Чанд навъи сӯзишворӣ интихоб кардан мумкин аст"
   },
   "carDetails": {
     "specifications": "Тавсифот",
