@@ -4804,11 +4804,13 @@ export default function AddCarDetailScreen() {
             emptyText="Модели не найдены"
           />
         </View>
+        )}
 
-        {/* Main Specs */}
+        {/* Main Specs - для авто: год, пробег, цена; для запчастей: только цена */}
         <View style={styles.card}>
-          <SectionHeader title={`📊 ${t('addCar.mainSpecs')}`} required />
+          <SectionHeader title={`📊 ${isPartsCategory ? t('addCar.priceTJS') : t('addCar.mainSpecs')}`} required />
           
+          {!isPartsCategory && (
           <View style={styles.row}>
             <View style={styles.halfField}>
               <Text style={styles.fieldLabel}>{t('addCar.yearOfManufacture')}</Text>
@@ -4833,6 +4835,7 @@ export default function AddCarDetailScreen() {
               />
             </View>
           </View>
+          )}
 
           <Text style={styles.fieldLabel}>{t('addCar.priceTJS')}</Text>
           <View style={styles.priceInputContainer}>
