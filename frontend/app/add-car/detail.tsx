@@ -5497,6 +5497,35 @@ export default function AddCarDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Message Modal (замена Alert.alert) */}
+      <Modal visible={messageModal.visible} transparent animationType="fade">
+        <View style={styles.messageModalOverlay}>
+          <View style={styles.messageModalContent}>
+            <View style={[
+              styles.messageModalIcon,
+              messageModal.type === 'success' ? styles.messageModalIconSuccess : styles.messageModalIconError
+            ]}>
+              <Ionicons 
+                name={messageModal.type === 'success' ? 'checkmark-circle' : 'alert-circle'} 
+                size={48} 
+                color={messageModal.type === 'success' ? '#10B981' : '#EF4444'} 
+              />
+            </View>
+            <Text style={styles.messageModalTitle}>{messageModal.title}</Text>
+            <Text style={styles.messageModalText}>{messageModal.message}</Text>
+            <TouchableOpacity 
+              style={[
+                styles.messageModalButton,
+                messageModal.type === 'success' ? styles.messageModalButtonSuccess : styles.messageModalButtonError
+              ]} 
+              onPress={closeMessage}
+            >
+              <Text style={styles.messageModalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
