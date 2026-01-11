@@ -747,4 +747,81 @@ const styles = StyleSheet.create({
   shareLabel: { fontSize: 14, fontWeight: '600', color: '#0F172A' },
   reportOption: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
   reportOptionText: { fontSize: 16, color: '#0F172A' },
+  // Fullscreen image gallery styles
+  fullScreenOverlay: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+  },
+  fullScreenHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  fullScreenCloseBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullScreenCounter: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  fullScreenPagination: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  fullScreenDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  fullScreenDotActive: {
+    backgroundColor: '#FFFFFF',
+    width: 24,
+  },
+  // Zoom styles
+  zoomContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomTouchable: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  zoomImage: {
+    width: width,
+    height: '100%',
+  },
+  zoomHint: {
+    position: 'absolute',
+    bottom: 80,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  zoomHintText: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: 13,
+  },
 });
