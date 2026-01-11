@@ -470,19 +470,11 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontWeight: '500',
   },
-  header: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   headerGreeting: {
     fontSize: 14,
     color: '#64748B',
-    marginBottom: 2,
+    marginBottom: 8,
+    marginTop: 4,
   },
   headerTitle: {
     fontSize: 28,
