@@ -284,7 +284,17 @@
     "customBrand": "Другая марка",
     "addCustomBrand": "Добавить свою марку",
     "brandName": "Название марки",
-    "modelName": "Название модели"
+    "modelName": "Название модели",
+    "required": "Обязательно",
+    "camera": "Камера",
+    "gallery": "Галерея",
+    "photos": "фото",
+    "selectBrandFirst": "Сначала выберите марку",
+    "mainSpecs": "Основные характеристики",
+    "cars": "Автомобили",
+    "motorcycles": "Мотоциклы",
+    "trucks": "Грузовики",
+    "specialEquipment": "Спецтехника"
   },
   "carDetails": {
     "specifications": "Характеристики",
