@@ -4796,30 +4796,44 @@ export default function AddCarDetailScreen() {
             <Ionicons name="chevron-forward" size={20} color="#94A3B8" />
           </TouchableOpacity>
 
-          {/* Engine Type */}
+          {/* Engine Type - Multiple Selection */}
           <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.engineType')}</Text>
+          <Text style={styles.fieldHint}>{t('addCar.selectMultipleFuels')}</Text>
           <View style={styles.chipContainer}>
             {[
-              { value: 'petrol', label: 'Бензин', icon: '⛽' },
-              { value: 'diesel', label: 'Дизель', icon: '🛢️' },
-              { value: 'electric', label: 'Электро', icon: '⚡' },
-              { value: 'hybrid', label: 'Гибрид', icon: '🔋' },
-            ].map(type => (
-              <TouchableOpacity
-                key={type.value}
-                style={[styles.chip, formData.engineType === type.value && styles.chipActive]}
-                onPress={() => setFormData({ ...formData, engineType: type.value })}
-              >
-                <Text style={styles.chipIcon}>{type.icon}</Text>
-                <Text style={[styles.chipText, formData.engineType === type.value && styles.chipTextActive]}>
-                  {type.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+              { value: 'petrol', label: t('car.petrol'), icon: '⛽' },
+              { value: 'diesel', label: t('car.diesel'), icon: '🛢️' },
+              { value: 'gas', label: t('car.gas'), icon: '🔥' },
+              { value: 'electric', label: t('car.electric'), icon: '⚡' },
+              { value: 'hybrid', label: t('car.hybrid'), icon: '🔋' },
+            ].map(type => {
+              const isSelected = formData.engineTypes.includes(type.value);
+              return (
+                <TouchableOpacity
+                  key={type.value}
+                  style={[styles.chip, isSelected && styles.chipActive]}
+                  onPress={() => {
+                    const newTypes = isSelected
+                      ? formData.engineTypes.filter(t => t !== type.value)
+                      : [...formData.engineTypes, type.value];
+                    // Ensure at least one type is selected
+                    if (newTypes.length > 0) {
+                      setFormData({ ...formData, engineTypes: newTypes });
+                    }
+                  }}
+                >
+                  <Text style={styles.chipIcon}>{type.icon}</Text>
+                  <Text style={[styles.chipText, isSelected && styles.chipTextActive]}>
+                    {type.label}
+                  </Text>
+                  {isSelected && <Ionicons name="checkmark-circle" size={16} color="#0066FF" style={{ marginLeft: 4 }} />}
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           {/* Engine Volume */}
-          {formData.engineType !== 'electric' && (
+          {!formData.engineTypes.includes('electric') && (
             <>
               <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.engineVolume')}</Text>
               <TouchableOpacity
