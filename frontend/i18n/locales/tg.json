@@ -10,7 +10,8 @@
     "motorcycles": "Мотосикл",
     "trucks": "Боркаш",
     "rent": "Иҷора",
-    "allListings": "Ҳамаи эълонҳо"
+    "allListings": "Ҳамаи эълонҳо",
+    "autoParts": "Қисмҳо ва аксессуарҳо"
   },
   "auth": {
     "phoneNumber": "Рақами телефон",
