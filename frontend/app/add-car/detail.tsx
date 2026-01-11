@@ -4688,10 +4688,22 @@ export default function AddCarDetailScreen() {
       } else {
         // Для авто - стандартная логика
         const carData = {
-          ...formData,
+          brand: formData.brand,
+          model: formData.model,
           year: parseInt(formData.year),
           price: parseFloat(formData.price),
           mileage: parseInt(formData.mileage),
+          engineType: formData.engineTypes[0] || 'petrol', // Берём первый тип из массива
+          engineVolume: formData.engineVolume,
+          transmission: formData.transmission,
+          driveType: formData.driveType,
+          bodyType: formData.bodyType,
+          condition: formData.condition,
+          color: formData.color,
+          region: formData.region,
+          category: formData.category,
+          description: formData.description,
+          features: formData.features,
           photos,
           sellerPhone: user.phone,
           sellerId: user._id || user.phone,
