@@ -205,6 +205,15 @@ export default function CarDetailsScreen() {
     setCurrentImageIndex(slideIndex);
   };
 
+  const openFullScreen = (index: number) => {
+    setFullScreenIndex(index);
+    setFullScreenVisible(true);
+  };
+
+  const closeFullScreen = () => {
+    setFullScreenVisible(false);
+  };
+
   if (loading) {
     return (
       <View style={styles.centerContainer}>
