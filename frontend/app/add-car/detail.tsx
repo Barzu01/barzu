@@ -4463,9 +4463,16 @@ export default function AddCarDetailScreen() {
     color: '',
     region: 'dushanbe',
     category: 'cars',
+    subcategory: '', // Подкатегория для запчастей
+    partName: '', // Название товара для запчастей
     description: '',
     features: [] as string[],
   });
+
+  const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
+
+  // Проверяем, является ли категория "Запчасти"
+  const isPartsCategory = formData.category === 'auto_parts';
 
   const handleBrandSelect = (brand: Brand) => {
     if (brand.make_id === 999) {
