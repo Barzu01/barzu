@@ -97,6 +97,20 @@ export default function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Animation interpolations
+  const expandableHeaderHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  });
+
+  const expandableHeaderOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_MAX_HEIGHT / 2],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
 
   useEffect(() => {
     loadCars();
