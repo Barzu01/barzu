@@ -352,7 +352,10 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Sticky Header - Always visible */}
       <View style={styles.stickyHeader}>
-        <Text style={styles.headerTitle}>SafedAuto</Text>
+        <View>
+          <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
+          <Text style={styles.headerTitle}>SafedAuto</Text>
+        </View>
         <TouchableOpacity 
           style={styles.notificationButton}
           onPress={() => router.push('/notifications')}
@@ -366,20 +369,8 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Expandable Header - Hides on scroll */}
+      {/* Expandable Header - Categories hide on scroll */}
       <Animated.View style={[styles.expandableHeader, { height: expandableHeaderHeight, opacity: expandableHeaderOpacity }]}>
-        <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
-        
-        {/* Search Bar */}
-        <TouchableOpacity 
-          style={styles.searchBar}
-          onPress={() => router.push('/(tabs)/search')}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="search" size={20} color="#94A3B8" />
-          <Text style={styles.searchPlaceholder}>{t('search.searchCars')}...</Text>
-        </TouchableOpacity>
-
         {/* Categories */}
         <View style={styles.categoriesSection}>
           <FlatList
