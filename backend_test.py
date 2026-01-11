@@ -21,7 +21,7 @@ def get_backend_url():
                     return line.split('=')[1].strip()
     except:
         pass
-    return "https://autocatalog-2.preview.emergentagent.com"
+    return "https://tajikcar-updates.preview.emergentagent.com"
 
 BASE_URL = get_backend_url()
 API_BASE = f"{BASE_URL}/api"
