@@ -4471,6 +4471,30 @@ export default function AddCarDetailScreen() {
 
   const [subcategoryModalVisible, setSubcategoryModalVisible] = useState(false);
   
+  // Состояние для модального окна сообщений (замена Alert.alert)
+  const [messageModal, setMessageModal] = useState<{
+    visible: boolean;
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+    onClose?: () => void;
+  }>({
+    visible: false,
+    type: 'error',
+    title: '',
+    message: '',
+  });
+
+  const showMessage = (type: 'success' | 'error', title: string, message: string, onClose?: () => void) => {
+    setMessageModal({ visible: true, type, title, message, onClose });
+  };
+
+  const closeMessage = () => {
+    const callback = messageModal.onClose;
+    setMessageModal({ ...messageModal, visible: false });
+    if (callback) callback();
+  };
+  
   // Проверяем, выбрана ли категория "Запчасти"
   const isPartsCategory = formData.category === 'auto_parts';
 
