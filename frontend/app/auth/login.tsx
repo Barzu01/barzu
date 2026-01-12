@@ -22,7 +22,7 @@ import {
 } from '../../services/firebaseAuth';
 
 // Тестовый режим - включить если Firebase не работает
-const USE_TEST_MODE = true; // Поменяйте на false для реальной SMS аутентификации
+const USE_TEST_MODE = false; // Firebase SMS включен!
 const TEST_CODE = '1234';
 
 export default function LoginScreen() {
