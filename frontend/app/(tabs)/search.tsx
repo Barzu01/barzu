@@ -171,16 +171,16 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
-  // Логотипы популярных брендов
+  // Логотипы популярных брендов (надёжные CDN ссылки)
   const BRAND_LOGOS: { [key: string]: string } = {
-    'Toyota': 'https://www.carlogos.org/car-logos/toyota-logo-2019-3700x1200.png',
-    'Mercedes-Benz': 'https://www.carlogos.org/car-logos/mercedes-benz-logo-2011-1920x1080.png',
-    'BMW': 'https://www.carlogos.org/car-logos/bmw-logo-2020-blue-white.png',
-    'Hyundai': 'https://www.carlogos.org/car-logos/hyundai-logo-2011-640.png',
-    'Honda': 'https://www.carlogos.org/car-logos/honda-logo-2000-full-640.png',
-    'Lada': 'https://www.carlogos.org/car-logos/lada-logo-2021-640.png',
-    'Kia': 'https://www.carlogos.org/car-logos/kia-logo-2021-640.png',
-    'Lexus': 'https://www.carlogos.org/car-logos/lexus-logo-1988-640.png',
+    'Toyota': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carance%2C_emblem.svg/200px-Toyota_carance%2C_emblem.svg.png',
+    'Mercedes-Benz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/200px-Mercedes-Benz_Logo_2010.svg.png',
+    'BMW': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png',
+    'Hyundai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png',
+    'Honda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png',
+    'Lada': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Lada_Logo.svg/200px-Lada_Logo.svg.png',
+    'Kia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/KIA_logo2.svg/200px-KIA_logo2.svg.png',
+    'Lexus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Lexus_division_emblem.svg/200px-Lexus_division_emblem.svg.png',
   };
 
   const popularBrands = [
