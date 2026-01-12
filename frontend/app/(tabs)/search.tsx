@@ -173,14 +173,14 @@ export default function SearchScreen() {
 
   // Логотипы популярных брендов (надёжные CDN ссылки)
   const BRAND_LOGOS: { [key: string]: string } = {
-    'Toyota': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carance%2C_emblem.svg/200px-Toyota_carance%2C_emblem.svg.png',
-    'Mercedes-Benz': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/200px-Mercedes-Benz_Logo_2010.svg.png',
-    'BMW': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png',
-    'Hyundai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png',
-    'Honda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png',
-    'Lada': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Lada_Logo.svg/200px-Lada_Logo.svg.png',
-    'Kia': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/KIA_logo2.svg/200px-KIA_logo2.svg.png',
-    'Lexus': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Lexus_division_emblem.svg/200px-Lexus_division_emblem.svg.png',
+    'Toyota': 'https://cdn.iconscout.com/icon/free/png-256/free-toyota-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211303.png',
+    'Mercedes-Benz': 'https://cdn.iconscout.com/icon/free/png-256/free-mercedes-logo-icon-download-in-svg-png-gif-file-formats--vehicle-brand-auto-car-automobile-freebies-pack-logos-icons-2211301.png',
+    'BMW': 'https://cdn.iconscout.com/icon/free/png-256/free-bmw-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211280.png',
+    'Hyundai': 'https://cdn.iconscout.com/icon/free/png-256/free-hyundai-logo-icon-download-in-svg-png-gif-file-formats--automobile-car-auto-vehicle-freebies-pack-logos-icons-2211294.png',
+    'Honda': 'https://cdn.iconscout.com/icon/free/png-256/free-honda-logo-icon-download-in-svg-png-gif-file-formats--automobile-auto-car-vehicle-freebies-pack-logos-icons-2211293.png',
+    'Lada': 'https://cdn.iconscout.com/icon/free/png-256/free-lada-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211297.png',
+    'Kia': 'https://cdn.iconscout.com/icon/free/png-256/free-kia-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211296.png',
+    'Lexus': 'https://cdn.iconscout.com/icon/free/png-256/free-lexus-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211298.png',
   };
 
   const popularBrands = [
