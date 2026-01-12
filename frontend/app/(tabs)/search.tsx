@@ -171,27 +171,16 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
-  // Логотипы популярных брендов (прямые ссылки на PNG)
-  const BRAND_LOGOS: { [key: string]: string } = {
-    'Toyota': 'https://www.car-logos.org/wp-content/uploads/2011/09/toyota.png',
-    'Mercedes-Benz': 'https://www.car-logos.org/wp-content/uploads/2011/09/mercedes.png',
-    'BMW': 'https://www.car-logos.org/wp-content/uploads/2011/09/bmw.png',
-    'Hyundai': 'https://www.car-logos.org/wp-content/uploads/2011/09/hyundai.png',
-    'Honda': 'https://www.car-logos.org/wp-content/uploads/2011/09/honda.png',
-    'Lada': 'https://www.car-logos.org/wp-content/uploads/2011/09/lada.png',
-    'Kia': 'https://www.car-logos.org/wp-content/uploads/2023/01/kia.png',
-    'Lexus': 'https://www.car-logos.org/wp-content/uploads/2011/09/lexus.png',
-  };
-
+  // Популярные бренды с цветами
   const popularBrands = [
-    { name: 'Toyota', logo: BRAND_LOGOS['Toyota'] },
-    { name: 'Mercedes-Benz', logo: BRAND_LOGOS['Mercedes-Benz'] },
-    { name: 'BMW', logo: BRAND_LOGOS['BMW'] },
-    { name: 'Hyundai', logo: BRAND_LOGOS['Hyundai'] },
-    { name: 'Honda', logo: BRAND_LOGOS['Honda'] },
-    { name: 'Lada', logo: BRAND_LOGOS['Lada'] },
-    { name: 'Kia', logo: BRAND_LOGOS['Kia'] },
-    { name: 'Lexus', logo: BRAND_LOGOS['Lexus'] },
+    { name: 'Toyota', color: '#EB0A1E', letter: 'T' },
+    { name: 'Mercedes-Benz', color: '#333333', letter: 'M' },
+    { name: 'BMW', color: '#0066B1', letter: 'B' },
+    { name: 'Hyundai', color: '#002C5F', letter: 'H' },
+    { name: 'Honda', color: '#E40521', letter: 'H' },
+    { name: 'Lada', color: '#154988', letter: 'L' },
+    { name: 'Kia', color: '#05141F', letter: 'K' },
+    { name: 'Lexus', color: '#1A1A1A', letter: 'L' },
   ];
 
   const FilterChip = ({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) => (
