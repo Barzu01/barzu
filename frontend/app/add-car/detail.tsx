@@ -4599,7 +4599,7 @@ export default function AddCarDetailScreen() {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.5, // Уменьшаем качество для быстрой загрузки
+      quality: 0.3, // Сильное сжатие для экономии места
       base64: true,
       exif: false,
     });
