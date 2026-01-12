@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,12 +21,16 @@ import {
   initRecaptcha 
 } from '../../services/firebaseAuth';
 
+// Тестовый режим - включить если Firebase не работает
+const USE_TEST_MODE = true; // Поменяйте на false для реальной SMS аутентификации
+const TEST_CODE = '1234';
+
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [useTestMode, setUseTestMode] = useState(USE_TEST_MODE);
   const [messageModal, setMessageModal] = useState<{visible: boolean; type: 'success' | 'error'; title: string; message: string}>({
     visible: false,
     type: 'error',
@@ -36,17 +40,15 @@ export default function LoginScreen() {
   const { login } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
-  const recaptchaContainerRef = useRef<View>(null);
 
-  // Initialize reCAPTCHA for web
+  // Initialize reCAPTCHA for web (only if not in test mode)
   useEffect(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      // Wait for DOM to be ready
+    if (!useTestMode && Platform.OS === 'web' && typeof window !== 'undefined') {
       setTimeout(() => {
         initRecaptcha('recaptcha-container');
       }, 1000);
     }
-  }, []);
+  }, [useTestMode]);
 
   const showMessage = (type: 'success' | 'error', title: string, message: string) => {
     setMessageModal({ visible: true, type, title, message });
@@ -59,18 +61,23 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    setError('');
     
     try {
-      // Format phone number
-      let formattedPhone = phone.trim();
-      if (!formattedPhone.startsWith('+')) {
-        formattedPhone = '+' + formattedPhone;
+      if (useTestMode) {
+        // Тестовый режим - сразу показываем ввод кода
+        setStep('code');
+        showMessage('success', 'Тестовый режим', `Используйте код: ${TEST_CODE}`);
+      } else {
+        // Firebase режим
+        let formattedPhone = phone.trim();
+        if (!formattedPhone.startsWith('+')) {
+          formattedPhone = '+' + formattedPhone;
+        }
+        
+        await sendVerificationCode(formattedPhone);
+        setStep('code');
+        showMessage('success', 'SMS отправлено', `Код подтверждения отправлен на ${formattedPhone}`);
       }
-      
-      await sendVerificationCode(formattedPhone);
-      setStep('code');
-      showMessage('success', 'SMS отправлено', `Код подтверждения отправлен на ${formattedPhone}`);
     } catch (err: any) {
       console.error('Send code error:', err);
       let errorMessage = 'Не удалось отправить код';
@@ -80,7 +87,9 @@ export default function LoginScreen() {
       } else if (err.code === 'auth/too-many-requests') {
         errorMessage = 'Слишком много попыток. Попробуйте позже';
       } else if (err.code === 'auth/captcha-check-failed') {
-        errorMessage = 'Ошибка проверки reCAPTCHA. Обновите страницу';
+        errorMessage = 'Ошибка reCAPTCHA. Попробуйте тестовый режим';
+        // Автоматически переключаемся на тестовый режим
+        setUseTestMode(true);
       } else if (err.message) {
         errorMessage = err.message;
       }
@@ -98,15 +107,28 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
-    setError('');
     
     try {
-      const firebaseUser = await verifyCode(code);
-      
-      if (firebaseUser && firebaseUser.phoneNumber) {
-        // Sync with our backend
-        await login(firebaseUser.phoneNumber);
-        router.replace('/(tabs)/home');
+      if (useTestMode) {
+        // Тестовый режим - проверяем тестовый код
+        if (code === TEST_CODE) {
+          let formattedPhone = phone.trim();
+          if (!formattedPhone.startsWith('+')) {
+            formattedPhone = '+' + formattedPhone;
+          }
+          await login(formattedPhone);
+          router.replace('/(tabs)/home');
+        } else {
+          showMessage('error', t('messages.error'), `Неверный код. Используйте: ${TEST_CODE}`);
+        }
+      } else {
+        // Firebase режим
+        const firebaseUser = await verifyCode(code);
+        
+        if (firebaseUser && firebaseUser.phoneNumber) {
+          await login(firebaseUser.phoneNumber);
+          router.replace('/(tabs)/home');
+        }
       }
     } catch (err: any) {
       console.error('Verify code error:', err);
@@ -174,13 +196,30 @@ export default function LoginScreen() {
                   )}
                 </TouchableOpacity>
 
-                <View style={styles.infoCard}>
-                  <Ionicons name="shield-checkmark" size={24} color="#10B981" />
-                  <Text style={styles.infoText}>
-                    🔐 Защищённый вход через Firebase{'\n'}
-                    📱 SMS код будет отправлен на ваш номер
+                <View style={[styles.infoCard, useTestMode ? styles.testModeCard : null]}>
+                  <Ionicons 
+                    name={useTestMode ? "flask" : "shield-checkmark"} 
+                    size={24} 
+                    color={useTestMode ? "#F59E0B" : "#10B981"} 
+                  />
+                  <Text style={[styles.infoText, useTestMode ? styles.testModeText : null]}>
+                    {useTestMode ? (
+                      `🧪 Тестовый режим\n📱 Код для входа: ${TEST_CODE}`
+                    ) : (
+                      `🔐 Защищённый вход через Firebase\n📱 SMS код будет отправлен на ваш номер`
+                    )}
                   </Text>
                 </View>
+                
+                {/* Toggle test mode */}
+                <TouchableOpacity 
+                  style={styles.toggleMode}
+                  onPress={() => setUseTestMode(!useTestMode)}
+                >
+                  <Text style={styles.toggleModeText}>
+                    {useTestMode ? 'Включить Firebase SMS' : 'Включить тестовый режим'}
+                  </Text>
+                </TouchableOpacity>
               </>
             ) : (
               <>
@@ -193,11 +232,19 @@ export default function LoginScreen() {
                 </View>
 
                 <Text style={styles.label}>{t('auth.enterCode')}</Text>
+                
+                {useTestMode && (
+                  <View style={styles.testCodeHint}>
+                    <Ionicons name="information-circle" size={20} color="#0066FF" />
+                    <Text style={styles.testCodeHintText}>Код: <Text style={styles.testCodeBold}>{TEST_CODE}</Text></Text>
+                  </View>
+                )}
+                
                 <View style={styles.inputWrapper}>
                   <Ionicons name="keypad-outline" size={22} color="#64748B" style={styles.inputIcon} />
                   <TextInput
                     style={[styles.input, styles.codeInput]}
-                    placeholder="• • • • • •"
+                    placeholder="• • • •"
                     placeholderTextColor="#94A3B8"
                     value={code}
                     onChangeText={setCode}
@@ -235,7 +282,7 @@ export default function LoginScreen() {
           </View>
           
           {/* reCAPTCHA container for web */}
-          {Platform.OS === 'web' && (
+          {!useTestMode && Platform.OS === 'web' && (
             <View nativeID="recaptcha-container" style={styles.recaptchaContainer} />
           )}
         </View>
@@ -376,11 +423,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BBF7D0',
   },
+  testModeCard: {
+    backgroundColor: '#FFFBEB',
+    borderColor: '#FDE68A',
+  },
   infoText: {
     flex: 1,
     fontSize: 14,
     color: '#166534',
     lineHeight: 20,
+  },
+  testModeText: {
+    color: '#92400E',
+  },
+  toggleMode: {
+    marginTop: 16,
+    padding: 12,
+    alignItems: 'center',
+  },
+  toggleModeText: {
+    fontSize: 14,
+    color: '#64748B',
+    textDecorationLine: 'underline',
   },
   phoneDisplay: {
     flexDirection: 'row',
@@ -396,6 +460,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#0066FF',
+  },
+  testCodeHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+  testCodeHintText: {
+    fontSize: 15,
+    color: '#0066FF',
+  },
+  testCodeBold: {
+    fontWeight: '800',
+    fontSize: 18,
+    letterSpacing: 2,
   },
   resendButton: {
     flexDirection: 'row',
