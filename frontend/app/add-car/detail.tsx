@@ -4608,12 +4608,20 @@ export default function AddCarDetailScreen() {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.3, // Сильное сжатие для экономии места
+      quality: 0.2, // Сильное сжатие
       base64: true,
       exif: false,
     });
 
     if (!result.canceled && result.assets[0].base64) {
+      const base64Size = result.assets[0].base64.length;
+      const fileSizeKB = Math.round(base64Size / 1024 / 1.33);
+      
+      if (fileSizeKB > 1500) {
+        showMessage('error', t('messages.error'), `Фото слишком большое (${fileSizeKB}KB). Максимум 1.5MB`);
+        return;
+      }
+      
       const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
       setPhotos([...photos, base64Image]);
     }
