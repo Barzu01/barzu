@@ -400,7 +400,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Car List */}
-      <Animated.FlatList
+      <FlatList
         data={filteredCars}
         renderItem={renderCarItem}
         keyExtractor={(item) => item._id || Math.random().toString()}
@@ -430,7 +430,7 @@ export default function HomeScreen() {
             </Text>
           </View>
         }
-      </Animated.FlatList>
+      />
     </SafeAreaView>
   );
 }
