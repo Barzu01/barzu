@@ -822,6 +822,11 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
   },
+  brandLetter: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
   brandIcon: {
     fontSize: 28,
     marginBottom: 8,
