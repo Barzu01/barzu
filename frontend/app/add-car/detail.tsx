@@ -4800,6 +4800,17 @@ export default function AddCarDetailScreen() {
                   <Ionicons name="images" size={28} color="#0066FF" />
                   <Text style={styles.addPhotoText}>{t('addCar.gallery')}</Text>
                 </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.addPhotoButton, { backgroundColor: '#F0FDF4' }]} 
+                  onPress={() => {
+                    // Добавляем тестовое изображение для веб-версии
+                    const testImage = 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&q=80';
+                    setPhotos([...photos, testImage]);
+                  }}
+                >
+                  <Ionicons name="link" size={28} color="#10B981" />
+                  <Text style={[styles.addPhotoText, { color: '#10B981' }]}>Тест</Text>
+                </TouchableOpacity>
               </>
             )}
           </View>
