@@ -171,16 +171,16 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
-  // Логотипы популярных брендов (надёжные CDN ссылки)
+  // Логотипы популярных брендов (прямые ссылки на PNG)
   const BRAND_LOGOS: { [key: string]: string } = {
-    'Toyota': 'https://cdn.iconscout.com/icon/free/png-256/free-toyota-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211303.png',
-    'Mercedes-Benz': 'https://cdn.iconscout.com/icon/free/png-256/free-mercedes-logo-icon-download-in-svg-png-gif-file-formats--vehicle-brand-auto-car-automobile-freebies-pack-logos-icons-2211301.png',
-    'BMW': 'https://cdn.iconscout.com/icon/free/png-256/free-bmw-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211280.png',
-    'Hyundai': 'https://cdn.iconscout.com/icon/free/png-256/free-hyundai-logo-icon-download-in-svg-png-gif-file-formats--automobile-car-auto-vehicle-freebies-pack-logos-icons-2211294.png',
-    'Honda': 'https://cdn.iconscout.com/icon/free/png-256/free-honda-logo-icon-download-in-svg-png-gif-file-formats--automobile-auto-car-vehicle-freebies-pack-logos-icons-2211293.png',
-    'Lada': 'https://cdn.iconscout.com/icon/free/png-256/free-lada-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211297.png',
-    'Kia': 'https://cdn.iconscout.com/icon/free/png-256/free-kia-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211296.png',
-    'Lexus': 'https://cdn.iconscout.com/icon/free/png-256/free-lexus-logo-icon-download-in-svg-png-gif-file-formats--car-automobile-auto-vehicle-freebies-pack-logos-icons-2211298.png',
+    'Toyota': 'https://www.car-logos.org/wp-content/uploads/2011/09/toyota.png',
+    'Mercedes-Benz': 'https://www.car-logos.org/wp-content/uploads/2011/09/mercedes.png',
+    'BMW': 'https://www.car-logos.org/wp-content/uploads/2011/09/bmw.png',
+    'Hyundai': 'https://www.car-logos.org/wp-content/uploads/2011/09/hyundai.png',
+    'Honda': 'https://www.car-logos.org/wp-content/uploads/2011/09/honda.png',
+    'Lada': 'https://www.car-logos.org/wp-content/uploads/2011/09/lada.png',
+    'Kia': 'https://www.car-logos.org/wp-content/uploads/2023/01/kia.png',
+    'Lexus': 'https://www.car-logos.org/wp-content/uploads/2011/09/lexus.png',
   };
 
   const popularBrands = [
