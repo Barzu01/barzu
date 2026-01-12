@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,48 +7,120 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Alert,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-
-const TEST_CODE = '1234'; // Тестовый код для MVP
+import { 
+  sendVerificationCode, 
+  verifyCode, 
+  initRecaptcha 
+} from '../../services/firebaseAuth';
 
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [loading, setLoading] = useState(false);
-  const [showCode, setShowCode] = useState(false);
+  const [error, setError] = useState('');
+  const [messageModal, setMessageModal] = useState<{visible: boolean; type: 'success' | 'error'; title: string; message: string}>({
+    visible: false,
+    type: 'error',
+    title: '',
+    message: ''
+  });
   const { login } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
+  const recaptchaContainerRef = useRef<View>(null);
 
-  const handleSendCode = () => {
-    if (!phone || phone.length < 9) {
-      Alert.alert(t('messages.error'), t('auth.enterValidPhone'));
-      return;
+  // Initialize reCAPTCHA for web
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      // Wait for DOM to be ready
+      setTimeout(() => {
+        initRecaptcha('recaptcha-container');
+      }, 1000);
     }
-    setShowCode(true);
-    setStep('code');
+  }, []);
+
+  const showMessage = (type: 'success' | 'error', title: string, message: string) => {
+    setMessageModal({ visible: true, type, title, message });
   };
 
-  const handleVerifyCode = async () => {
-    if (code !== TEST_CODE) {
-      Alert.alert(t('messages.error'), t('auth.wrongCode'));
+  const handleSendCode = async () => {
+    if (!phone || phone.length < 9) {
+      showMessage('error', t('messages.error'), t('auth.enterValidPhone'));
       return;
     }
 
     setLoading(true);
+    setError('');
+    
     try {
-      await login(phone);
-      router.replace('/(tabs)/home');
-    } catch (error) {
-      Alert.alert(t('messages.error'), t('auth.loginError'));
+      // Format phone number
+      let formattedPhone = phone.trim();
+      if (!formattedPhone.startsWith('+')) {
+        formattedPhone = '+' + formattedPhone;
+      }
+      
+      await sendVerificationCode(formattedPhone);
+      setStep('code');
+      showMessage('success', 'SMS отправлено', `Код подтверждения отправлен на ${formattedPhone}`);
+    } catch (err: any) {
+      console.error('Send code error:', err);
+      let errorMessage = 'Не удалось отправить код';
+      
+      if (err.code === 'auth/invalid-phone-number') {
+        errorMessage = 'Неверный формат номера телефона';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = 'Слишком много попыток. Попробуйте позже';
+      } else if (err.code === 'auth/captcha-check-failed') {
+        errorMessage = 'Ошибка проверки reCAPTCHA. Обновите страницу';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      showMessage('error', t('messages.error'), errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!code || code.length < 4) {
+      showMessage('error', t('messages.error'), 'Введите код из SMS');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    try {
+      const firebaseUser = await verifyCode(code);
+      
+      if (firebaseUser && firebaseUser.phoneNumber) {
+        // Sync with our backend
+        await login(firebaseUser.phoneNumber);
+        router.replace('/(tabs)/home');
+      }
+    } catch (err: any) {
+      console.error('Verify code error:', err);
+      let errorMessage = 'Неверный код';
+      
+      if (err.code === 'auth/invalid-verification-code') {
+        errorMessage = 'Неверный код подтверждения';
+      } else if (err.code === 'auth/code-expired') {
+        errorMessage = 'Код истёк. Запросите новый';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      showMessage('error', t('messages.error'), errorMessage);
     } finally {
       setLoading(false);
     }
@@ -62,8 +134,10 @@ export default function LoginScreen() {
       >
         <View style={styles.content}>
           <View style={styles.logoContainer}>
-            <Ionicons name="car-sport" size={80} color="#0066CC" />
-            <Text style={styles.appName}>{t('app.name')}</Text>
+            <View style={styles.logoWrapper}>
+              <Ionicons name="car-sport" size={60} color="#FFFFFF" />
+            </View>
+            <Text style={styles.appName}>SafedAuto</Text>
             <Text style={styles.subtitle}>{t('app.welcome')}</Text>
           </View>
 
@@ -71,49 +145,67 @@ export default function LoginScreen() {
             {step === 'phone' ? (
               <>
                 <Text style={styles.label}>{t('auth.phoneNumber')}</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="+992 900 123 456"
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                  autoFocus
-                  maxLength={20}
-                />
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="call-outline" size={22} color="#64748B" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="+992 900 123 456"
+                    placeholderTextColor="#94A3B8"
+                    value={phone}
+                    onChangeText={setPhone}
+                    keyboardType="phone-pad"
+                    autoFocus
+                    maxLength={20}
+                  />
+                </View>
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[styles.button, loading && styles.buttonDisabled]}
                   onPress={handleSendCode}
+                  disabled={loading}
                 >
-                  <Text style={styles.buttonText}>{t('auth.sendCode')}</Text>
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <>
+                      <Text style={styles.buttonText}>{t('auth.sendCode')}</Text>
+                      <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+                    </>
+                  )}
                 </TouchableOpacity>
 
-                <Text style={styles.infoText}>
-                  {t('auth.loginInfo')}
-                </Text>
+                <View style={styles.infoCard}>
+                  <Ionicons name="shield-checkmark" size={24} color="#10B981" />
+                  <Text style={styles.infoText}>
+                    🔐 Защищённый вход через Firebase{'\n'}
+                    📱 SMS код будет отправлен на ваш номер
+                  </Text>
+                </View>
               </>
             ) : (
               <>
-                <Text style={styles.label}>{t('auth.enterCode')}</Text>
-                
-                {showCode && (
-                  <View style={styles.codeDisplay}>
-                    <Ionicons name="mail-open" size={24} color="#0066CC" />
-                    <Text style={styles.codeText}>
-                      {t('auth.yourCode')}: <Text style={styles.codeBold}>{TEST_CODE}</Text>
-                    </Text>
-                  </View>
-                )}
+                <View style={styles.phoneDisplay}>
+                  <Ionicons name="phone-portrait-outline" size={20} color="#0066FF" />
+                  <Text style={styles.phoneDisplayText}>{phone}</Text>
+                  <TouchableOpacity onPress={() => { setStep('phone'); setCode(''); }}>
+                    <Ionicons name="pencil" size={18} color="#64748B" />
+                  </TouchableOpacity>
+                </View>
 
-                <TextInput
-                  style={styles.input}
-                  placeholder={t('auth.enterCodePlaceholder')}
-                  value={code}
-                  onChangeText={setCode}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  autoFocus
-                />
+                <Text style={styles.label}>{t('auth.enterCode')}</Text>
+                <View style={styles.inputWrapper}>
+                  <Ionicons name="keypad-outline" size={22} color="#64748B" style={styles.inputIcon} />
+                  <TextInput
+                    style={[styles.input, styles.codeInput]}
+                    placeholder="• • • • • •"
+                    placeholderTextColor="#94A3B8"
+                    value={code}
+                    onChangeText={setCode}
+                    keyboardType="number-pad"
+                    maxLength={6}
+                    autoFocus
+                  />
+                </View>
 
                 <TouchableOpacity
                   style={[styles.button, loading && styles.buttonDisabled]}
@@ -123,29 +215,54 @@ export default function LoginScreen() {
                   {loading ? (
                     <ActivityIndicator color="#FFFFFF" />
                   ) : (
-                    <Text style={styles.buttonText}>{t('auth.verifyCode')}</Text>
+                    <>
+                      <Text style={styles.buttonText}>{t('auth.verifyCode')}</Text>
+                      <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+                    </>
                   )}
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={styles.backLink}
-                  onPress={() => {
-                    setStep('phone');
-                    setCode('');
-                    setShowCode(false);
-                  }}
+                  style={styles.resendButton}
+                  onPress={handleSendCode}
+                  disabled={loading}
                 >
-                  <Text style={styles.backLinkText}>← {t('auth.changeNumber')}</Text>
+                  <Ionicons name="refresh" size={18} color="#0066FF" />
+                  <Text style={styles.resendText}>Отправить код повторно</Text>
                 </TouchableOpacity>
-
-                <Text style={styles.infoText}>
-                  🧪 {t('auth.testMode')}
-                </Text>
               </>
             )}
           </View>
+          
+          {/* reCAPTCHA container for web */}
+          {Platform.OS === 'web' && (
+            <View nativeID="recaptcha-container" style={styles.recaptchaContainer} />
+          )}
         </View>
       </KeyboardAvoidingView>
+
+      {/* Message Modal */}
+      <Modal visible={messageModal.visible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={[styles.modalIconContainer, { backgroundColor: messageModal.type === 'success' ? '#D1FAE5' : '#FEE2E2' }]}>
+              <Ionicons 
+                name={messageModal.type === 'success' ? 'checkmark-circle' : 'alert-circle'} 
+                size={48} 
+                color={messageModal.type === 'success' ? '#10B981' : '#EF4444'} 
+              />
+            </View>
+            <Text style={styles.modalTitle}>{messageModal.title}</Text>
+            <Text style={styles.modalMessage}>{messageModal.message}</Text>
+            <TouchableOpacity 
+              style={[styles.modalButton, { backgroundColor: messageModal.type === 'success' ? '#10B981' : '#0066FF' }]}
+              onPress={() => setMessageModal({ ...messageModal, visible: false })}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -153,7 +270,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8FAFC',
   },
   keyboardView: {
     flex: 1,
@@ -167,87 +284,183 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 48,
   },
+  logoWrapper: {
+    width: 100,
+    height: 100,
+    borderRadius: 30,
+    backgroundColor: '#0066FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   appName: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginTop: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginTop: 20,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#8E8E93',
+    fontSize: 16,
+    color: '#64748B',
     marginTop: 8,
   },
   formContainer: {
     width: '100%',
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#000000',
+    color: '#0F172A',
     marginBottom: 8,
   },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 16,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
   input: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
+    flex: 1,
+    paddingVertical: 16,
+    fontSize: 17,
+    color: '#0F172A',
+  },
+  codeInput: {
+    letterSpacing: 8,
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   button: {
-    backgroundColor: '#0066CC',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: '#0066FF',
+    borderRadius: 16,
+    padding: 18,
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    justifyContent: 'center',
+    gap: 8,
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   buttonDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   buttonText: {
     color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: '700',
   },
-  infoText: {
-    textAlign: 'center',
-    color: '#8E8E93',
-    fontSize: 14,
-    marginTop: 24,
-    lineHeight: 20,
-  },
-  codeDisplay: {
-    backgroundColor: '#E5F0FF',
-    borderRadius: 12,
+  infoCard: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginTop: 24,
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+  },
+  infoText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#166534',
+    lineHeight: 20,
+  },
+  phoneDisplay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 20,
+  },
+  phoneDisplayText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0066FF',
+  },
+  resendButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 20,
+    padding: 12,
+  },
+  resendText: {
+    fontSize: 15,
+    color: '#0066FF',
+    fontWeight: '600',
+  },
+  recaptchaContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+    alignItems: 'center',
+  },
+  modalIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
-  codeText: {
-    fontSize: 16,
-    color: '#000000',
-  },
-  codeBold: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0066CC',
-    letterSpacing: 4,
-  },
-  backLink: {
-    marginTop: 16,
-    padding: 8,
-  },
-  backLinkText: {
-    fontSize: 16,
-    color: '#0066CC',
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#0F172A',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalMessage: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  modalButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 48,
+    borderRadius: 12,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
 });
