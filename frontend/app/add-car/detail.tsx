@@ -4573,7 +4573,7 @@ export default function AddCarDetailScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.5, // Уменьшаем качество для быстрой загрузки
+      quality: 0.3, // Сильное сжатие - фото до 500KB
       base64: true,
       exif: false,
     });
