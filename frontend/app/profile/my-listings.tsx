@@ -267,10 +267,10 @@ export default function MyListingsScreen() {
             
             <View style={styles.promoteOptions}>
               {[
-                { days: 3, price: '50 TJS', popular: false },
-                { days: 7, price: '100 TJS', popular: true },
-                { days: 14, price: '180 TJS', popular: false },
-                { days: 30, price: '300 TJS', popular: false },
+                { days: 3, price: '20 TJS', popular: false },
+                { days: 7, price: '40 TJS', popular: true },
+                { days: 14, price: '60 TJS', popular: false },
+                { days: 30, price: '80 TJS', popular: false },
               ].map((option) => (
                 <TouchableOpacity
                   key={option.days}
