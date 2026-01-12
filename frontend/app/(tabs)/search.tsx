@@ -348,12 +348,8 @@ export default function SearchScreen() {
                     setTimeout(() => handleSearch(), 100);
                   }}
                 >
-                  <View style={styles.brandLogoContainer}>
-                    <Image 
-                      source={{ uri: brand.logo }} 
-                      style={styles.brandLogo}
-                      resizeMode="contain"
-                    />
+                  <View style={[styles.brandLogoContainer, { backgroundColor: brand.color }]}>
+                    <Text style={styles.brandLetter}>{brand.letter}</Text>
                   </View>
                   <Text style={styles.brandName}>{brand.name}</Text>
                 </TouchableOpacity>
