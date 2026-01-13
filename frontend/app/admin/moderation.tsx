@@ -26,7 +26,7 @@ export default function AdminModerationScreen() {
   
   // Modal states
   const [confirmModal, setConfirmModal] = useState(false);
-  const [modalAction, setModalAction] = useState<'approve' | 'reject' | null>(null);
+  const [modalAction, setModalAction] = useState<'approve' | 'reject' | 'delete' | null>(null);
   const [selectedCar, setSelectedCar] = useState<{ id: string; title: string } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
