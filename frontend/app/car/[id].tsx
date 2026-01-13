@@ -464,6 +464,17 @@ export default function CarDetailsScreen() {
           </TouchableOpacity>
         )}
 
+        {/* Admin Delete Button */}
+        {isAdmin && (
+          <TouchableOpacity 
+            style={styles.adminDeleteButton} 
+            onPress={() => setDeleteModalVisible(true)}
+          >
+            <Ionicons name="trash" size={20} color="#FFFFFF" />
+            <Text style={styles.adminDeleteText}>🛡️ Удалить объявление (Модератор)</Text>
+          </TouchableOpacity>
+        )}
+
         <View style={{ height: 120 }} />
       </ScrollView>
 
