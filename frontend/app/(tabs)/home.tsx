@@ -484,6 +484,42 @@ export default function HomeScreen() {
           </View>
         }
       />
+
+      {/* Модальное окно подкатегорий запчастей */}
+      <Modal
+        visible={partsModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setPartsModalVisible(false)}
+      >
+        <View style={styles.partsModalOverlay}>
+          <View style={styles.partsModalContent}>
+            <View style={styles.partsModalHeader}>
+              <Text style={styles.partsModalTitle}>🔧 Запчасти и аксессуары</Text>
+              <TouchableOpacity onPress={() => setPartsModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.partsModalScroll} showsVerticalScrollIndicator={false}>
+              <View style={styles.partsGrid}>
+                {partsSubcategories.map((item) => (
+                  <TouchableOpacity
+                    key={item.value}
+                    style={styles.partsGridItem}
+                    onPress={() => handlePartsSubcategorySelect(item.value)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.partsGridIcon, { backgroundColor: item.color + '15' }]}>
+                      <Ionicons name={item.icon as any} size={28} color={item.color} />
+                    </View>
+                    <Text style={styles.partsGridText}>{item.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
