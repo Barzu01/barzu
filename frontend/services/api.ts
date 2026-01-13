@@ -57,6 +57,14 @@ export const carAPI = {
     const response = await api.post(`/cars/search?limit=${limit}&skip=${skip}`, filters);
     return response.data;
   },
+  getBySubcategory: async (subcategory: string, limit = 50, skip = 0) => {
+    const response = await api.get(`/cars?status=approved&subcategory=${subcategory}&limit=${limit}&skip=${skip}`);
+    return response.data;
+  },
+  getByCategory: async (category: string, limit = 50, skip = 0) => {
+    const response = await api.get(`/cars?status=approved&category=${category}&limit=${limit}&skip=${skip}`);
+    return response.data;
+  },
 };
 
 // Favorites APIs
