@@ -44,7 +44,7 @@ export default function CarDetailsScreen() {
   const [fullScreenIndex, setFullScreenIndex] = useState(0);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [sellerName, setSellerName] = useState<string>('Частное лицо');
+  const [sellerName, setSellerName] = useState<string>('Загрузка...');
   const scrollViewRef = useRef<ScrollView>(null);
   const router = useRouter();
   const { t } = useTranslation();
