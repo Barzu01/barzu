@@ -118,12 +118,17 @@ export default function CarDetailsScreen() {
         try {
           const { userAPI } = await import('../../services/api');
           const sellerData = await userAPI.getUser(data.sellerPhone);
-          if (sellerData && sellerData.name) {
+          if (sellerData && sellerData.name && sellerData.name.trim()) {
             setSellerName(sellerData.name);
+          } else {
+            setSellerName('Имя не указано');
           }
         } catch (e) {
           console.log('Could not load seller name');
+          setSellerName('Имя не указано');
         }
+      } else {
+        setSellerName('Имя не указано');
       }
       
       if (user) {
