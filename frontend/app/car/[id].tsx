@@ -646,6 +646,44 @@ export default function CarDetailsScreen() {
           />
         </View>
       </Modal>
+
+      {/* Admin Delete Confirmation Modal */}
+      <Modal visible={deleteModalVisible} transparent animationType="fade">
+        <View style={styles.deleteModalOverlay}>
+          <View style={styles.deleteModalContent}>
+            <View style={styles.deleteModalIcon}>
+              <Ionicons name="warning" size={48} color="#DC2626" />
+            </View>
+            <Text style={styles.deleteModalTitle}>🗑️ Удалить объявление?</Text>
+            <Text style={styles.deleteModalSubtitle}>
+              {car?.brand} {car?.model} ({car?.year})
+            </Text>
+            <Text style={styles.deleteModalWarning}>
+              ⚠️ Это действие нельзя отменить!
+            </Text>
+            <View style={styles.deleteModalButtons}>
+              <TouchableOpacity 
+                style={styles.deleteModalCancelBtn}
+                onPress={() => setDeleteModalVisible(false)}
+                disabled={deleteLoading}
+              >
+                <Text style={styles.deleteModalCancelText}>Отмена</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.deleteModalConfirmBtn}
+                onPress={handleDeleteCar}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <Text style={styles.deleteModalConfirmText}>Удалить</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
