@@ -55,7 +55,7 @@ export default function AdminModerationScreen() {
     loadData();
   };
 
-  const openConfirmModal = (action: 'approve' | 'reject', carId: string, carTitle: string) => {
+  const openConfirmModal = (action: 'approve' | 'reject' | 'delete', carId: string, carTitle: string) => {
     setModalAction(action);
     setSelectedCar({ id: carId, title: carTitle });
     setConfirmModal(true);
@@ -68,8 +68,10 @@ export default function AdminModerationScreen() {
     try {
       if (modalAction === 'approve') {
         await adminAPI.approveCar(selectedCar.id);
-      } else {
+      } else if (modalAction === 'reject') {
         await adminAPI.rejectCar(selectedCar.id);
+      } else if (modalAction === 'delete') {
+        await adminAPI.deleteCar(selectedCar.id);
       }
       setCars(cars.filter(car => car._id !== selectedCar.id));
       setConfirmModal(false);
