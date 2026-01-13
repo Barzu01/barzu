@@ -5892,6 +5892,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#0066FF',
   },
+  // Color selection styles
+  colorLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+    marginBottom: 12,
+  },
+  colorChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  colorChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#F1F5F9',
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+  },
+  colorChipSelected: {
+    backgroundColor: '#E8F1FF',
+    borderColor: '#0066FF',
+  },
+  colorChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  colorChipTextSelected: {
+    color: '#0066FF',
+  },
   photosContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
