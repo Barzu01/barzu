@@ -934,14 +934,24 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
+  brandCardSelected: {
+    backgroundColor: '#E8F1FF',
+    borderColor: '#0066FF',
+    borderWidth: 2,
+  },
   brandLogoContainer: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     backgroundColor: '#F8FAFC',
-    borderRadius: 12,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
+    overflow: 'hidden',
+  },
+  brandLogoImage: {
+    width: 36,
+    height: 36,
   },
   brandLogo: {
     width: 36,
@@ -960,6 +970,57 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#0F172A',
+    textAlign: 'center',
+  },
+  brandNameSelected: {
+    color: '#0066FF',
+    fontWeight: '700',
+  },
+  // Стили для результатов поиска по бренду
+  selectedBrandHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#E8F1FF',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  selectedBrandInfo: {
+    flex: 1,
+  },
+  selectedBrandTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0066FF',
+  },
+  selectedBrandCount: {
+    fontSize: 14,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  clearBrandButton: {
+    padding: 8,
+  },
+  brandResultsContainer: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  loadingContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  emptyBrandResults: {
+    alignItems: 'center',
+    padding: 40,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  emptyBrandText: {
+    fontSize: 16,
+    color: '#64748B',
+    marginTop: 12,
     textAlign: 'center',
   },
   tipsCard: {
