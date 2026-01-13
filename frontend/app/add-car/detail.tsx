@@ -4680,23 +4680,33 @@ export default function AddCarDetailScreen() {
 
     setLoading(true);
     try {
-      // Загружаем фото в Firebase Storage
+      // Обрабатываем фото - если это уже URL (http), используем напрямую
+      // Если это base64 или file://, загружаем в Firebase Storage
       let photoUrls: string[] = [];
-      if (photos.length > 0) {
-        const carId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        console.log('Uploading photos to Firebase Storage...');
-        
-        try {
-          photoUrls = await uploadMultipleImages(photos, `cars/${carId}`);
-          console.log('Photos uploaded successfully:', photoUrls.length);
-        } catch (uploadError) {
-          console.error('Error uploading photos:', uploadError);
-          // Если загрузка в Storage не удалась, используем оригинальные URL (для тестовых фото)
-          photoUrls = photos.filter(p => p.startsWith('http'));
-          if (photoUrls.length === 0) {
-            throw new Error('Не удалось загрузить фотографии');
+      
+      for (const photo of photos) {
+        if (photo.startsWith('http')) {
+          // Это уже URL - используем напрямую
+          photoUrls.push(photo);
+        } else if (photo.startsWith('data:') || photo.startsWith('file:')) {
+          // Это base64 или локальный файл - загружаем в Firebase Storage
+          try {
+            const carId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            const { uploadImage } = await import('../../services/storageService');
+            const url = await uploadImage(photo, `cars/${carId}/photo_${Date.now()}.jpg`);
+            photoUrls.push(url);
+          } catch (uploadError) {
+            console.error('Error uploading photo to Firebase:', uploadError);
+            // Пропускаем фото если не удалось загрузить
           }
         }
+      }
+      
+      console.log('Photo URLs ready:', photoUrls.length);
+      
+      if (photoUrls.length === 0) {
+        showMessage('error', t('messages.error'), 'Добавьте хотя бы одну фотографию');
+        return;
       }
 
       // Для запчастей формируем другой объект
