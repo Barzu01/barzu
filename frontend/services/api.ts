@@ -97,6 +97,10 @@ export const adminAPI = {
     const response = await api.put(`/admin/cars/${carId}/reject`);
     return response.data;
   },
+  deleteCar: async (carId: string) => {
+    const response = await api.delete(`/cars/${carId}`);
+    return response.data;
+  },
   blockUser: async (phone: string) => {
     const response = await api.put(`/admin/users/${phone}/block`);
     return response.data;
