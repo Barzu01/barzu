@@ -355,11 +355,50 @@ export default function CarDetailsScreen() {
           <Text style={styles.cardTitle}>Характеристики</Text>
           <View style={styles.specGrid}>
             <SpecItem icon="car" label="Привод" value={t(`car.${car.driveType}`)} />
-            <SpecItem icon="color-palette" label="Цвет" value={car.color} />
-            <SpecItem icon="checkbox" label="Состояние" value={t(`car.${car.condition}`)} />
             <SpecItem icon="location" label="Регион" value={t(`regions.${car.region}`)} />
           </View>
         </View>
+
+        {/* Condition */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Состояние</Text>
+          <View style={styles.conditionBadge}>
+            <Ionicons 
+              name={car.condition === 'new' ? 'sparkles' : 'checkmark-circle'} 
+              size={20} 
+              color={car.condition === 'new' ? '#10B981' : '#0066FF'} 
+            />
+            <Text style={[styles.conditionText, car.condition === 'new' && styles.conditionNew]}>
+              {t(`car.${car.condition}`)}
+            </Text>
+          </View>
+        </View>
+
+        {/* Color */}
+        {car.color && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Цвет</Text>
+            <View style={styles.colorBadge}>
+              <Ionicons name="color-palette" size={20} color="#64748B" />
+              <Text style={styles.colorText}>{car.color}</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Features/Options */}
+        {car.features && car.features.length > 0 && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Опции и комплектация</Text>
+            <View style={styles.featuresGrid}>
+              {car.features.map((feature, index) => (
+                <View key={index} style={styles.featureBadge}>
+                  <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+                  <Text style={styles.featureText}>{feature}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         {/* Description */}
         {car.description && (
