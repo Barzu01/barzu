@@ -42,10 +42,15 @@ export default function CarDetailsScreen() {
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [fullScreenVisible, setFullScreenVisible] = useState(false);
   const [fullScreenIndex, setFullScreenIndex] = useState(0);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
+
+  // Проверяем, является ли пользователь администратором/модератором
+  const isAdmin = user?.isAdmin === true;
 
   useEffect(() => {
     loadCar();
