@@ -496,7 +496,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#64748B',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalWarning: {
+    fontSize: 14,
+    color: '#DC2626',
+    textAlign: 'center',
     marginBottom: 24,
+    fontWeight: '600',
   },
   modalButtons: {
     flexDirection: 'row',
