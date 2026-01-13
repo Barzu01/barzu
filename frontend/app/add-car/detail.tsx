@@ -5117,9 +5117,8 @@ export default function AddCarDetailScreen() {
 
         {/* Condition - для авто с цветом, для запчастей без цвета */}
         <View style={styles.card}>
-          <SectionHeader title={isPartsCategory ? t('car.condition') : t('addCar.conditionColorSection')} />
+          <SectionHeader title={t('car.condition')} />
           
-          <Text style={styles.fieldLabel}>{t('car.condition')}</Text>
           <View style={styles.toggleContainer}>
             <TouchableOpacity
               style={[styles.toggleButton, formData.condition === 'new' && styles.toggleActiveGreen]}
@@ -5138,19 +5137,46 @@ export default function AddCarDetailScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
 
-          {!isPartsCategory && (
-          <>
-          <Text style={[styles.fieldLabel, { marginTop: 16 }]}>{t('car.color')}</Text>
+        {/* Color Section - отдельная секция */}
+        {!isPartsCategory && (
+        <View style={styles.card}>
+          <SectionHeader title={t('car.color')} />
+          
+          {/* Популярные цвета */}
+          <Text style={styles.colorLabel}>Популярные цвета:</Text>
+          <View style={styles.colorChips}>
+            {['Белый', 'Чёрный', 'Серый', 'Серебристый', 'Синий', 'Красный', 'Бежевый', 'Коричневый'].map((colorName) => (
+              <TouchableOpacity
+                key={colorName}
+                style={[
+                  styles.colorChip,
+                  formData.color === colorName && styles.colorChipSelected
+                ]}
+                onPress={() => setFormData({ ...formData, color: colorName })}
+              >
+                <Text style={[
+                  styles.colorChipText,
+                  formData.color === colorName && styles.colorChipTextSelected
+                ]}>
+                  {colorName}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          
+          {/* Поле для своего цвета */}
+          <Text style={[styles.colorLabel, { marginTop: 16 }]}>Или введите свой:</Text>
           <TextInput
             style={styles.input}
             value={formData.color}
             onChangeText={(text) => setFormData({ ...formData, color: text })}
-            placeholder="Например: Белый, Чёрный металлик"
+            placeholder="Например: Белый перламутр, Чёрный металлик"
             placeholderTextColor="#94A3B8"
           />
-          </>
-          )}
+        </View>
+        )}
         </View>
 
         {/* Features - только для авто */}
