@@ -136,6 +136,14 @@ export default function AdminModerationScreen() {
           <Ionicons name="close-circle" size={20} color="#FFFFFF" />
           <Text style={styles.rejectButtonText}>Отклонить</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => openConfirmModal('delete', item._id!, `${item.brand} ${item.model}`)}
+        >
+          <Ionicons name="trash" size={20} color="#FFFFFF" />
+          <Text style={styles.deleteButtonText}>Удалить</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
