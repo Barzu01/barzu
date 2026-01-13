@@ -96,10 +96,36 @@ export default function HomeScreen() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [partsModalVisible, setPartsModalVisible] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Подкатегории запчастей и аксессуаров
+  const partsSubcategories = [
+    { value: 'auto_parts', label: 'Автозапчасти', icon: 'construct', color: '#0066FF' },
+    { value: 'moto_parts', label: 'Мотозапчасти', icon: 'bicycle', color: '#F59E0B' },
+    { value: 'tires_wheels', label: 'Шины и диски', icon: 'ellipse-outline', color: '#1A1A1A' },
+    { value: 'oils_chemistry', label: 'Масла и автохимия', icon: 'water', color: '#10B981' },
+    { value: 'accessories', label: 'Аксессуары', icon: 'car', color: '#8B5CF6' },
+    { value: 'audio_video', label: 'Аудио и видео', icon: 'musical-notes', color: '#EC4899' },
+    { value: 'gps_video', label: 'GPS и видеорегистраторы', icon: 'navigate', color: '#06B6D4' },
+    { value: 'roof_racks', label: 'Багажники и рейлинги', icon: 'cube', color: '#84CC16' },
+    { value: 'anti_theft', label: 'Противоугонные системы', icon: 'lock-closed', color: '#EF4444' },
+    { value: 'special_parts', label: 'Спецтехника', icon: 'cog', color: '#F97316' },
+    { value: 'moto_accessories', label: 'Мотоаксессуары', icon: 'speedometer', color: '#6366F1' },
+    { value: 'for_parts', label: 'Авто на запчасти', icon: 'car-sport', color: '#64748B' },
+  ];
+
+  const handlePartsSubcategorySelect = (subcategory: string) => {
+    setPartsModalVisible(false);
+    // Переход на поиск с фильтром по подкатегории
+    router.push({
+      pathname: '/(tabs)/search',
+      params: { category: 'auto_parts', subcategory: subcategory }
+    });
+  };
 
   // Animation interpolations
   const expandableHeaderHeight = scrollY.interpolate({
