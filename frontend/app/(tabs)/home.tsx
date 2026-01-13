@@ -417,6 +417,31 @@ export default function HomeScreen() {
         </View>
       </Animated.View>
 
+      {/* Запчасти и аксессуары - баннер */}
+      <TouchableOpacity 
+        style={styles.partsBanner}
+        onPress={() => setPartsModalVisible(true)}
+        activeOpacity={0.9}
+      >
+        <LinearGradient
+          colors={['#FF6B35', '#F7931E']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.partsBannerGradient}
+        >
+          <View style={styles.partsBannerContent}>
+            <View style={styles.partsBannerIcon}>
+              <Ionicons name="construct" size={24} color="#FFFFFF" />
+            </View>
+            <View style={styles.partsBannerText}>
+              <Text style={styles.partsBannerTitle}>🔧 Запчасти и аксессуары</Text>
+              <Text style={styles.partsBannerSubtitle}>Шины, масла, автозвук и многое другое</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#FFFFFF" />
+          </View>
+        </LinearGradient>
+      </TouchableOpacity>
+
       {/* Section title */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>
