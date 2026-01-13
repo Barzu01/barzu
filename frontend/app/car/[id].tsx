@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { carAPI, favoritesAPI, reportAPI, viewAPI, recentlyViewedAPI } from '../../services/api';
+import { carAPI, favoritesAPI, reportAPI, viewAPI, recentlyViewedAPI, adminAPI } from '../../services/api';
 import { CarListing } from '../../types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
