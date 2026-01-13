@@ -437,17 +437,17 @@ export default function HomeScreen() {
             </View>
           </LinearGradient>
         </TouchableOpacity>
-      </Animated.View>
 
-      {/* Section title */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>
-          {selectedCategory && selectedCategory !== 'all' 
-            ? categories.find(c => c.id === selectedCategory)?.name 
-            : t('categories.allListings')}
-        </Text>
-        <Text style={styles.sectionCount}>{filteredCars.length}</Text>
-      </View>
+        {/* Section title */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>
+            {selectedCategory && selectedCategory !== 'all' 
+              ? categories.find(c => c.id === selectedCategory)?.name 
+              : t('categories.allListings')}
+          </Text>
+          <Text style={styles.sectionCount}>{filteredCars.length}</Text>
+        </View>
+      </Animated.View>
 
       {/* Car List */}
       <FlatList
