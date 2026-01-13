@@ -427,13 +427,13 @@ export default function HomeScreen() {
           >
             <View style={styles.partsBannerContent}>
               <View style={styles.partsBannerIcon}>
-                <Ionicons name="construct" size={24} color="#FFFFFF" />
+                <Ionicons name="construct" size={20} color="#FFFFFF" />
               </View>
               <View style={styles.partsBannerText}>
                 <Text style={styles.partsBannerTitle}>🔧 Запчасти и аксессуары</Text>
-                <Text style={styles.partsBannerSubtitle}>Шины, масла, автозвук и многое другое</Text>
+                <Text style={styles.partsBannerSubtitle}>Шины, масла, автозвук и другое</Text>
               </View>
-              <Ionicons name="chevron-forward" size={24} color="#FFFFFF" />
+              <Ionicons name="chevron-forward" size={20} color="#FFFFFF" />
             </View>
           </LinearGradient>
         </TouchableOpacity>
