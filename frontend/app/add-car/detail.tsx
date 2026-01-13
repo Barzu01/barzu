@@ -4680,6 +4680,25 @@ export default function AddCarDetailScreen() {
 
     setLoading(true);
     try {
+      // Загружаем фото в Firebase Storage
+      let photoUrls: string[] = [];
+      if (photos.length > 0) {
+        const carId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        console.log('Uploading photos to Firebase Storage...');
+        
+        try {
+          photoUrls = await uploadMultipleImages(photos, `cars/${carId}`);
+          console.log('Photos uploaded successfully:', photoUrls.length);
+        } catch (uploadError) {
+          console.error('Error uploading photos:', uploadError);
+          // Если загрузка в Storage не удалась, используем оригинальные URL (для тестовых фото)
+          photoUrls = photos.filter(p => p.startsWith('http'));
+          if (photoUrls.length === 0) {
+            throw new Error('Не удалось загрузить фотографии');
+          }
+        }
+      }
+
       // Для запчастей формируем другой объект
       if (isPartsCategory) {
         const partData = {
@@ -4698,7 +4717,7 @@ export default function AddCarDetailScreen() {
           subcategory: formData.subcategory,
           description: formData.description || '',
           features: [],
-          photos,
+          photos: photoUrls,
           sellerPhone: user.phone,
           sellerId: user._id || user.phone,
           status: 'pending' as const,
@@ -4725,7 +4744,7 @@ export default function AddCarDetailScreen() {
           category: formData.category || 'cars',
           description: formData.description || '',
           features: formData.features || [],
-          photos,
+          photos: photoUrls,
           sellerPhone: user.phone,
           sellerId: user._id || user.phone,
           status: 'pending' as const,
