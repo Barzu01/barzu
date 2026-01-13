@@ -113,6 +113,19 @@ export default function CarDetailsScreen() {
       const data = await carAPI.getById(id as string);
       setCar(data);
       
+      // Загружаем имя продавца
+      if (data.sellerPhone) {
+        try {
+          const { userAPI } = await import('../../services/api');
+          const sellerData = await userAPI.getUser(data.sellerPhone);
+          if (sellerData && sellerData.name) {
+            setSellerName(sellerData.name);
+          }
+        } catch (e) {
+          console.log('Could not load seller name');
+        }
+      }
+      
       if (user) {
         const favorites = await favoritesAPI.getAll(user.phone);
         setIsFavorite(favorites.some((fav: CarListing) => fav._id === id));
