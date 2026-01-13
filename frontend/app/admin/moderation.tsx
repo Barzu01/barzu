@@ -219,11 +219,18 @@ export default function AdminModerationScreen() {
               />
             </View>
             <Text style={styles.modalTitle}>
-              {modalAction === 'approve' ? 'Одобрить объявление?' : 'Отклонить объявление?'}
+              {modalAction === 'approve' ? 'Одобрить объявление?' : 
+               modalAction === 'reject' ? 'Отклонить объявление?' : 
+               '🗑️ Удалить объявление?'}
             </Text>
             <Text style={styles.modalSubtitle}>
               {selectedCar?.title}
             </Text>
+            {modalAction === 'delete' && (
+              <Text style={styles.modalWarning}>
+                ⚠️ Это действие нельзя отменить!
+              </Text>
+            )}
             
             <View style={styles.modalButtons}>
               <TouchableOpacity 
@@ -237,7 +244,8 @@ export default function AdminModerationScreen() {
               <TouchableOpacity 
                 style={[
                   styles.modalConfirmButton,
-                  { backgroundColor: modalAction === 'approve' ? '#10B981' : '#EF4444' }
+                  { backgroundColor: modalAction === 'approve' ? '#10B981' : 
+                                     modalAction === 'delete' ? '#DC2626' : '#EF4444' }
                 ]}
                 onPress={handleConfirmAction}
                 disabled={actionLoading}
@@ -246,7 +254,8 @@ export default function AdminModerationScreen() {
                   <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
                   <Text style={styles.modalConfirmText}>
-                    {modalAction === 'approve' ? 'Одобрить' : 'Отклонить'}
+                    {modalAction === 'approve' ? 'Одобрить' : 
+                     modalAction === 'delete' ? 'Удалить' : 'Отклонить'}
                   </Text>
                 )}
               </TouchableOpacity>
