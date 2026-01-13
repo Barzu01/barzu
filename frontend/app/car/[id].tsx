@@ -116,18 +116,23 @@ export default function CarDetailsScreen() {
       // Загружаем имя продавца
       if (data.sellerPhone) {
         try {
+          console.log('SELLER_DEBUG: Loading seller for phone:', data.sellerPhone);
           const { userAPI } = await import('../../services/api');
           const sellerData = await userAPI.getUser(data.sellerPhone);
+          console.log('SELLER_DEBUG: Got seller data:', sellerData);
           if (sellerData && sellerData.name && sellerData.name.trim()) {
+            console.log('SELLER_DEBUG: Setting name to:', sellerData.name);
             setSellerName(sellerData.name);
           } else {
+            console.log('SELLER_DEBUG: No name, setting to Имя не указано');
             setSellerName('Имя не указано');
           }
         } catch (e) {
-          console.log('Could not load seller name');
+          console.log('SELLER_DEBUG: Error loading seller:', e);
           setSellerName('Имя не указано');
         }
       } else {
+        console.log('SELLER_DEBUG: No seller phone');
         setSellerName('Имя не указано');
       }
       
