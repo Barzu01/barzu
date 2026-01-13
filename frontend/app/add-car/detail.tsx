@@ -5139,42 +5139,81 @@ export default function AddCarDetailScreen() {
           </View>
         </View>
 
-        {/* Color Section - отдельная секция */}
+        {/* Color Section - каталог цветов как на auto.ru */}
         {!isPartsCategory && (
         <View style={styles.card}>
           <SectionHeader title={t('car.color')} />
           
-          {/* Популярные цвета */}
-          <Text style={styles.colorLabel}>Популярные цвета:</Text>
-          <View style={styles.colorChips}>
-            {['Белый', 'Чёрный', 'Серый', 'Серебристый', 'Синий', 'Красный', 'Бежевый', 'Коричневый'].map((colorName) => (
+          {/* Каталог цветов в стиле auto.ru */}
+          <View style={styles.colorCatalog}>
+            {[
+              { name: 'Белый', hex: '#FFFFFF', border: '#E2E8F0' },
+              { name: 'Чёрный', hex: '#1A1A1A', border: '#1A1A1A' },
+              { name: 'Серый', hex: '#808080', border: '#808080' },
+              { name: 'Серебристый', hex: '#C0C0C0', border: '#A0A0A0' },
+              { name: 'Синий', hex: '#0066CC', border: '#0066CC' },
+              { name: 'Голубой', hex: '#4FC3F7', border: '#4FC3F7' },
+              { name: 'Красный', hex: '#DC2626', border: '#DC2626' },
+              { name: 'Бордовый', hex: '#7B1E1E', border: '#7B1E1E' },
+              { name: 'Зелёный', hex: '#16A34A', border: '#16A34A' },
+              { name: 'Жёлтый', hex: '#FACC15', border: '#D4A90A' },
+              { name: 'Оранжевый', hex: '#F97316', border: '#F97316' },
+              { name: 'Коричневый', hex: '#8B4513', border: '#8B4513' },
+              { name: 'Бежевый', hex: '#D4B896', border: '#B89B7A' },
+              { name: 'Фиолетовый', hex: '#7C3AED', border: '#7C3AED' },
+              { name: 'Золотистый', hex: '#D4AF37', border: '#B8942E' },
+            ].map((colorItem) => (
               <TouchableOpacity
-                key={colorName}
+                key={colorItem.name}
                 style={[
-                  styles.colorChip,
-                  formData.color === colorName && styles.colorChipSelected
+                  styles.colorCatalogItem,
+                  formData.color === colorItem.name && styles.colorCatalogItemSelected
                 ]}
-                onPress={() => setFormData({ ...formData, color: colorName })}
+                onPress={() => setFormData({ ...formData, color: colorItem.name })}
+                activeOpacity={0.7}
               >
-                <Text style={[
-                  styles.colorChipText,
-                  formData.color === colorName && styles.colorChipTextSelected
+                <View style={[
+                  styles.colorCircle,
+                  { backgroundColor: colorItem.hex, borderColor: colorItem.border },
+                  formData.color === colorItem.name && styles.colorCircleSelected
                 ]}>
-                  {colorName}
+                  {formData.color === colorItem.name && (
+                    <Ionicons 
+                      name="checkmark" 
+                      size={16} 
+                      color={colorItem.hex === '#FFFFFF' || colorItem.hex === '#FACC15' ? '#1A1A1A' : '#FFFFFF'} 
+                    />
+                  )}
+                </View>
+                <Text style={[
+                  styles.colorCatalogText,
+                  formData.color === colorItem.name && styles.colorCatalogTextSelected
+                ]}>
+                  {colorItem.name}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
           
           {/* Поле для своего цвета */}
-          <Text style={[styles.colorLabel, { marginTop: 16 }]}>Или введите свой:</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.color}
-            onChangeText={(text) => setFormData({ ...formData, color: text })}
-            placeholder="Например: Белый перламутр, Чёрный металлик"
-            placeholderTextColor="#94A3B8"
-          />
+          <View style={styles.customColorSection}>
+            <Text style={styles.customColorLabel}>Другой цвет:</Text>
+            <TextInput
+              style={styles.customColorInput}
+              value={!['Белый', 'Чёрный', 'Серый', 'Серебристый', 'Синий', 'Голубой', 'Красный', 'Бордовый', 'Зелёный', 'Жёлтый', 'Оранжевый', 'Коричневый', 'Бежевый', 'Фиолетовый', 'Золотистый'].includes(formData.color) ? formData.color : ''}
+              onChangeText={(text) => setFormData({ ...formData, color: text })}
+              placeholder="Белый перламутр, Чёрный металлик..."
+              placeholderTextColor="#94A3B8"
+            />
+          </View>
+          
+          {/* Выбранный цвет */}
+          {formData.color && (
+            <View style={styles.selectedColorBadge}>
+              <Ionicons name="color-palette" size={16} color="#0066FF" />
+              <Text style={styles.selectedColorText}>Выбрано: {formData.color}</Text>
+            </View>
+          )}
         </View>
         )}
 
