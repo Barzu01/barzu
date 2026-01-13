@@ -22,7 +22,6 @@ import { carAPI, brandsAPI } from '../../services/api';
 import { REGIONS } from '../../constants/carData';
 import { BODY_TYPES, CAR_FEATURES, ENGINE_VOLUMES, COLORS } from '../../constants/theme';
 import SearchableSelect from '../../components/SearchableSelect';
-import { uploadMultipleImages } from '../../services/storageService';
 
 interface Brand {
   name: string;
