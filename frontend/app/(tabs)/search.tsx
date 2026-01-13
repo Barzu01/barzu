@@ -372,49 +372,137 @@ export default function SearchScreen() {
           contentContainerStyle={styles.suggestionsContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Popular Brands */}
+          {/* Selected Brand Header */}
+          {selectedBrand && (
+            <View style={styles.selectedBrandHeader}>
+              <View style={styles.selectedBrandInfo}>
+                <Text style={styles.selectedBrandTitle}>Марка: {selectedBrand}</Text>
+                <Text style={styles.selectedBrandCount}>{brandResults.length} объявлений</Text>
+              </View>
+              <TouchableOpacity style={styles.clearBrandButton} onPress={clearBrandFilter}>
+                <Ionicons name="close-circle" size={24} color="#64748B" />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Brand Results */}
+          {selectedBrand && loadingBrand && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#0066FF" />
+            </View>
+          )}
+
+          {selectedBrand && !loadingBrand && brandResults.length > 0 && (
+            <View style={styles.brandResultsContainer}>
+              {brandResults.map((car) => (
+                <TouchableOpacity
+                  key={car._id}
+                  style={styles.carCard}
+                  onPress={() => router.push({ pathname: '/car/[id]', params: { id: car._id } })}
+                  activeOpacity={0.9}
+                >
+                  {car.photos && car.photos.length > 0 ? (
+                    <Image
+                      source={{ uri: car.photos[0] }}
+                      style={styles.carImage}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View style={[styles.carImage, styles.noImage]}>
+                      <Ionicons name="car-outline" size={48} color="#CBD5E1" />
+                    </View>
+                  )}
+                  <TouchableOpacity 
+                    style={styles.favoriteButton}
+                    onPress={(e) => toggleFavorite(car._id!, e)}
+                  >
+                    <Ionicons 
+                      name={favoriteIds.has(car._id!) ? "heart" : "heart-outline"} 
+                      size={22} 
+                      color={favoriteIds.has(car._id!) ? "#EF4444" : "#FFFFFF"} 
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.carInfo}>
+                    <Text style={styles.carTitle} numberOfLines={1}>
+                      {car.brand} {car.model}
+                    </Text>
+                    <Text style={styles.carPrice}>{formatPrice(car.price)}</Text>
+                    <View style={styles.carSpecs}>
+                      <View style={styles.specBadge}>
+                        <Text style={styles.specText}>{car.year}</Text>
+                      </View>
+                      {car.mileage && (
+                        <View style={styles.specBadge}>
+                          <Text style={styles.specText}>{car.mileage} км</Text>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {selectedBrand && !loadingBrand && brandResults.length === 0 && (
+            <View style={styles.emptyBrandResults}>
+              <Ionicons name="car-outline" size={48} color="#94A3B8" />
+              <Text style={styles.emptyBrandText}>Нет объявлений марки {selectedBrand}</Text>
+            </View>
+          )}
+
+          {/* Popular Brands - показываем всегда или только когда нет выбранного бренда */}
           <View style={styles.suggestionsSection}>
             <Text style={styles.sectionTitle}>🔥 {t('search.popularBrands')}</Text>
             <View style={styles.brandsGrid}>
               {popularBrands.map(brand => (
                 <TouchableOpacity
                   key={brand.name}
-                  style={styles.brandCard}
-                  onPress={() => {
-                    setSearchText(brand.name);
-                    setTimeout(() => handleSearch(), 100);
-                  }}
+                  style={[
+                    styles.brandCard,
+                    selectedBrand === brand.name && styles.brandCardSelected
+                  ]}
+                  onPress={() => searchByBrand(brand.name)}
                 >
                   <View style={[styles.brandLogoContainer, { backgroundColor: brand.color }]}>
-                    <Text style={styles.brandLetter}>{brand.letter}</Text>
+                    <Image
+                      source={{ uri: brand.logo }}
+                      style={styles.brandLogoImage}
+                      resizeMode="contain"
+                      defaultSource={{ uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' }}
+                    />
                   </View>
-                  <Text style={styles.brandName}>{brand.name}</Text>
+                  <Text style={[
+                    styles.brandName,
+                    selectedBrand === brand.name && styles.brandNameSelected
+                  ]}>{brand.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          {/* Tips */}
-          <View style={styles.tipsCard}>
-            <View style={styles.tipsHeader}>
-              <Ionicons name="bulb" size={24} color="#F59E0B" />
-              <Text style={styles.tipsTitle}>{t('search.searchTips')}</Text>
+          {/* Tips - показываем только когда нет выбранного бренда */}
+          {!selectedBrand && (
+            <View style={styles.tipsCard}>
+              <View style={styles.tipsHeader}>
+                <Ionicons name="bulb" size={24} color="#F59E0B" />
+                <Text style={styles.tipsTitle}>{t('search.searchTips')}</Text>
+              </View>
+              <View style={styles.tipsList}>
+                <View style={styles.tipItem}>
+                  <View style={styles.tipBullet} />
+                  <Text style={styles.tipText}>{t('search.tipBrand')}</Text>
+                </View>
+                <View style={styles.tipItem}>
+                  <View style={styles.tipBullet} />
+                  <Text style={styles.tipText}>{t('search.tipBrandModel')}</Text>
+                </View>
+                <View style={styles.tipItem}>
+                  <View style={styles.tipBullet} />
+                  <Text style={styles.tipText}>{t('search.tipModel')}</Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.tipsList}>
-              <View style={styles.tipItem}>
-                <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>{t('search.tipBrand')}</Text>
-              </View>
-              <View style={styles.tipItem}>
-                <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>{t('search.tipBrandModel')}</Text>
-              </View>
-              <View style={styles.tipItem}>
-                <View style={styles.tipBullet} />
-                <Text style={styles.tipText}>{t('search.tipModel')}</Text>
-              </View>
-            </View>
-          </View>
+          )}
         </ScrollView>
       )}
 
