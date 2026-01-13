@@ -769,6 +769,7 @@ const styles = StyleSheet.create({
   sellerAvatar: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#F1F5F9', justifyContent: 'center', alignItems: 'center' },
   sellerDetails: { flex: 1 },
   sellerName: { fontSize: 16, fontWeight: '600', color: '#0F172A', marginBottom: 2 },
+  sellerLocationRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   sellerLocation: { fontSize: 14, color: '#64748B' },
   reportButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, marginBottom: 16 },
   reportText: { fontSize: 14, color: '#EF4444', fontWeight: '500' },
