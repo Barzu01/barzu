@@ -21,8 +21,10 @@ import {
   initRecaptcha 
 } from '../../services/firebaseAuth';
 
-// Тестовый режим - включить если Firebase не работает
-const USE_TEST_MODE = false; // Firebase SMS включен!
+// Тестовый режим для мобильных устройств (Firebase Phone Auth требует нативную сборку)
+// На веб работает Firebase SMS, на мобильных - тестовый режим
+import { Platform } from 'react-native';
+const USE_TEST_MODE_DEFAULT = Platform.OS !== 'web'; // Тестовый режим на мобильных
 const TEST_CODE = '1234';
 
 export default function LoginScreen() {
