@@ -335,13 +335,19 @@ async def get_user_car_listings(user_id: str, limit: int = 50, skip: int = 0):
 @api_router.get("/cars", response_model=List[CarListingResponse])
 async def get_car_listings(
     status: Optional[str] = 'approved',
+    category: Optional[str] = None,
+    subcategory: Optional[str] = None,
     limit: int = 50,
     skip: int = 0
 ):
-    """Get car listings"""
+    """Get car listings with optional category/subcategory filter"""
     query = {}
     if status:
         query["status"] = status
+    if category:
+        query["category"] = category
+    if subcategory:
+        query["subcategory"] = subcategory
     
     cars = await db.cars.find(query).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
     return [serialize_doc(car) for car in cars]
