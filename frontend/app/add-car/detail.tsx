@@ -5177,7 +5177,6 @@ export default function AddCarDetailScreen() {
           />
         </View>
         )}
-        </View>
 
         {/* Features - только для авто */}
         {!isPartsCategory && (
