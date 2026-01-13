@@ -198,6 +198,22 @@ export default function CarDetailsScreen() {
     setReportModalVisible(false);
   };
 
+  // Delete function for admins
+  const handleDeleteCar = async () => {
+    if (!car?._id) return;
+    setDeleteLoading(true);
+    try {
+      await adminAPI.deleteCar(car._id);
+      setDeleteModalVisible(false);
+      router.replace('/(tabs)/home');
+    } catch (error) {
+      console.error('Error deleting car:', error);
+      Alert.alert('Ошибка', 'Не удалось удалить объявление');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const handleImageScroll = (event: any) => {
     const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentImageIndex(slideIndex);
