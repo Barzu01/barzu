@@ -120,11 +120,8 @@ export default function HomeScreen() {
 
   const handlePartsSubcategorySelect = (subcategory: string) => {
     setPartsModalVisible(false);
-    // Переход на поиск с фильтром по подкатегории
-    router.push({
-      pathname: '/(tabs)/search',
-      params: { category: 'auto_parts', subcategory: subcategory }
-    });
+    // Переход на страницу подкатегории запчастей
+    router.push(`/parts/${subcategory}`);
   };
 
   // Animation interpolations
