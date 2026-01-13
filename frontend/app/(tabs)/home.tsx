@@ -871,25 +871,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   partsBannerIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   partsBannerText: {
     flex: 1,
   },
   partsBannerTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 2,
   },
   partsBannerSubtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'rgba(255,255,255,0.85)',
   },
   // Стили для модального окна подкатегорий
