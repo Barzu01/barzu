@@ -457,9 +457,10 @@ export default function CarDetailsScreen() {
             </View>
             <View style={styles.sellerDetails}>
               <Text style={styles.sellerName}>{sellerName}</Text>
-              <Text style={styles.sellerLocation}>
-                <Ionicons name="location" size={12} color="#64748B" /> {t(`regions.${car.region}`)}
-              </Text>
+              <View style={styles.sellerLocationRow}>
+                <Ionicons name="location" size={12} color="#64748B" />
+                <Text style={styles.sellerLocation}>{t(`regions.${car.region}`)}</Text>
+              </View>
             </View>
           </View>
         </View>
