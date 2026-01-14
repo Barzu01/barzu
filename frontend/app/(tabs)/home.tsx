@@ -23,7 +23,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
-const HEADER_MAX_HEIGHT = 220; // Max height for categories + parts banner + section title
+const HEADER_MAX_HEIGHT = 260; // Max height for categories + parts banner + section title
 const HEADER_MIN_HEIGHT = 0; // Min height (collapsed)
 
 // Логотипы автопроизводителей (надёжные Wikipedia CDN ссылки)
