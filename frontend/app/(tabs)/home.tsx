@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   listContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     paddingBottom: 20,
     gap: 16,
   },
