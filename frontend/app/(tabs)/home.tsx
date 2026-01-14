@@ -539,7 +539,6 @@ const styles = StyleSheet.create({
   expandableHeader: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 0,
-    overflow: 'hidden',
     paddingTop: 8,
   },
   centerContainer: {
