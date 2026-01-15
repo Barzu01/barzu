@@ -793,12 +793,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '800',
     color: '#0066FF',
-    marginBottom: 12,
+    marginBottom: 4,
   },
   currency: {
     fontSize: 16,
     fontWeight: '600',
     color: '#64748B',
+  },
+  listingNumber: {
+    fontSize: 11,
+    color: '#94A3B8',
+    marginBottom: 10,
   },
   specRow: {
     flexDirection: 'row',
