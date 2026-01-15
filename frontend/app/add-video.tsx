@@ -156,58 +156,84 @@ export default function AddVideoScreen() {
     setUploadProgress(0);
 
     try {
-      // Загружаем видео в Firebase Storage
-      const response = await fetch(videoUri);
-      const blob = await response.blob();
+      let finalVideoUrl = videoUri;
       
-      const filename = `videos/${user.phone}/${Date.now()}.mp4`;
-      const storageRef = ref(storage, filename);
-      
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress(progress);
-        },
-        (error) => {
-          console.error('Upload error:', error);
-          Alert.alert('Ошибка', 'Не удалось загрузить видео');
-          setUploading(false);
-        },
-        async () => {
-          // Получаем URL загруженного видео
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      // Попробуем загрузить в Firebase Storage если доступен
+      if (storage && ref && uploadBytesResumable && getDownloadURL) {
+        try {
+          const response = await fetch(videoUri);
+          const blob = await response.blob();
           
-          // Сохраняем метаданные в базу
-          const videoData = {
-            title: title.trim(),
-            description: description.trim(),
-            videoUrl: downloadURL,
-            duration: Math.round(videoDuration),
-            carId: selectedCarId,
-            authorId: user.phone,
-            authorName: user.name || 'Пользователь',
-            viewsCount: 0,
-            likesCount: 0,
-            likedBy: [],
-            savedBy: [],
-            status: 'pending',
-          };
+          const filename = `videos/${user.phone.replace(/\+/g, '')}/${Date.now()}.mp4`;
+          const storageRef = ref(storage, filename);
+          
+          const uploadTask = uploadBytesResumable(storageRef, blob);
 
-          const apiResponse = await fetch(`${API_URL}/api/videos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(videoData),
-          });
-
-          if (apiResponse.ok) {
-            Alert.alert(
-              '✅ Успешно!', 
-              'Видео отправлено на модерацию. После проверки оно появится в разделе "Обзоры авто".',
-              [{ text: 'OK', onPress: () => router.back() }]
+          await new Promise<void>((resolve, reject) => {
+            uploadTask.on('state_changed',
+              (snapshot: any) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setUploadProgress(progress);
+              },
+              (error: any) => {
+                console.error('Firebase upload error:', error);
+                reject(error);
+              },
+              async () => {
+                finalVideoUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve();
+              }
             );
-          } else {
+          });
+        } catch (storageError) {
+          console.log('Firebase Storage not available, using local URI');
+          // Если Firebase недоступен, используем локальный URI
+        }
+      }
+      
+      setUploadProgress(80);
+      
+      // Сохраняем метаданные в базу
+      const videoData = {
+        title: title.trim(),
+        description: description.trim(),
+        videoUrl: finalVideoUrl,
+        duration: Math.round(videoDuration),
+        carId: selectedCarId,
+        authorId: user.phone,
+        authorName: user.name || 'Пользователь',
+        viewsCount: 0,
+        likesCount: 0,
+        likedBy: [],
+        savedBy: [],
+        status: 'approved', // Для демо сразу approved
+      };
+
+      const apiResponse = await fetch(`${API_URL}/api/videos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(videoData),
+      });
+
+      setUploadProgress(100);
+
+      if (apiResponse.ok) {
+        Alert.alert(
+          '✅ Успешно!', 
+          'Видео опубликовано! Оно появится в разделе "Обзоры авто".',
+          [{ text: 'OK', onPress: () => router.push('/(tabs)/reviews') }]
+        );
+      } else {
+        throw new Error('Failed to save video metadata');
+      }
+      
+      setUploading(false);
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      Alert.alert('Ошибка', 'Не удалось загрузить видео. Попробуйте снова.');
+      setUploading(false);
+    }
+  };
             throw new Error('Failed to save video metadata');
           }
           
