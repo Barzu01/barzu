@@ -337,11 +337,39 @@ async def update_user(phone: str, name: Optional[str] = None):
     return serialize_doc(user)
 
 
+# ===== LISTING NUMBER GENERATION =====
+async def generate_listing_number():
+    """Generate unique listing number in format SA-XXXXXX"""
+    # Находим последний номер объявления
+    last_listing = await db.cars.find_one(
+        {"listingNumber": {"$exists": True, "$ne": None}},
+        sort=[("listingNumber", -1)]
+    )
+    
+    if last_listing and last_listing.get("listingNumber"):
+        # Извлекаем номер из SA-XXXXXX
+        try:
+            last_num = int(last_listing["listingNumber"].split("-")[1])
+            new_num = last_num + 1
+        except:
+            new_num = 1
+    else:
+        # Если нет объявлений с номером, начинаем с количества существующих + 1
+        count = await db.cars.count_documents({})
+        new_num = count + 1
+    
+    return f"SA-{new_num:06d}"
+
+
 # ===== CAR LISTING ENDPOINTS =====
 @api_router.post("/cars", response_model=CarListingResponse)
 async def create_car_listing(car: CarListing):
     """Create new car listing"""
     car_dict = car.model_dump()
+    
+    # Генерируем уникальный номер объявления
+    car_dict["listingNumber"] = await generate_listing_number()
+    
     result = await db.cars.insert_one(car_dict)
     new_car = await db.cars.find_one({"_id": result.inserted_id})
     return serialize_doc(new_car)
