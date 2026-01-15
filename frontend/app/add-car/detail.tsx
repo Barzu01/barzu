@@ -5932,6 +5932,9 @@ const styles = StyleSheet.create({
   toggleActiveGreen: {
     backgroundColor: '#10B981',
   },
+  toggleActiveRed: {
+    backgroundColor: '#EF4444',
+  },
   toggleText: {
     fontSize: 15,
     fontWeight: '600',
