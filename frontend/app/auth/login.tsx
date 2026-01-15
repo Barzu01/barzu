@@ -32,6 +32,8 @@ export default function LoginScreen() {
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [loading, setLoading] = useState(false);
   const [useTestMode, setUseTestMode] = useState(USE_TEST_MODE_DEFAULT);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showTermsError, setShowTermsError] = useState(false);
   const [messageModal, setMessageModal] = useState<{visible: boolean; type: 'success' | 'error'; title: string; message: string}>({
     visible: false,
     type: 'error',
