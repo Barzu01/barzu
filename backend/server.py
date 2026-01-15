@@ -172,6 +172,7 @@ class CarListing(BaseModel):
     photos: List[str] = Field(default_factory=list, max_length=10)
     sellerPhone: str
     sellerId: str
+    listingNumber: Optional[str] = None  # Уникальный номер объявления SA-XXXXXX
     status: Literal['pending', 'approved', 'rejected'] = 'pending'
     isPromoted: bool = False  # Продвигаемое объявление
     promotedUntil: Optional[datetime] = None  # До какого времени продвигается
