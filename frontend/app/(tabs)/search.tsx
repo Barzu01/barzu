@@ -19,6 +19,9 @@ import { carAPI, favoritesAPI, advancedSearchAPI } from '../../services/api';
 import { CarListing } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { REGIONS } from '../../constants/carData';
+import Constants from 'expo-constants';
+
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safedauto-2.preview.emergentagent.com';
 
 export default function SearchScreen() {
   const router = useRouter();
