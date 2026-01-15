@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   Modal,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
