@@ -821,4 +821,56 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 18,
   },
+  checkboxTouchable: {
+    marginRight: 12,
+    marginTop: 2,
+  },
+  // Terms Modal styles
+  termsModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  termsModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '90%',
+    paddingBottom: 20,
+  },
+  termsModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  termsModalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  termsModalScroll: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+  },
+  termsModalText: {
+    fontSize: 14,
+    color: '#374151',
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+  termsModalButton: {
+    backgroundColor: '#0066FF',
+    marginHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  termsModalButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
 });
