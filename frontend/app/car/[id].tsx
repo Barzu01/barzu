@@ -761,6 +761,7 @@ const styles = StyleSheet.create({
   yearText: { fontSize: 14, fontWeight: '700', color: '#0066FF' },
   price: { fontSize: 32, fontWeight: '800', color: '#0066FF' },
   currency: { fontSize: 20, fontWeight: '600', color: '#64748B' },
+  listingNumberDetail: { fontSize: 13, color: '#94A3B8', marginTop: 8 },
   quickStats: { flexDirection: 'row', backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, marginBottom: 16, shadowColor: '#0F172A', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
   statItem: { flex: 1, alignItems: 'center' },
   statValue: { fontSize: 16, fontWeight: '700', color: '#0F172A', marginTop: 6 },
