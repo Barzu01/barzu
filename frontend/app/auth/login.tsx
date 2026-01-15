@@ -191,6 +191,38 @@ export default function LoginScreen() {
                   />
                 </View>
 
+                {/* Ошибка - не согласились с условиями */}
+                {showTermsError && (
+                  <View style={styles.termsErrorCard}>
+                    <Ionicons name="warning" size={20} color="#DC2626" />
+                    <Text style={styles.termsErrorText}>
+                      Чтобы продолжить вход, вы должны согласиться с условиями и политикой конфиденциальности
+                    </Text>
+                  </View>
+                )}
+
+                {/* Чекбокс согласия с условиями */}
+                <TouchableOpacity 
+                  style={styles.termsContainer}
+                  onPress={() => {
+                    setAgreedToTerms(!agreedToTerms);
+                    if (!agreedToTerms) setShowTermsError(false);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
+                    {agreedToTerms && (
+                      <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                    )}
+                  </View>
+                  <Text style={styles.termsText}>
+                    Продолжая, вы соглашаетесь с нашими{' '}
+                    <Text style={styles.termsLink}>Условиями обслуживания</Text>
+                    {' '}и{' '}
+                    <Text style={styles.termsLink}>Политикой конфиденциальности</Text>
+                  </Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity
                   style={[styles.button, loading && styles.buttonDisabled]}
                   onPress={handleSendCode}
