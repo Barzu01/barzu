@@ -4749,6 +4749,7 @@ export default function AddCarDetailScreen() {
           driveType: formData.driveType || 'front',
           bodyType: formData.bodyType || null,
           condition: formData.condition || 'used',
+          customsCleared: formData.customsCleared,
           color: formData.color || '',
           region: formData.region || 'dushanbe',
           category: formData.category || 'cars',
