@@ -234,18 +234,6 @@ export default function AddVideoScreen() {
       setUploading(false);
     }
   };
-            throw new Error('Failed to save video metadata');
-          }
-          
-          setUploading(false);
-        }
-      );
-    } catch (error) {
-      console.error('Error uploading video:', error);
-      Alert.alert('Ошибка', 'Не удалось загрузить видео. Попробуйте снова.');
-      setUploading(false);
-    }
-  };
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
