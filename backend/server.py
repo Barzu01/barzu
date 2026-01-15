@@ -1270,6 +1270,49 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+@app.on_event("startup")
+async def startup_migrate_listing_numbers():
+    """Migrate existing listings - add listing numbers if missing"""
+    try:
+        # Находим объявления без номера
+        cars_without_number = await db.cars.find({
+            "$or": [
+                {"listingNumber": {"$exists": False}},
+                {"listingNumber": None}
+            ]
+        }).to_list(None)
+        
+        if cars_without_number:
+            logger.info(f"Migrating {len(cars_without_number)} listings without numbers")
+            
+            # Находим максимальный существующий номер
+            last_listing = await db.cars.find_one(
+                {"listingNumber": {"$exists": True, "$ne": None}},
+                sort=[("listingNumber", -1)]
+            )
+            
+            if last_listing and last_listing.get("listingNumber"):
+                try:
+                    start_num = int(last_listing["listingNumber"].split("-")[1]) + 1
+                except:
+                    start_num = 1
+            else:
+                start_num = 1
+            
+            # Присваиваем номера
+            for i, car in enumerate(cars_without_number):
+                new_number = f"SA-{(start_num + i):06d}"
+                await db.cars.update_one(
+                    {"_id": car["_id"]},
+                    {"$set": {"listingNumber": new_number}}
+                )
+            
+            logger.info(f"Successfully migrated {len(cars_without_number)} listings")
+    except Exception as e:
+        logger.error(f"Error migrating listing numbers: {e}")
+
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
