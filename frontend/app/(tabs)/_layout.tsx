@@ -30,7 +30,7 @@ export default function TabLayout() {
           elevation: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: '600',
           marginTop: 4,
         },
@@ -72,11 +72,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorites"
+        name="reviews"
         options={{
-          title: t('tabs.favorites'),
+          title: "Обзоры",
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name={focused ? "heart" : "heart-outline"} color={color} focused={focused} />
+            <TabIcon name={focused ? "videocam" : "videocam-outline"} color={color} focused={focused} />
           ),
         }}
       />
@@ -87,6 +87,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? "person" : "person-outline"} color={color} focused={focused} />
           ),
+        }}
+      />
+      {/* Скрываем favorites из табов - теперь доступно через профиль */}
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          href: null, // Скрыть из нижнего меню
         }}
       />
     </Tabs>
