@@ -141,42 +141,48 @@ export default function AddVideoScreen() {
     setUploadProgress(0);
 
     try {
-      let finalVideoUrl = videoUri;
+      let finalVideoUrl = '';
       
-      // Попробуем загрузить в Firebase Storage если доступен
-      if (storage && ref && uploadBytesResumable && getDownloadURL) {
-        try {
-          const response = await fetch(videoUri);
-          const blob = await response.blob();
-          
-          const filename = `videos/${user.phone.replace(/\+/g, '')}/${Date.now()}.mp4`;
-          const storageRef = ref(storage, filename);
-          
-          const uploadTask = uploadBytesResumable(storageRef, blob);
+      // Загружаем в Firebase Storage
+      const response = await fetch(videoUri);
+      const blob = await response.blob();
+      
+      const cleanPhone = user.phone.replace(/\+/g, '');
+      const filename = `videos/${cleanPhone}/${Date.now()}.mp4`;
+      const storageRef = ref(storage, filename);
+      
+      console.log('Starting upload to Firebase Storage:', filename);
+      
+      const uploadTask = uploadBytesResumable(storageRef, blob);
 
-          await new Promise<void>((resolve, reject) => {
-            uploadTask.on('state_changed',
-              (snapshot: any) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setUploadProgress(progress);
-              },
-              (error: any) => {
-                console.error('Firebase upload error:', error);
-                reject(error);
-              },
-              async () => {
-                finalVideoUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                resolve();
-              }
-            );
-          });
-        } catch (storageError) {
-          console.log('Firebase Storage not available, using local URI');
-          // Если Firebase недоступен, используем локальный URI
-        }
+      await new Promise<void>((resolve, reject) => {
+        uploadTask.on('state_changed',
+          (snapshot: any) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload progress:', progress);
+            setUploadProgress(progress * 0.9); // 90% для загрузки
+          },
+          (error: any) => {
+            console.error('Firebase upload error:', error);
+            reject(error);
+          },
+          async () => {
+            try {
+              finalVideoUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              console.log('Video uploaded, URL:', finalVideoUrl);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          }
+        );
+      });
+      
+      if (!finalVideoUrl) {
+        throw new Error('Failed to get video URL');
       }
       
-      setUploadProgress(80);
+      setUploadProgress(95);
       
       // Сохраняем метаданные в базу
       const videoData = {
@@ -191,8 +197,10 @@ export default function AddVideoScreen() {
         likesCount: 0,
         likedBy: [],
         savedBy: [],
-        status: 'approved', // Для демо сразу approved
+        status: 'approved',
       };
+
+      console.log('Saving video metadata:', videoData);
 
       const apiResponse = await fetch(`${API_URL}/api/videos`, {
         method: 'POST',
