@@ -345,7 +345,24 @@ SafedAuto настоятельно рекомендует:
                     size={24} 
                     color={useTestMode ? "#F59E0B" : "#10B981"} 
                   />
+                  <Text style={[styles.infoText, useTestMode ? styles.testModeText : null]}>
+                    {useTestMode ? (
+                      `🧪 Тестовый режим\n📱 Код для входа: 1234`
+                    ) : (
+                      `📱 SMS код будет отправлен на ваш номер`
+                    )}
+                  </Text>
                 </View>
+                
+                {/* Toggle test mode */}
+                <TouchableOpacity 
+                  style={styles.toggleMode}
+                  onPress={() => setUseTestMode(!useTestMode)}
+                >
+                  <Text style={styles.toggleModeText}>
+                    {useTestMode ? 'Включить Firebase SMS' : 'Включить тестовый режим'}
+                  </Text>
+                </TouchableOpacity>
               </>
             ) : (
               <>
