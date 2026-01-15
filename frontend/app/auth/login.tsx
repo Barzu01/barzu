@@ -58,6 +58,13 @@ export default function LoginScreen() {
   };
 
   const handleSendCode = async () => {
+    // Проверяем согласие с условиями
+    if (!agreedToTerms) {
+      setShowTermsError(true);
+      return;
+    }
+    setShowTermsError(false);
+
     if (!phone || phone.length < 9) {
       showMessage('error', t('messages.error'), t('auth.enterValidPhone'));
       return;
