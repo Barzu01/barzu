@@ -372,6 +372,10 @@ export default function CarDetailsScreen() {
             </View>
           </View>
           <Text style={styles.price}>{car.price.toLocaleString()} <Text style={styles.currency}>TJS</Text></Text>
+          {/* Номер объявления */}
+          {car.listingNumber && (
+            <Text style={styles.listingNumberDetail}>№ объявления: {car.listingNumber}</Text>
+          )}
         </View>
 
         {/* Quick Stats */}
