@@ -219,6 +219,31 @@ class NotificationResponse(Notification):
         populate_by_name = True
 
 
+# ===== VIDEO REVIEWS =====
+class VideoReview(BaseModel):
+    title: str
+    description: Optional[str] = None
+    videoUrl: str  # URL видео в Firebase Storage
+    thumbnailUrl: Optional[str] = None  # URL превью
+    duration: int = 0  # Длительность в секундах
+    carId: Optional[str] = None  # Привязка к объявлению (опционально)
+    authorId: str  # ID автора
+    authorName: str  # Имя автора
+    authorAvatar: Optional[str] = None  # Аватар автора
+    viewsCount: int = 0
+    likesCount: int = 0
+    likedBy: List[str] = Field(default_factory=list)  # Список ID пользователей
+    savedBy: List[str] = Field(default_factory=list)  # Избранное
+    status: Literal['pending', 'approved', 'rejected'] = 'pending'
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+class VideoReviewResponse(VideoReview):
+    id: str = Field(alias="_id")
+
+    class Config:
+        populate_by_name = True
+
+
 class SearchFilters(BaseModel):
     brand: Optional[str] = None
     model: Optional[str] = None
