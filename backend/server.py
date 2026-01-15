@@ -420,6 +420,22 @@ async def get_car_by_id(car_id: str):
         raise HTTPException(status_code=400, detail="Invalid car ID")
 
 
+@api_router.get("/cars/by-number/{listing_number}")
+async def get_car_by_listing_number(listing_number: str):
+    """Get car by listing number (SA-XXXXXX)"""
+    # Нормализуем номер (убираем пробелы, приводим к верхнему регистру)
+    normalized_number = listing_number.strip().upper()
+    
+    # Если не начинается с SA-, добавляем
+    if not normalized_number.startswith("SA-"):
+        normalized_number = f"SA-{normalized_number}"
+    
+    car = await db.cars.find_one({"listingNumber": normalized_number})
+    if not car:
+        raise HTTPException(status_code=404, detail="Объявление не найдено")
+    return serialize_doc(car)
+
+
 @api_router.put("/cars/{car_id}", response_model=CarListingResponse)
 async def update_car_listing(car_id: str, car: CarListing):
     """Update car listing"""
