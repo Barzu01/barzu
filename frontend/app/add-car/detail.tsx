@@ -4460,6 +4460,7 @@ export default function AddCarDetailScreen() {
     transmission: 'automatic',
     driveType: 'rear',
     condition: 'used',
+    customsCleared: true,
     color: '',
     region: 'dushanbe',
     category: 'cars',
