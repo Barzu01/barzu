@@ -452,6 +452,89 @@ SafedAuto настоятельно рекомендует:
           </View>
         </View>
       </Modal>
+
+      {/* Terms of Service Modal */}
+      <Modal visible={showTermsModal} transparent animationType="slide">
+        <View style={styles.termsModalOverlay}>
+          <View style={styles.termsModalContent}>
+            <View style={styles.termsModalHeader}>
+              <Text style={styles.termsModalTitle}>📜 Условия использования</Text>
+              <TouchableOpacity onPress={() => setShowTermsModal(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.termsModalScroll} showsVerticalScrollIndicator={true}>
+              <Text style={styles.termsModalText}>{termsOfServiceText}</Text>
+            </ScrollView>
+            <TouchableOpacity 
+              style={styles.termsModalButton}
+              onPress={() => setShowTermsModal(false)}
+            >
+              <Text style={styles.termsModalButtonText}>Понятно</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Privacy Policy Modal */}
+      <Modal visible={showPrivacyModal} transparent animationType="slide">
+        <View style={styles.termsModalOverlay}>
+          <View style={styles.termsModalContent}>
+            <View style={styles.termsModalHeader}>
+              <Text style={styles.termsModalTitle}>🔒 Политика конфиденциальности</Text>
+              <TouchableOpacity onPress={() => setShowPrivacyModal(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.termsModalScroll} showsVerticalScrollIndicator={true}>
+              <Text style={styles.termsModalText}>
+{`🔒 Политика конфиденциальности SafedAuto
+
+Дата вступления в силу: 01.02.2026
+
+1. Сбор информации
+
+SafedAuto собирает следующую информацию:
+• Номер телефона для регистрации
+• Фотографии и описания объявлений
+• Данные о местоположении (регион)
+
+2. Использование информации
+
+Собранная информация используется для:
+• Предоставления услуг приложения
+• Отображения объявлений другим пользователям
+• Связи с пользователями по вопросам сервиса
+• Улучшения качества услуг
+
+3. Защита данных
+
+• Мы принимаем меры для защиты ваших данных
+• Данные хранятся на защищённых серверах
+• Мы не продаём ваши данные третьим лицам
+
+4. Права пользователей
+
+Вы имеете право:
+• Получить доступ к своим данным
+• Удалить свой аккаунт
+• Отказаться от уведомлений
+
+5. Контакты
+
+По вопросам конфиденциальности:
+📧 Email: safedauto.com`}
+              </Text>
+            </ScrollView>
+            <TouchableOpacity 
+              style={styles.termsModalButton}
+              onPress={() => setShowPrivacyModal(false)}
+            >
+              <Text style={styles.termsModalButtonText}>Понятно</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
