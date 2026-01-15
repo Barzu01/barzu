@@ -18,8 +18,23 @@ import * as ImagePicker from 'expo-image-picker';
 import { Video, ResizeMode } from 'expo-av';
 import { useAuth } from '../contexts/AuthContext';
 import Constants from 'expo-constants';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '../config/firebase';
+
+// Firebase Storage imports - опционально
+let storage: any = null;
+let ref: any = null;
+let uploadBytesResumable: any = null;
+let getDownloadURL: any = null;
+
+try {
+  const firebaseStorage = require('firebase/storage');
+  const firebaseConfig = require('../config/firebase');
+  storage = firebaseConfig.storage;
+  ref = firebaseStorage.ref;
+  uploadBytesResumable = firebaseStorage.uploadBytesResumable;
+  getDownloadURL = firebaseStorage.getDownloadURL;
+} catch (e) {
+  console.log('Firebase Storage not available');
+}
 
 const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safedauto-2.preview.emergentagent.com';
 const MAX_DURATION = 120; // 2 минуты в секундах
