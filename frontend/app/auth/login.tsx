@@ -290,26 +290,38 @@ SafedAuto настоятельно рекомендует:
                 )}
 
                 {/* Чекбокс согласия с условиями */}
-                <TouchableOpacity 
-                  style={styles.termsContainer}
-                  onPress={() => {
-                    setAgreedToTerms(!agreedToTerms);
-                    if (!agreedToTerms) setShowTermsError(false);
-                  }}
-                  activeOpacity={0.7}
-                >
-                  <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
-                    {agreedToTerms && (
-                      <Ionicons name="checkmark" size={16} color="#FFFFFF" />
-                    )}
-                  </View>
+                <View style={styles.termsContainer}>
+                  <TouchableOpacity 
+                    style={styles.checkboxTouchable}
+                    onPress={() => {
+                      setAgreedToTerms(!agreedToTerms);
+                      if (!agreedToTerms) setShowTermsError(false);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
+                      {agreedToTerms && (
+                        <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+                      )}
+                    </View>
+                  </TouchableOpacity>
                   <Text style={styles.termsText}>
                     Продолжая, вы соглашаетесь с нашими{' '}
-                    <Text style={styles.termsLink}>Условиями обслуживания</Text>
+                    <Text 
+                      style={styles.termsLink}
+                      onPress={() => setShowTermsModal(true)}
+                    >
+                      Условиями обслуживания
+                    </Text>
                     {' '}и{' '}
-                    <Text style={styles.termsLink}>Политикой конфиденциальности</Text>
+                    <Text 
+                      style={styles.termsLink}
+                      onPress={() => setShowPrivacyModal(true)}
+                    >
+                      Политикой конфиденциальности
+                    </Text>
                   </Text>
-                </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity
                   style={[styles.button, loading && styles.buttonDisabled]}
