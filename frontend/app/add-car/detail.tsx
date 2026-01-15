@@ -5134,11 +5134,37 @@ export default function AddCarDetailScreen() {
               onPress={() => setFormData({ ...formData, condition: 'used' })}
             >
               <Text style={[styles.toggleText, formData.condition === 'used' && styles.toggleTextActive]}>
-                {t('car.used')}
+                🚗 {t('car.used')}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Растаможен в РТ - только для автомобилей */}
+        {!isPartsCategory && (
+        <View style={styles.card}>
+          <SectionHeader title={t('car.customsCleared')} />
+          
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[styles.toggleButton, formData.customsCleared === true && styles.toggleActiveGreen]}
+              onPress={() => setFormData({ ...formData, customsCleared: true })}
+            >
+              <Text style={[styles.toggleText, formData.customsCleared === true && styles.toggleTextActive]}>
+                ✅ {t('car.customsClearedYes')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleButton, formData.customsCleared === false && styles.toggleActiveRed]}
+              onPress={() => setFormData({ ...formData, customsCleared: false })}
+            >
+              <Text style={[styles.toggleText, formData.customsCleared === false && styles.toggleTextActive]}>
+                ❌ {t('car.customsClearedNo')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        )}
 
         {/* Color Section - каталог цветов как на auto.ru */}
         {!isPartsCategory && (
