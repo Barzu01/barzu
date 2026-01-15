@@ -343,6 +343,11 @@ export default function HomeScreen() {
           {formatPrice(item.price)} <Text style={styles.currency}>TJS</Text>
         </Text>
         
+        {/* Номер объявления */}
+        {item.listingNumber && (
+          <Text style={styles.listingNumber}>№ {item.listingNumber}</Text>
+        )}
+        
         <View style={styles.specRow}>
           <View style={styles.specItem}>
             <Ionicons name="speedometer-outline" size={14} color="#64748B" />
