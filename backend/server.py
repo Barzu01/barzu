@@ -1061,6 +1061,145 @@ async def track_car_view(car_id: str, userId: Optional[str] = None):
 from datetime import timedelta
 
 
+# ===== VIDEO REVIEWS API =====
+@api_router.post("/videos")
+async def create_video(video: VideoReview):
+    """Create a new video review"""
+    video_dict = video.model_dump()
+    video_dict['createdAt'] = datetime.utcnow()
+    result = await db.videos.insert_one(video_dict)
+    return {"id": str(result.inserted_id), "message": "Video created successfully"}
+
+
+@api_router.get("/videos")
+async def get_videos(
+    status: str = "approved",
+    limit: int = 20,
+    skip: int = 0,
+    authorId: Optional[str] = None
+):
+    """Get all videos with optional filters"""
+    query = {}
+    if status:
+        query["status"] = status
+    if authorId:
+        query["authorId"] = authorId
+    
+    videos = await db.videos.find(query).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(video) for video in videos]
+
+
+@api_router.get("/videos/{video_id}")
+async def get_video(video_id: str):
+    """Get a single video by ID"""
+    video = await db.videos.find_one({"_id": ObjectId(video_id)})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return serialize_doc(video)
+
+
+@api_router.post("/videos/{video_id}/view")
+async def track_video_view(video_id: str):
+    """Track a view on a video"""
+    result = await db.videos.update_one(
+        {"_id": ObjectId(video_id)},
+        {"$inc": {"viewsCount": 1}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return {"message": "View tracked"}
+
+
+@api_router.post("/videos/{video_id}/like")
+async def like_video(video_id: str, userId: str):
+    """Like or unlike a video"""
+    video = await db.videos.find_one({"_id": ObjectId(video_id)})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    
+    liked_by = video.get("likedBy", [])
+    if userId in liked_by:
+        # Unlike
+        await db.videos.update_one(
+            {"_id": ObjectId(video_id)},
+            {"$pull": {"likedBy": userId}, "$inc": {"likesCount": -1}}
+        )
+        return {"liked": False, "likesCount": video.get("likesCount", 1) - 1}
+    else:
+        # Like
+        await db.videos.update_one(
+            {"_id": ObjectId(video_id)},
+            {"$push": {"likedBy": userId}, "$inc": {"likesCount": 1}}
+        )
+        return {"liked": True, "likesCount": video.get("likesCount", 0) + 1}
+
+
+@api_router.post("/videos/{video_id}/save")
+async def save_video(video_id: str, userId: str):
+    """Save or unsave a video to favorites"""
+    video = await db.videos.find_one({"_id": ObjectId(video_id)})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    
+    saved_by = video.get("savedBy", [])
+    if userId in saved_by:
+        # Unsave
+        await db.videos.update_one(
+            {"_id": ObjectId(video_id)},
+            {"$pull": {"savedBy": userId}}
+        )
+        return {"saved": False}
+    else:
+        # Save
+        await db.videos.update_one(
+            {"_id": ObjectId(video_id)},
+            {"$push": {"savedBy": userId}}
+        )
+        return {"saved": True}
+
+
+@api_router.get("/videos/saved/{user_id}")
+async def get_saved_videos(user_id: str):
+    """Get all saved videos for a user"""
+    videos = await db.videos.find({"savedBy": user_id, "status": "approved"}).sort("createdAt", -1).to_list(100)
+    return [serialize_doc(video) for video in videos]
+
+
+@api_router.delete("/videos/{video_id}")
+async def delete_video(video_id: str, userId: str):
+    """Delete a video (only author or admin)"""
+    video = await db.videos.find_one({"_id": ObjectId(video_id)})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    
+    # Check if user is author or admin
+    user = await db.users.find_one({"phone": userId})
+    is_admin = user and user.get("isAdmin", False)
+    
+    if video.get("authorId") != userId and not is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this video")
+    
+    await db.videos.delete_one({"_id": ObjectId(video_id)})
+    return {"message": "Video deleted successfully"}
+
+
+@api_router.put("/videos/{video_id}/status")
+async def update_video_status(video_id: str, status: str, userId: str):
+    """Update video status (admin only)"""
+    user = await db.users.find_one({"phone": userId})
+    if not user or not user.get("isAdmin", False):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    if status not in ["pending", "approved", "rejected"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    await db.videos.update_one(
+        {"_id": ObjectId(video_id)},
+        {"$set": {"status": status}}
+    )
+    return {"message": f"Video status updated to {status}"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
