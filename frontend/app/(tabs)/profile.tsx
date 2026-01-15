@@ -197,6 +197,24 @@ export default function ProfileScreen() {
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              icon="heart"
+              title={t('tabs.favorites')}
+              subtitle="Сохранённые объявления"
+              onPress={() => router.push('/(tabs)/favorites')}
+              iconBg="#FEE2E2"
+              iconColor="#EF4444"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="bookmark"
+              title="Сохранённые видео"
+              subtitle="Избранные обзоры авто"
+              onPress={() => router.push('/profile/saved-videos')}
+              iconBg="#F3E8FF"
+              iconColor="#8B5CF6"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
               icon="time"
               title={t('profile.recentlyViewed')}
               subtitle={t('profile.viewHistory')}
