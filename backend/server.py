@@ -162,6 +162,7 @@ class CarListing(BaseModel):
     driveType: Literal['front', 'rear', 'awd']
     bodyType: Optional[str] = None  # Тип кузова
     condition: Literal['new', 'used']
+    customsCleared: Optional[bool] = True  # Растаможен в РТ
     color: str
     region: str
     category: str = 'cars'
