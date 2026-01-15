@@ -103,6 +103,28 @@ export default function SearchScreen() {
     setLoading(true);
     setHasSearched(true);
     try {
+      const trimmedText = searchText.trim().toUpperCase();
+      
+      // Проверяем, не ищут ли по номеру объявления (SA-XXXXXX или просто XXXXXX)
+      if (trimmedText.startsWith('SA-') || /^\d{1,6}$/.test(trimmedText)) {
+        const listingNumber = trimmedText.startsWith('SA-') 
+          ? trimmedText 
+          : `SA-${trimmedText.padStart(6, '0')}`;
+        
+        try {
+          const response = await fetch(`${API_URL}/api/cars/by-number/${listingNumber}`);
+          if (response.ok) {
+            const car = await response.json();
+            // Нашли объявление - переходим на его страницу
+            router.push(`/car/${car._id}`);
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          // Если не нашли по номеру, продолжаем обычный поиск
+        }
+      }
+      
       const searchFilters: any = {};
       
       // Text search
