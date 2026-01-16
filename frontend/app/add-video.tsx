@@ -172,7 +172,7 @@ export default function AddVideoScreen() {
       
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<string>((resolve, reject) => {
         uploadTask.on('state_changed',
           (snapshot) => {
             const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
@@ -187,53 +187,52 @@ export default function AddVideoScreen() {
           async () => {
             try {
               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-              setUploadedVideoUrl(downloadURL);
-              resolve();
+              resolve(downloadURL);
             } catch (e) {
               reject(e);
             }
           }
         );
-      });
-      
-      // Сохранение в базу данных
-      setUploadStatus('saving');
-      
-      const videoData = {
-        title: title.trim(),
-        description: description.trim(),
-        videoUrl: uploadedVideoUrl,
-        duration: Math.round(videoDuration),
-        carId: selectedCarId,
-        authorId: user.phone,
-        authorName: user.name || 'Пользователь',
-        viewsCount: 0,
-        likesCount: 0,
-        likedBy: [],
-        savedBy: [],
-        status: 'approved',
-      };
-
-      const apiResponse = await fetch(`${API_URL}/api/videos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(videoData),
-      });
-
-      if (apiResponse.ok) {
-        setUploadStatus('success');
+      }).then(async (downloadURL) => {
+        // Сохранение в базу данных
+        setUploadStatus('saving');
         
-        // Показываем успешное сообщение и переходим
-        setTimeout(() => {
-          Alert.alert(
-            '✅ Видео опубликовано!', 
-            'Ваш обзор успешно добавлен в ленту',
-            [{ text: 'Смотреть', onPress: () => router.push('/(tabs)/reviews') }]
-          );
-        }, 1000);
-      } else {
-        throw new Error('Ошибка сохранения');
-      }
+        const videoData = {
+          title: title.trim(),
+          description: description.trim(),
+          videoUrl: downloadURL,
+          duration: Math.round(videoDuration),
+          carId: selectedCarId,
+          authorId: user.phone,
+          authorName: user.name || 'Пользователь',
+          viewsCount: 0,
+          likesCount: 0,
+          likedBy: [],
+          savedBy: [],
+          status: 'approved',
+        };
+
+        const apiResponse = await fetch(`${API_URL}/api/videos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(videoData),
+        });
+
+        if (apiResponse.ok) {
+          setUploadStatus('success');
+          
+          // Показываем успешное сообщение и переходим
+          setTimeout(() => {
+            Alert.alert(
+              '✅ Видео опубликовано!', 
+              'Ваш обзор успешно добавлен в ленту',
+              [{ text: 'Смотреть', onPress: () => router.push('/(tabs)/reviews') }]
+            );
+          }, 1000);
+        } else {
+          throw new Error('Ошибка сохранения');
+        }
+      });
       
     } catch (error) {
       console.error('Error uploading video:', error);
