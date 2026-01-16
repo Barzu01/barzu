@@ -283,9 +283,33 @@ export default function ReviewsScreen() {
   const [videos, setVideos] = useState<VideoReview[]>(DEMO_VIDEOS);
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isScreenFocused, setIsScreenFocused] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
+
+  // Остановка видео при уходе с экрана
+  useFocusEffect(
+    useCallback(() => {
+      setIsScreenFocused(true);
+      return () => {
+        setIsScreenFocused(false);
+      };
+    }, [])
+  );
+
+  // Остановка видео когда приложение уходит в фон
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState !== 'active') {
+        setIsScreenFocused(false);
+      } else {
+        setIsScreenFocused(true);
+      }
+    });
+
+    return () => subscription?.remove();
+  }, []);
 
   // Загрузка видео с сервера
   const fetchVideos = async () => {
