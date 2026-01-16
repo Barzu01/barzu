@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
-  Image,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,6 +22,7 @@ import Constants from 'expo-constants';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase';
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safedauto-2.preview.emergentagent.com';
 const MAX_DURATION = 120; // 2 минуты в секундах
 
@@ -31,19 +33,28 @@ interface CarListing {
   year: number;
 }
 
+type UploadStatus = 'idle' | 'preparing' | 'uploading' | 'saving' | 'success' | 'error';
+
 export default function AddVideoScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const videoRef = useRef<Video>(null);
   
   const [videoUri, setVideoUri] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [videoAspectRatio, setVideoAspectRatio] = useState(9/16);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCarId, setSelectedCarId] = useState<string | null>(null);
   const [myListings, setMyListings] = useState<CarListing[]>([]);
   const [showCarPicker, setShowCarPicker] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  
+  // Upload state
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.phone) {
@@ -89,6 +100,11 @@ export default function AddVideoScreen() {
       
       setVideoUri(asset.uri);
       setVideoDuration(duration);
+      
+      // Определяем соотношение сторон
+      if (asset.width && asset.height) {
+        setVideoAspectRatio(asset.width / asset.height);
+      }
     }
   };
 
@@ -118,32 +134,35 @@ export default function AddVideoScreen() {
       
       setVideoUri(asset.uri);
       setVideoDuration(duration);
+      
+      if (asset.width && asset.height) {
+        setVideoAspectRatio(asset.width / asset.height);
+      }
     }
   };
 
+  const showPreview = () => {
+    if (!videoUri || !title.trim()) {
+      Alert.alert('Ошибка', 'Добавьте видео и название');
+      return;
+    }
+    setShowPreviewModal(true);
+  };
+
   const uploadVideo = async () => {
-    if (!videoUri) {
-      Alert.alert('Ошибка', 'Выберите видео');
-      return;
-    }
-    
-    if (!title.trim()) {
-      Alert.alert('Ошибка', 'Введите название');
+    if (!videoUri || !title.trim() || !user?.phone) {
       return;
     }
 
-    if (!user?.phone) {
-      Alert.alert('Ошибка', 'Необходимо авторизоваться');
-      return;
-    }
-
-    setUploading(true);
+    setShowPreviewModal(false);
+    setUploadStatus('preparing');
     setUploadProgress(0);
+    setUploadError(null);
 
     try {
-      let finalVideoUrl = '';
+      // Подготовка к загрузке
+      setUploadStatus('uploading');
       
-      // Загружаем в Firebase Storage
       const response = await fetch(videoUri);
       const blob = await response.blob();
       
@@ -151,25 +170,24 @@ export default function AddVideoScreen() {
       const filename = `videos/${cleanPhone}/${Date.now()}.mp4`;
       const storageRef = ref(storage, filename);
       
-      // console.log('Starting upload to Firebase Storage:', filename);
-      
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
       await new Promise<void>((resolve, reject) => {
         uploadTask.on('state_changed',
-          (snapshot: any) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            // console.log('Upload progress:', progress);
-            setUploadProgress(progress * 0.9); // 90% для загрузки
+          (snapshot) => {
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setUploadProgress(progress);
           },
-          (error: any) => {
+          (error) => {
             console.error('Firebase upload error:', error);
+            setUploadError('Ошибка загрузки. Проверьте интернет-соединение.');
+            setUploadStatus('error');
             reject(error);
           },
           async () => {
             try {
-              finalVideoUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              // console.log('Video uploaded, URL:', finalVideoUrl);
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              setUploadedVideoUrl(downloadURL);
               resolve();
             } catch (e) {
               reject(e);
@@ -178,17 +196,13 @@ export default function AddVideoScreen() {
         );
       });
       
-      if (!finalVideoUrl) {
-        throw new Error('Failed to get video URL');
-      }
+      // Сохранение в базу данных
+      setUploadStatus('saving');
       
-      setUploadProgress(95);
-      
-      // Сохраняем метаданные в базу
       const videoData = {
         title: title.trim(),
         description: description.trim(),
-        videoUrl: finalVideoUrl,
+        videoUrl: uploadedVideoUrl,
         duration: Math.round(videoDuration),
         carId: selectedCarId,
         authorId: user.phone,
@@ -200,32 +214,38 @@ export default function AddVideoScreen() {
         status: 'approved',
       };
 
-      // console.log('Saving video metadata:', videoData);
-
       const apiResponse = await fetch(`${API_URL}/api/videos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(videoData),
       });
 
-      setUploadProgress(100);
-
       if (apiResponse.ok) {
-        Alert.alert(
-          '✅ Успешно!', 
-          'Видео опубликовано! Оно появится в разделе "Обзоры авто".',
-          [{ text: 'OK', onPress: () => router.push('/(tabs)/reviews') }]
-        );
+        setUploadStatus('success');
+        
+        // Показываем успешное сообщение и переходим
+        setTimeout(() => {
+          Alert.alert(
+            '✅ Видео опубликовано!', 
+            'Ваш обзор успешно добавлен в ленту',
+            [{ text: 'Смотреть', onPress: () => router.push('/(tabs)/reviews') }]
+          );
+        }, 1000);
       } else {
-        throw new Error('Failed to save video metadata');
+        throw new Error('Ошибка сохранения');
       }
       
-      setUploading(false);
     } catch (error) {
       console.error('Error uploading video:', error);
-      Alert.alert('Ошибка', 'Не удалось загрузить видео. Попробуйте снова.');
-      setUploading(false);
+      setUploadError('Не удалось загрузить видео. Попробуйте снова.');
+      setUploadStatus('error');
     }
+  };
+
+  const retryUpload = () => {
+    setUploadStatus('idle');
+    setUploadError(null);
+    setUploadProgress(0);
   };
 
   const formatDuration = (seconds: number) => {
@@ -234,18 +254,82 @@ export default function AddVideoScreen() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const getStatusText = () => {
+    switch (uploadStatus) {
+      case 'preparing': return 'Подготовка видео...';
+      case 'uploading': return `Загрузка видео... ${uploadProgress}%`;
+      case 'saving': return 'Сохранение...';
+      case 'success': return '✅ Видео опубликовано!';
+      case 'error': return '❌ Ошибка загрузки';
+      default: return '';
+    }
+  };
+
   const selectedCar = myListings.find(car => car._id === selectedCarId);
+  const isUploading = ['preparing', 'uploading', 'saving'].includes(uploadStatus);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#0F172A" />
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton} disabled={isUploading}>
+          <Ionicons name="arrow-back" size={24} color={isUploading ? "#94A3B8" : "#0F172A"} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Новый видео-обзор</Text>
         <View style={styles.placeholder} />
       </View>
+
+      {/* Upload Progress Overlay */}
+      {isUploading && (
+        <View style={styles.uploadOverlay}>
+          <View style={styles.uploadCard}>
+            <ActivityIndicator size="large" color="#0066FF" />
+            <Text style={styles.uploadStatusText}>{getStatusText()}</Text>
+            
+            {/* Progress Bar */}
+            {uploadStatus === 'uploading' && (
+              <View style={styles.progressContainer}>
+                <View style={styles.progressBar}>
+                  <View style={[styles.progressFill, { width: `${uploadProgress}%` }]} />
+                </View>
+                <Text style={styles.progressText}>{uploadProgress}%</Text>
+              </View>
+            )}
+            
+            <Text style={styles.uploadHint}>
+              Не закрывайте приложение до завершения загрузки
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* Success Overlay */}
+      {uploadStatus === 'success' && (
+        <View style={styles.uploadOverlay}>
+          <View style={styles.uploadCard}>
+            <View style={styles.successIcon}>
+              <Ionicons name="checkmark-circle" size={64} color="#10B981" />
+            </View>
+            <Text style={styles.successText}>Видео опубликовано!</Text>
+            <Text style={styles.successHint}>Переход в ленту обзоров...</Text>
+          </View>
+        </View>
+      )}
+
+      {/* Error Overlay */}
+      {uploadStatus === 'error' && (
+        <View style={styles.uploadOverlay}>
+          <View style={styles.uploadCard}>
+            <View style={styles.errorIcon}>
+              <Ionicons name="alert-circle" size={64} color="#EF4444" />
+            </View>
+            <Text style={styles.errorText}>{uploadError}</Text>
+            <TouchableOpacity style={styles.retryButton} onPress={retryUpload}>
+              <Text style={styles.retryButtonText}>Попробовать снова</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Video Selection */}
@@ -256,22 +340,24 @@ export default function AddVideoScreen() {
             <View style={styles.videoPickerContainer}>
               <TouchableOpacity style={styles.videoPickerButton} onPress={pickVideo}>
                 <Ionicons name="images-outline" size={32} color="#0066FF" />
-                <Text style={styles.videoPickerText}>Выбрать из галереи</Text>
+                <Text style={styles.videoPickerText}>Из галереи</Text>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.videoPickerButton} onPress={recordVideo}>
                 <Ionicons name="videocam-outline" size={32} color="#EF4444" />
-                <Text style={styles.videoPickerText}>Записать видео</Text>
+                <Text style={styles.videoPickerText}>Записать</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={styles.videoPreview}>
+            <View style={styles.videoPreviewContainer}>
               <Video
+                ref={videoRef}
                 source={{ uri: videoUri }}
-                style={styles.video}
-                resizeMode={ResizeMode.COVER}
+                style={styles.videoPreview}
+                resizeMode={ResizeMode.CONTAIN}
                 shouldPlay={false}
                 isLooping={false}
+                useNativeControls
               />
               <View style={styles.videoDurationBadge}>
                 <Text style={styles.videoDurationText}>{formatDuration(videoDuration)}</Text>
@@ -286,13 +372,13 @@ export default function AddVideoScreen() {
           )}
           
           <Text style={styles.hint}>
-            Максимальная длительность: {MAX_DURATION / 60} минуты
+            Максимум {MAX_DURATION / 60} минуты • Рекомендуем вертикальное видео
           </Text>
         </View>
 
         {/* Title */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>✏️ Название</Text>
+          <Text style={styles.sectionTitle}>✏️ Название *</Text>
           <TextInput
             style={styles.input}
             placeholder="Например: Обзор BMW M5 2024"
@@ -321,9 +407,6 @@ export default function AddVideoScreen() {
         {/* Link to Car Listing */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🔗 Привязать к объявлению</Text>
-          <Text style={styles.hint}>
-            Если видео связано с вашим объявлением, покупатели смогут перейти к нему
-          </Text>
           
           <TouchableOpacity 
             style={styles.carPickerButton}
@@ -342,7 +425,7 @@ export default function AddVideoScreen() {
             ) : (
               <View style={styles.noCarSelected}>
                 <Ionicons name="add-circle-outline" size={24} color="#64748B" />
-                <Text style={styles.noCarSelectedText}>Выбрать объявление (необязательно)</Text>
+                <Text style={styles.noCarSelectedText}>Выбрать (необязательно)</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -373,29 +456,66 @@ export default function AddVideoScreen() {
           )}
         </View>
 
-        {/* Upload Button */}
+        {/* Preview & Publish Button */}
         <TouchableOpacity
-          style={[styles.uploadButton, (!videoUri || !title.trim()) && styles.uploadButtonDisabled]}
-          onPress={uploadVideo}
-          disabled={!videoUri || !title.trim() || uploading}
+          style={[styles.previewButton, (!videoUri || !title.trim()) && styles.buttonDisabled]}
+          onPress={showPreview}
+          disabled={!videoUri || !title.trim() || isUploading}
         >
-          {uploading ? (
-            <View style={styles.uploadingContainer}>
-              <ActivityIndicator color="#FFFFFF" />
-              <Text style={styles.uploadButtonText}>
-                Загрузка {Math.round(uploadProgress)}%
-              </Text>
-            </View>
-          ) : (
-            <>
-              <Ionicons name="cloud-upload" size={24} color="#FFFFFF" />
-              <Text style={styles.uploadButtonText}>Опубликовать видео</Text>
-            </>
-          )}
+          <Ionicons name="eye" size={24} color="#FFFFFF" />
+          <Text style={styles.previewButtonText}>Предпросмотр и публикация</Text>
         </TouchableOpacity>
 
         <View style={styles.bottomPadding} />
       </ScrollView>
+
+      {/* Preview Modal */}
+      <Modal visible={showPreviewModal} animationType="slide" transparent>
+        <View style={styles.previewModalOverlay}>
+          <View style={styles.previewModalContent}>
+            <View style={styles.previewModalHeader}>
+              <Text style={styles.previewModalTitle}>Предпросмотр</Text>
+              <TouchableOpacity onPress={() => setShowPreviewModal(false)}>
+                <Ionicons name="close" size={28} color="#0F172A" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.previewVideoContainer}>
+              {videoUri && (
+                <Video
+                  source={{ uri: videoUri }}
+                  style={styles.previewVideo}
+                  resizeMode={ResizeMode.CONTAIN}
+                  shouldPlay={true}
+                  isLooping={true}
+                  isMuted={false}
+                />
+              )}
+              
+              {/* Overlay info like in feed */}
+              <View style={styles.previewInfoOverlay}>
+                <Text style={styles.previewTitle}>{title}</Text>
+                {description ? (
+                  <Text style={styles.previewDescription} numberOfLines={2}>{description}</Text>
+                ) : null}
+              </View>
+            </View>
+            
+            <View style={styles.previewModalFooter}>
+              <Text style={styles.previewHint}>
+                Так ваше видео будет выглядеть в ленте
+              </Text>
+              <TouchableOpacity
+                style={styles.publishButton}
+                onPress={uploadVideo}
+              >
+                <Ionicons name="cloud-upload" size={24} color="#FFFFFF" />
+                <Text style={styles.publishButtonText}>Опубликовать</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -466,15 +586,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#64748B',
     marginTop: 8,
-    textAlign: 'center',
   },
-  videoPreview: {
+  videoPreviewContainer: {
     backgroundColor: '#000000',
     borderRadius: 16,
     overflow: 'hidden',
-    height: 200,
+    height: 280,
   },
-  video: {
+  videoPreview: {
     width: '100%',
     height: '100%',
   },
@@ -517,7 +636,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    marginTop: 8,
   },
   selectedCar: {
     flexDirection: 'row',
@@ -562,7 +680,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0F172A',
   },
-  uploadButton: {
+  previewButton: {
     flexDirection: 'row',
     backgroundColor: '#0066FF',
     borderRadius: 16,
@@ -572,20 +690,173 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 16,
   },
-  uploadButtonDisabled: {
+  buttonDisabled: {
     backgroundColor: '#94A3B8',
   },
-  uploadButtonText: {
+  previewButtonText: {
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '700',
   },
-  uploadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
   bottomPadding: {
     height: 40,
+  },
+  // Upload Overlay
+  uploadOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  uploadCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 32,
+    width: SCREEN_WIDTH - 64,
+    alignItems: 'center',
+  },
+  uploadStatusText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#0F172A',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  progressContainer: {
+    width: '100%',
+    marginTop: 20,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#0066FF',
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0066FF',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  uploadHint: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  successIcon: {
+    marginBottom: 8,
+  },
+  successText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#10B981',
+  },
+  successHint: {
+    fontSize: 14,
+    color: '#64748B',
+    marginTop: 8,
+  },
+  errorIcon: {
+    marginBottom: 8,
+  },
+  errorText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#EF4444',
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#0066FF',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginTop: 20,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // Preview Modal
+  previewModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  },
+  previewModalContent: {
+    flex: 1,
+  },
+  previewModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+  },
+  previewModalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  previewVideoContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  previewVideo: {
+    flex: 1,
+  },
+  previewInfoOverlay: {
+    position: 'absolute',
+    bottom: 80,
+    left: 16,
+    right: 80,
+  },
+  previewTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  previewDescription: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  previewModalFooter: {
+    padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  previewHint: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  publishButton: {
+    flexDirection: 'row',
+    backgroundColor: '#10B981',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  publishButtonText: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: '700',
   },
 });
