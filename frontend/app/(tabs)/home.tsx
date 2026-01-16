@@ -423,7 +423,7 @@ export default function HomeScreen() {
       <FlatList
         data={filteredCars}
         renderItem={renderCarItem}
-        keyExtractor={(item) => item._id || Math.random().toString()}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
@@ -431,6 +431,15 @@ export default function HomeScreen() {
           { useNativeDriver: false }
         )}
         scrollEventThrottle={16}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={5}
+        windowSize={5}
+        initialNumToRender={4}
+        getItemLayout={(data, index) => ({
+          length: 300,
+          offset: 300 * index,
+          index,
+        })}
         ListHeaderComponent={
           <>
             {/* Запчасти и аксессуары - баннер */}
