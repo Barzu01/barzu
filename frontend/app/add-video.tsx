@@ -23,7 +23,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safedauto-2.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
 const MAX_DURATION = 120; // 2 минуты в секундах
 
 interface CarListing {

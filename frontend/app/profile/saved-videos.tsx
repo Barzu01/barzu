@@ -18,7 +18,7 @@ import Constants from 'expo-constants';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_WIDTH = (SCREEN_WIDTH - 48) / 2;
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safedauto-2.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
 
 interface SavedVideo {
   _id: string;
