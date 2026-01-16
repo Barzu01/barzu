@@ -370,9 +370,13 @@ export default function SearchScreen() {
         <FlatList
           data={searchResults}
           renderItem={renderCarItem}
-          keyExtractor={(item) => item._id || Math.random().toString()}
+          keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={5}
+          windowSize={5}
+          initialNumToRender={4}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <View style={styles.emptyIcon}>
