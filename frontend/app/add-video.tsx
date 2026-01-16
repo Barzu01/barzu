@@ -54,7 +54,6 @@ export default function AddVideoScreen() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.phone) {
