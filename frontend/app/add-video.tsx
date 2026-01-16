@@ -151,7 +151,7 @@ export default function AddVideoScreen() {
       const filename = `videos/${cleanPhone}/${Date.now()}.mp4`;
       const storageRef = ref(storage, filename);
       
-      console.log('Starting upload to Firebase Storage:', filename);
+      // console.log('Starting upload to Firebase Storage:', filename);
       
       const uploadTask = uploadBytesResumable(storageRef, blob);
 
@@ -159,7 +159,7 @@ export default function AddVideoScreen() {
         uploadTask.on('state_changed',
           (snapshot: any) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload progress:', progress);
+            // console.log('Upload progress:', progress);
             setUploadProgress(progress * 0.9); // 90% для загрузки
           },
           (error: any) => {
@@ -169,7 +169,7 @@ export default function AddVideoScreen() {
           async () => {
             try {
               finalVideoUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              console.log('Video uploaded, URL:', finalVideoUrl);
+              // console.log('Video uploaded, URL:', finalVideoUrl);
               resolve();
             } catch (e) {
               reject(e);
@@ -200,7 +200,7 @@ export default function AddVideoScreen() {
         status: 'approved',
       };
 
-      console.log('Saving video metadata:', videoData);
+      // console.log('Saving video metadata:', videoData);
 
       const apiResponse = await fetch(`${API_URL}/api/videos`, {
         method: 'POST',

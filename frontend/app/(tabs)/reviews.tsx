@@ -323,7 +323,7 @@ export default function ReviewsScreen() {
         }
       }
     } catch (error) {
-      console.log('Using demo videos');
+      // console.log('Using demo videos');
     } finally {
       setLoading(false);
     }

@@ -52,9 +52,9 @@ export default function ProfileScreen() {
 
     setSaving(true);
     try {
-      console.log('Saving name:', newName.trim(), 'for user:', user?.phone);
+      // console.log('Saving name:', newName.trim(), 'for user:', user?.phone);
       await updateUserProfile(newName.trim());
-      console.log('Name saved successfully');
+      // console.log('Name saved successfully');
       setEditModalVisible(false);
     } catch (error) {
       console.error('Error saving name:', error);

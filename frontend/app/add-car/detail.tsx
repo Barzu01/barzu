@@ -4702,7 +4702,7 @@ export default function AddCarDetailScreen() {
         }
       }
       
-      console.log('Photo URLs ready:', photoUrls.length);
+      // console.log('Photo URLs ready:', photoUrls.length);
       
       if (photoUrls.length === 0) {
         showMessage('error', t('messages.error'), 'Добавьте хотя бы одну фотографию');
@@ -4733,7 +4733,7 @@ export default function AddCarDetailScreen() {
           status: 'pending' as const,
         };
 
-        console.log('Submitting part data:', JSON.stringify(partData, null, 2).substring(0, 500));
+        // console.log('Submitting part data:', JSON.stringify(partData, null, 2).substring(0, 500));
         await carAPI.create(partData as any);
       } else {
         // Для авто - стандартная логика
@@ -4761,7 +4761,7 @@ export default function AddCarDetailScreen() {
           status: 'pending' as const,
         };
 
-        console.log('Submitting car data:', JSON.stringify({...carData, photos: [`${carData.photos.length} photos`]}, null, 2));
+        // console.log('Submitting car data:', JSON.stringify({...carData, photos: [`${carData.photos.length} photos`]}, null, 2));
         await carAPI.create(carData as any);
       }
       
