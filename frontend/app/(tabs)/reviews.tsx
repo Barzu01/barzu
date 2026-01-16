@@ -422,7 +422,7 @@ export default function ReviewsScreen() {
         renderItem={({ item, index }) => (
           <VideoItem
             item={item}
-            isActive={index === activeIndex}
+            isActive={index === activeIndex && isScreenFocused}
             onLike={handleLike}
             onSave={handleSave}
             onShare={handleShare}
