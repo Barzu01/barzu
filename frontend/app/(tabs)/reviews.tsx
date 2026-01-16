@@ -201,7 +201,7 @@ const VideoItem = React.memo(({
           ref={videoRef}
           source={{ uri: item.videoUrl }}
           style={styles.video}
-          resizeMode={ResizeMode.COVER}
+          resizeMode={ResizeMode.CONTAIN}
           isLooping
           shouldPlay={isActive}
           isMuted={false}
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   videoContainer: {
     width: SCREEN_WIDTH,
     height: VIDEO_HEIGHT,
-    backgroundColor: '#000000',
+    backgroundColor: '#0A0A0A',
   },
   videoTouchable: {
     flex: 1,
