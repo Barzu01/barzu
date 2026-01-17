@@ -197,6 +197,15 @@ export default function ProfileScreen() {
             />
             <View style={styles.menuDivider} />
             <MenuItem
+              icon="chatbubbles"
+              title="Чаты"
+              subtitle="Переписки с продавцами"
+              onPress={() => router.push('/profile/chats')}
+              iconBg="#D1FAE5"
+              iconColor="#10B981"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
               icon="heart"
               title={t('tabs.favorites')}
               subtitle="Сохранённые объявления"
