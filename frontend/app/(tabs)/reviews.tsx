@@ -867,11 +867,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 2,
   },
-  // Actions
+  // Actions - спущены ниже
   actionsColumn: {
     position: 'absolute',
     right: 12,
-    bottom: 100,
+    bottom: 80,
     alignItems: 'center',
   },
   actionItem: {
