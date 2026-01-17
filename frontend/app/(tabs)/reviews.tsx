@@ -11,10 +11,12 @@ import {
   Platform,
   StatusBar,
   AppState,
+  Animated,
+  Image,
 } from 'react-native';
-import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,7 +24,6 @@ import Constants from 'expo-constants';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 88 : 70;
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0;
 const VIDEO_HEIGHT = SCREEN_HEIGHT - TAB_BAR_HEIGHT;
 
 const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
@@ -46,12 +47,12 @@ interface VideoReview {
   createdAt: string;
 }
 
-// Тестовые видео для демонстрации
+// Демо видео
 const DEMO_VIDEOS: VideoReview[] = [
   {
     _id: '1',
     title: 'Обзор BMW M5 Competition 2024',
-    description: '🔥 Полный обзор нового BMW M5 Competition! 625 л.с., разгон до 100 за 3.3 сек. Смотрите детали в этом видео! #BMW #M5 #обзор',
+    description: '🔥 Полный обзор нового BMW M5! 625 л.с., разгон до 100 за 3.3 сек',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     duration: 15,
     authorId: 'demo1',
@@ -65,12 +66,12 @@ const DEMO_VIDEOS: VideoReview[] = [
   },
   {
     _id: '2',
-    title: 'Mercedes-AMG GT 63 S - тест-драйв',
-    description: '🚗 Тестируем Mercedes-AMG GT 63 S на трассе! Невероятная мощь и комфорт в одном автомобиле. #Mercedes #AMG #тестдрайв',
+    title: 'Mercedes-AMG GT 63 S',
+    description: '🚗 Тестируем Mercedes-AMG GT 63 S на трассе!',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     duration: 15,
     authorId: 'demo2',
-    authorName: 'CarReviews TJ',
+    authorName: 'CarReviews',
     viewsCount: 8934,
     likesCount: 567,
     likedBy: [],
@@ -80,44 +81,14 @@ const DEMO_VIDEOS: VideoReview[] = [
   },
   {
     _id: '3',
-    title: 'Audi RS6 Avant - семейный спорткар',
-    description: '👨‍👩‍👧‍👦 Audi RS6 Avant - идеальный семейный автомобиль для тех, кто любит скорость! 600+ л.с. и огромный багажник. #Audi #RS6 #семья',
+    title: 'Audi RS6 Avant',
+    description: '👨‍👩‍👧‍👦 Идеальный семейный спорткар!',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     duration: 60,
     authorId: 'demo3',
     authorName: 'AvtoMir',
     viewsCount: 23100,
     likesCount: 1240,
-    likedBy: [],
-    savedBy: [],
-    status: 'approved',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: '4',
-    title: 'Porsche 911 GT3 на треке',
-    description: '🏁 Porsche 911 GT3 - настоящий трек-монстр! Смотрите как он проходит повороты на скорости. #Porsche #911GT3 #трек',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-    duration: 15,
-    authorId: 'demo4',
-    authorName: 'SpeedMaster',
-    viewsCount: 45200,
-    likesCount: 3420,
-    likedBy: [],
-    savedBy: [],
-    status: 'approved',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: '5',
-    title: 'Toyota Land Cruiser 300 - обзор',
-    description: '🌍 Новый Toyota Land Cruiser 300 - король бездорожья! Полный обзор внедорожника мечты. #Toyota #LandCruiser #внедорожник',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-    duration: 15,
-    authorId: 'demo5',
-    authorName: 'OffRoad TJ',
-    viewsCount: 67800,
-    likesCount: 4521,
     likedBy: [],
     savedBy: [],
     status: 'approved',
@@ -132,6 +103,7 @@ const VideoItem = React.memo(({
   onSave, 
   onShare, 
   onCarPress,
+  onAuthorPress,
   userId,
 }: { 
   item: VideoReview; 
@@ -140,6 +112,7 @@ const VideoItem = React.memo(({
   onSave: (id: string) => void;
   onShare: (item: VideoReview) => void;
   onCarPress: (carId: string) => void;
+  onAuthorPress: (authorId: string) => void;
   userId?: string;
 }) => {
   const videoRef = useRef<Video>(null);
@@ -147,13 +120,14 @@ const VideoItem = React.memo(({
   const [isLiked, setIsLiked] = useState(item.likedBy?.includes(userId || '') || false);
   const [isSaved, setIsSaved] = useState(item.savedBy?.includes(userId || '') || false);
   const [likesCount, setLikesCount] = useState(item.likesCount);
-  const [showPlayButton, setShowPlayButton] = useState(false);
+  const [showPlayIcon, setShowPlayIcon] = useState(false);
+  const likeScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isActive) {
       videoRef.current?.playAsync();
       setIsPlaying(true);
-      setShowPlayButton(false);
+      setShowPlayIcon(false);
     } else {
       videoRef.current?.pauseAsync();
       videoRef.current?.setPositionAsync(0);
@@ -165,15 +139,21 @@ const VideoItem = React.memo(({
     if (isPlaying) {
       await videoRef.current?.pauseAsync();
       setIsPlaying(false);
-      setShowPlayButton(true);
+      setShowPlayIcon(true);
     } else {
       await videoRef.current?.playAsync();
       setIsPlaying(true);
-      setShowPlayButton(false);
+      setShowPlayIcon(false);
     }
   };
 
   const handleLike = () => {
+    // Анимация лайка
+    Animated.sequence([
+      Animated.spring(likeScale, { toValue: 1.4, useNativeDriver: true, speed: 50 }),
+      Animated.spring(likeScale, { toValue: 1, useNativeDriver: true, speed: 50 }),
+    ]).start();
+    
     setIsLiked(!isLiked);
     setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
     onLike(item._id);
@@ -201,80 +181,129 @@ const VideoItem = React.memo(({
           ref={videoRef}
           source={{ uri: item.videoUrl }}
           style={styles.video}
-          resizeMode={ResizeMode.CONTAIN}
+          resizeMode={ResizeMode.COVER}
           isLooping
           shouldPlay={isActive}
           isMuted={false}
           volume={1.0}
         />
         
-        {/* Play button overlay */}
-        {showPlayButton && (
-          <View style={styles.playButtonOverlay}>
-            <View style={styles.playButton}>
-              <Ionicons name="play" size={50} color="#FFFFFF" />
+        {/* Play/Pause Icon */}
+        {showPlayIcon && (
+          <View style={styles.playIconOverlay}>
+            <View style={styles.playIconCircle}>
+              <Ionicons name="play" size={40} color="#FFFFFF" style={{ marginLeft: 4 }} />
             </View>
           </View>
         )}
       </TouchableOpacity>
 
-      {/* Градиент снизу */}
-      <View style={styles.gradient} />
+      {/* Градиент снизу - Instagram style */}
+      <LinearGradient
+        colors={['transparent', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.7)']}
+        style={styles.bottomGradient}
+        pointerEvents="none"
+      />
 
-      {/* Информация об авторе и описание */}
-      <View style={styles.infoContainer}>
-        <View style={styles.authorRow}>
-          <View style={styles.authorAvatar}>
-            <Text style={styles.authorInitial}>
+      {/* Контент слева внизу - Instagram style */}
+      <View style={styles.contentContainer}>
+        {/* Автор */}
+        <TouchableOpacity 
+          style={styles.authorContainer}
+          onPress={() => onAuthorPress(item.authorId)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>
               {item.authorName.charAt(0).toUpperCase()}
             </Text>
           </View>
-          <Text style={styles.authorName}>@{item.authorName}</Text>
-        </View>
-        <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-        <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
-        <View style={styles.statsRow}>
-          <Ionicons name="eye-outline" size={14} color="#FFFFFF" />
-          <Text style={styles.statsText}>{formatCount(item.viewsCount)} просмотров</Text>
+          <Text style={styles.authorName}>{item.authorName}</Text>
+          <View style={styles.followButton}>
+            <Text style={styles.followText}>Подписаться</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Описание */}
+        <Text style={styles.description} numberOfLines={2}>
+          {item.title}
+        </Text>
+        
+        {item.description && (
+          <Text style={styles.caption} numberOfLines={1}>
+            {item.description}
+          </Text>
+        )}
+
+        {/* Музыка/Звук - как в Instagram */}
+        <View style={styles.soundRow}>
+          <Ionicons name="musical-notes" size={12} color="#FFFFFF" />
+          <Text style={styles.soundText} numberOfLines={1}>
+            Оригинальный звук · {item.authorName}
+          </Text>
         </View>
       </View>
 
-      {/* Кнопки справа */}
-      <View style={styles.actionsContainer}>
+      {/* Кнопки справа - Instagram style */}
+      <View style={styles.actionsColumn}>
         {/* Лайк */}
-        <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-          <Ionicons 
-            name={isLiked ? "heart" : "heart-outline"} 
-            size={32} 
-            color={isLiked ? "#EF4444" : "#FFFFFF"} 
-          />
-          <Text style={styles.actionText}>{formatCount(likesCount)}</Text>
+        <TouchableOpacity style={styles.actionItem} onPress={handleLike}>
+          <Animated.View style={{ transform: [{ scale: likeScale }] }}>
+            <Ionicons 
+              name={isLiked ? "heart" : "heart-outline"} 
+              size={28} 
+              color={isLiked ? "#FF3B5C" : "#FFFFFF"} 
+            />
+          </Animated.View>
+          <Text style={styles.actionCount}>{formatCount(likesCount)}</Text>
         </TouchableOpacity>
 
-        {/* Сохранить */}
-        <TouchableOpacity style={styles.actionButton} onPress={handleSave}>
-          <Ionicons 
-            name={isSaved ? "bookmark" : "bookmark-outline"} 
-            size={32} 
-            color={isSaved ? "#F59E0B" : "#FFFFFF"} 
-          />
-          <Text style={styles.actionText}>Сохранить</Text>
+        {/* Комментарии */}
+        <TouchableOpacity style={styles.actionItem}>
+          <Ionicons name="chatbubble-outline" size={26} color="#FFFFFF" />
+          <Text style={styles.actionCount}>{formatCount(Math.floor(item.likesCount / 10))}</Text>
         </TouchableOpacity>
 
         {/* Поделиться */}
-        <TouchableOpacity style={styles.actionButton} onPress={() => onShare(item)}>
-          <Ionicons name="share-social-outline" size={32} color="#FFFFFF" />
-          <Text style={styles.actionText}>Поделиться</Text>
+        <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
+          <Ionicons name="paper-plane-outline" size={26} color="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Перейти к объявлению */}
-        {item.carId && (
-          <TouchableOpacity style={styles.actionButton} onPress={() => onCarPress(item.carId!)}>
-            <Ionicons name="car-sport-outline" size={32} color="#FFFFFF" />
-            <Text style={styles.actionText}>Авто</Text>
-          </TouchableOpacity>
-        )}
+        {/* Сохранить */}
+        <TouchableOpacity style={styles.actionItem} onPress={handleSave}>
+          <Ionicons 
+            name={isSaved ? "bookmark" : "bookmark-outline"} 
+            size={26} 
+            color={isSaved ? "#FFFFFF" : "#FFFFFF"} 
+          />
+        </TouchableOpacity>
+
+        {/* Ещё */}
+        <TouchableOpacity style={styles.actionItem}>
+          <Ionicons name="ellipsis-horizontal" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        {/* Аватар автора с музыкой - как в Instagram */}
+        <View style={styles.musicDisc}>
+          <View style={styles.musicDiscInner}>
+            <Text style={styles.musicDiscText}>
+              {item.authorName.charAt(0)}
+            </Text>
+          </View>
+        </View>
       </View>
+
+      {/* Привязка к авто (если есть) */}
+      {item.carId && (
+        <TouchableOpacity 
+          style={styles.carBadge}
+          onPress={() => onCarPress(item.carId!)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="car-sport" size={16} color="#FFFFFF" />
+          <Text style={styles.carBadgeText}>Смотреть авто</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 });
@@ -283,22 +312,19 @@ export default function ReviewsScreen() {
   const [videos, setVideos] = useState<VideoReview[]>(DEMO_VIDEOS);
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const isFocused = useIsFocused(); // Мгновенное отслеживание фокуса
+  const isFocused = useIsFocused();
   const [isAppActive, setIsAppActive] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
 
-  // Остановка видео когда приложение уходит в фон
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       setIsAppActive(nextAppState === 'active');
     });
-
     return () => subscription?.remove();
   }, []);
 
-  // Загрузка видео с сервера
   const fetchVideos = async () => {
     try {
       setLoading(true);
@@ -310,7 +336,7 @@ export default function ReviewsScreen() {
         }
       }
     } catch (error) {
-      // console.log('Using demo videos');
+      // Using demo videos
     } finally {
       setLoading(false);
     }
@@ -326,9 +352,7 @@ export default function ReviewsScreen() {
       await fetch(`${API_URL}/api/videos/${videoId}/like?userId=${encodeURIComponent(user.phone)}`, {
         method: 'POST',
       });
-    } catch (error) {
-      console.error('Error liking video:', error);
-    }
+    } catch (error) {}
   };
 
   const handleSave = async (videoId: string) => {
@@ -337,24 +361,24 @@ export default function ReviewsScreen() {
       await fetch(`${API_URL}/api/videos/${videoId}/save?userId=${encodeURIComponent(user.phone)}`, {
         method: 'POST',
       });
-    } catch (error) {
-      console.error('Error saving video:', error);
-    }
+    } catch (error) {}
   };
 
   const handleShare = async (video: VideoReview) => {
     try {
       await Share.share({
-        message: `🚗 ${video.title}\n\nСмотрите обзор авто в SafedAuto!\n\n${video.description}`,
+        message: `🚗 ${video.title}\n\nСмотрите в SafedAuto!`,
         title: video.title,
       });
-    } catch (error) {
-      console.error('Error sharing:', error);
-    }
+    } catch (error) {}
   };
 
   const handleCarPress = (carId: string) => {
     router.push(`/car/${carId}`);
+  };
+
+  const handleAuthorPress = (authorId: string) => {
+    // TODO: Navigate to author profile
   };
 
   const handleAddVideo = () => {
@@ -368,8 +392,6 @@ export default function ReviewsScreen() {
   const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
       setActiveIndex(viewableItems[0].index);
-      
-      // Track view
       const videoId = viewableItems[0].item._id;
       if (videoId && !videoId.startsWith('demo')) {
         fetch(`${API_URL}/api/videos/${videoId}/view`, { method: 'POST' }).catch(() => {});
@@ -384,25 +406,23 @@ export default function ReviewsScreen() {
   if (loading && videos.length === 0) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0066FF" />
-        <Text style={styles.loadingText}>Загрузка видео...</Text>
+        <ActivityIndicator size="large" color="#FFFFFF" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       
-      {/* Заголовок */}
-      <SafeAreaView style={styles.header} edges={['top']}>
-        <Text style={styles.headerTitle}>🎬 Обзоры авто</Text>
-        <TouchableOpacity style={styles.addButton} onPress={handleAddVideo}>
-          <Ionicons name="add-circle" size={32} color="#FFFFFF" />
+      {/* Header - Instagram style */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Reels</Text>
+        <TouchableOpacity style={styles.cameraButton} onPress={handleAddVideo}>
+          <Ionicons name="camera-outline" size={28} color="#FFFFFF" />
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
 
-      {/* Видео лента */}
       <FlatList
         ref={flatListRef}
         data={videos}
@@ -414,6 +434,7 @@ export default function ReviewsScreen() {
             onSave={handleSave}
             onShare={handleShare}
             onCarPress={handleCarPress}
+            onAuthorPress={handleAuthorPress}
             userId={user?.phone}
           />
         )}
@@ -425,7 +446,7 @@ export default function ReviewsScreen() {
         decelerationRate="fast"
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
-        getItemLayout={(data, index) => ({
+        getItemLayout={(_, index) => ({
           length: VIDEO_HEIGHT,
           offset: VIDEO_HEIGHT * index,
           index,
@@ -449,14 +470,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingText: {
-    color: '#FFFFFF',
-    marginTop: 12,
-    fontSize: 16,
-  },
   header: {
     position: 'absolute',
-    top: 0,
+    top: Platform.OS === 'ios' ? 50 : 35,
     left: 0,
     right: 0,
     zIndex: 100,
@@ -464,24 +480,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? STATUS_BAR_HEIGHT + 8 : 8,
-    paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: '#FFFFFF',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
-  addButton: {
+  cameraButton: {
     padding: 4,
   },
   videoContainer: {
     width: SCREEN_WIDTH,
     height: VIDEO_HEIGHT,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: '#000000',
   },
   videoTouchable: {
     flex: 1,
@@ -490,105 +501,149 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  playButtonOverlay: {
+  playIconOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  playButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  playIconCircle: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  gradient: {
+  bottomGradient: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 300,
-    backgroundColor: 'transparent',
-    backgroundImage: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+    height: 350,
   },
-  infoContainer: {
+  contentContainer: {
     position: 'absolute',
-    bottom: 100,
-    left: 16,
-    right: 80,
+    bottom: 80,
+    left: 12,
+    right: 70,
   },
-  authorRow: {
+  authorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
-  authorAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#0066FF',
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E1306C',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
-  authorInitial: {
+  avatarText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
   },
   authorName: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    marginLeft: 10,
   },
-  title: {
+  followButton: {
+    marginLeft: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+  },
+  followText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 6,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    fontSize: 12,
+    fontWeight: '600',
   },
   description: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: '#FFFFFF',
     fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 6,
     lineHeight: 20,
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
-  statsRow: {
+  caption: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 13,
+    marginBottom: 10,
+  },
+  soundRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
   },
-  statsText: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 13,
+  soundText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginLeft: 6,
+    maxWidth: 180,
   },
-  actionsContainer: {
+  actionsColumn: {
     position: 'absolute',
     right: 12,
-    bottom: 120,
-    alignItems: 'center',
-    gap: 20,
-  },
-  actionButton: {
+    bottom: 100,
     alignItems: 'center',
   },
-  actionText: {
+  actionItem: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  actionCount: {
     color: '#FFFFFF',
-    fontSize: 11,
+    fontSize: 12,
+    fontWeight: '500',
     marginTop: 4,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+  },
+  musicDisc: {
+    width: 35,
+    height: 35,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#3D3D3D',
+    overflow: 'hidden',
+    marginTop: 5,
+  },
+  musicDiscInner: {
+    flex: 1,
+    backgroundColor: '#1A1A1A',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  musicDiscText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  carBadge: {
+    position: 'absolute',
+    bottom: 85,
+    left: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 102, 255, 0.9)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  carBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 6,
   },
 });
