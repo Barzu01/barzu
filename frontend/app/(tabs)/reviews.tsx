@@ -113,6 +113,7 @@ const VideoItem = React.memo(({
   onCarPress,
   onAuthorPress,
   onCommentPress,
+  onFollow,
   userId,
 }: { 
   item: VideoReview; 
@@ -123,6 +124,7 @@ const VideoItem = React.memo(({
   onCarPress: (carId: string) => void;
   onAuthorPress: (authorId: string) => void;
   onCommentPress: (video: VideoReview) => void;
+  onFollow: (authorId: string) => Promise<boolean>;
   userId?: string;
 }) => {
   const videoRef = useRef<Video>(null);
@@ -131,6 +133,8 @@ const VideoItem = React.memo(({
   const [isSaved, setIsSaved] = useState(item.savedBy?.includes(userId || '') || false);
   const [likesCount, setLikesCount] = useState(item.likesCount);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const likeScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -171,6 +175,11 @@ const VideoItem = React.memo(({
   const handleSave = () => {
     setIsSaved(!isSaved);
     onSave(item._id);
+  };
+
+  const handleFollow = async () => {
+    const result = await onFollow(item.authorId);
+    setIsFollowing(result);
   };
 
   const formatCount = (count: number) => {
