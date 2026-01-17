@@ -252,7 +252,7 @@ const VideoItem = React.memo(({
         </TouchableOpacity>
       )}
 
-      {/* Информация об авторе */}
+      {/* Информация об авторе - спущена ниже */}
       <View style={styles.contentContainer}>
         <TouchableOpacity 
           style={styles.authorContainer}
@@ -267,8 +267,13 @@ const VideoItem = React.memo(({
           <View style={styles.authorInfo}>
             <View style={styles.authorNameRow}>
               <Text style={styles.authorName}>{item.authorName}</Text>
-              <TouchableOpacity style={styles.followBtn}>
-                <Text style={styles.followBtnText}>Подписаться</Text>
+              <TouchableOpacity 
+                style={[styles.followBtn, isFollowing && styles.followingBtn]}
+                onPress={handleFollow}
+              >
+                <Text style={[styles.followBtnText, isFollowing && styles.followingBtnText]}>
+                  {isFollowing ? 'Подписки' : 'Подписаться'}
+                </Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.dateText}>
@@ -277,19 +282,26 @@ const VideoItem = React.memo(({
           </View>
         </TouchableOpacity>
 
-        {/* Описание */}
-        <Text style={styles.description} numberOfLines={2}>
+        {/* Описание с кнопкой "Ещё" */}
+        <Text style={styles.description} numberOfLines={showFullDescription ? undefined : 1}>
           {item.title}
         </Text>
         
         {item.description && (
-          <Text style={styles.caption} numberOfLines={1}>
-            {item.description}
-          </Text>
+          <View>
+            <Text style={styles.caption} numberOfLines={showFullDescription ? undefined : 1}>
+              {item.description}
+            </Text>
+            {item.description.length > 50 && !showFullDescription && (
+              <TouchableOpacity onPress={() => setShowFullDescription(true)}>
+                <Text style={styles.moreBtn}>... ещё</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
       </View>
 
-      {/* Кнопки справа - как в Manzili */}
+      {/* Кнопки справа - убрана жалоба */}
       <View style={styles.actionsColumn}>
         {/* Лайк */}
         <TouchableOpacity style={styles.actionItem} onPress={handleLike}>
@@ -321,11 +333,6 @@ const VideoItem = React.memo(({
         {/* Поделиться */}
         <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
           <Ionicons name="arrow-redo-outline" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
-
-        {/* Жалоба */}
-        <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="alert-circle-outline" size={26} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </View>
