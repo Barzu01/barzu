@@ -491,6 +491,21 @@ export default function ReviewsScreen() {
     router.push(`/profile/user/${authorId}`);
   };
 
+  const handleFollow = async (authorId: string): Promise<boolean> => {
+    if (!user?.phone) return false;
+    try {
+      const response = await fetch(
+        `${API_URL}/api/users/${encodeURIComponent(authorId)}/follow?followerId=${encodeURIComponent(user.phone)}`,
+        { method: 'POST' }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        return data.following;
+      }
+    } catch {}
+    return false;
+  };
+
   const handleAddVideo = () => {
     if (!user) {
       router.push('/auth/login');
@@ -527,7 +542,7 @@ export default function ReviewsScreen() {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Reels</Text>
+        <Text style={styles.headerTitle}>Обзоры</Text>
         <TouchableOpacity style={styles.cameraButton} onPress={handleAddVideo}>
           <Ionicons name="camera-outline" size={28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -546,6 +561,7 @@ export default function ReviewsScreen() {
             onCarPress={handleCarPress}
             onAuthorPress={handleAuthorPress}
             onCommentPress={handleCommentPress}
+            onFollow={handleFollow}
             userId={user?.phone}
           />
         )}
