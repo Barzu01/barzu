@@ -10,99 +10,107 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
-import { chatAPI } from '../../services/api';
+import Constants from 'expo-constants';
+
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
 
 interface Message {
   _id: string;
-  chatId: string;
   senderId: string;
   receiverId: string;
-  message: string;
+  text: string;
   createdAt: string;
-  isRead: boolean;
+  read: boolean;
+}
+
+interface UserInfo {
+  phone: string;
+  name: string;
 }
 
 export default function ChatScreen() {
-  const params = useLocalSearchParams<{
-    id: string;
-    sellerId: string;
-    sellerPhone: string;
-    carTitle: string;
-  }>();
-  const { user } = useAuth();
+  const { id: otherUserId } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { user } = useAuth();
+  const flatListRef = useRef<FlatList>(null);
+  
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [chatId, setChatId] = useState<string | null>(null);
-  const flatListRef = useRef<FlatList>(null);
+  const [otherUser, setOtherUser] = useState<UserInfo | null>(null);
 
-  useEffect(() => {
-    initChat();
-  }, []);
-
-  useEffect(() => {
-    if (chatId) {
-      loadMessages();
-      const interval = setInterval(loadMessages, 5000); // Poll for new messages
-      return () => clearInterval(interval);
-    }
-  }, [chatId]);
-
-  const initChat = async () => {
-    if (!user || !params.sellerPhone) return;
+  const fetchOtherUser = async () => {
+    if (!otherUserId) return;
     
     try {
-      const chat = await chatAPI.createOrGetChat(
-        user.phone,
-        params.sellerPhone,
-        params.id,
-        params.carTitle
-      );
-      setChatId(chat._id);
-      await chatAPI.markAsRead(chat._id, user.phone);
+      const response = await fetch(`${API_URL}/api/users/${encodeURIComponent(otherUserId)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setOtherUser(data);
+      }
     } catch (error) {
-      console.error('Error initializing chat:', error);
+      console.error('Error fetching user:', error);
+    }
+  };
+
+  const fetchMessages = async () => {
+    if (!user?.phone || !otherUserId) return;
+    
+    try {
+      const response = await fetch(
+        `${API_URL}/api/chats/${encodeURIComponent(user.phone)}/${encodeURIComponent(otherUserId)}/messages`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.reverse());
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadMessages = async () => {
-    if (!chatId) return;
+  useEffect(() => {
+    fetchOtherUser();
+    fetchMessages();
+    
+    // Poll for new messages every 5 seconds
+    const interval = setInterval(fetchMessages, 5000);
+    return () => clearInterval(interval);
+  }, [otherUserId, user?.phone]);
+
+  const handleSend = async () => {
+    if (!newMessage.trim() || !user?.phone || !otherUserId) return;
+    
+    setSending(true);
     
     try {
-      const data = await chatAPI.getMessages(chatId);
-      setMessages(data);
-      if (user) {
-        await chatAPI.markAsRead(chatId, user.phone);
+      const response = await fetch(`${API_URL}/api/chats/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: user.phone,
+          receiverId: otherUserId,
+          text: newMessage.trim(),
+        }),
+      });
+      
+      if (response.ok) {
+        const message = await response.json();
+        setMessages([...messages, message]);
+        setNewMessage('');
+        
+        // Scroll to bottom
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }, 100);
       }
-    } catch (error) {
-      console.error('Error loading messages:', error);
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !chatId || !user || !params.sellerPhone) return;
-
-    setSending(true);
-    try {
-      await chatAPI.sendMessage(
-        chatId,
-        user.phone,
-        params.sellerPhone,
-        newMessage.trim(),
-        params.id,
-        params.carTitle
-      );
-      setNewMessage('');
-      await loadMessages();
-      flatListRef.current?.scrollToEnd({ animated: true });
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -120,66 +128,53 @@ export default function ChatScreen() {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-
+    
     if (date.toDateString() === today.toDateString()) {
       return 'Сегодня';
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Вчера';
+    } else {
+      return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
     }
-    return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
   };
 
   const renderMessage = ({ item, index }: { item: Message; index: number }) => {
     const isMyMessage = item.senderId === user?.phone;
     const showDate = index === 0 || 
-      formatDate(item.createdAt) !== formatDate(messages[index - 1].createdAt);
-
+      formatDate(item.createdAt) !== formatDate(messages[index - 1]?.createdAt);
+    
     return (
       <View>
         {showDate && (
-          <View style={styles.dateSeparator}>
+          <View style={styles.dateContainer}>
             <Text style={styles.dateText}>{formatDate(item.createdAt)}</Text>
           </View>
         )}
-        <View style={[
-          styles.messageContainer,
-          isMyMessage ? styles.myMessageContainer : styles.theirMessageContainer
-        ]}>
-          <View style={[
-            styles.messageBubble,
-            isMyMessage ? styles.myMessage : styles.theirMessage
-          ]}>
-            <Text style={[
-              styles.messageText,
-              isMyMessage ? styles.myMessageText : styles.theirMessageText
-            ]}>
-              {item.message}
-            </Text>
-            <Text style={[
-              styles.messageTime,
-              isMyMessage ? styles.myMessageTime : styles.theirMessageTime
-            ]}>
+        <View style={[styles.messageContainer, isMyMessage ? styles.myMessage : styles.theirMessage]}>
+          <Text style={[styles.messageText, isMyMessage ? styles.myMessageText : styles.theirMessageText]}>
+            {item.text}
+          </Text>
+          <View style={styles.messageFooter}>
+            <Text style={[styles.timeText, isMyMessage ? styles.myTimeText : styles.theirTimeText]}>
               {formatTime(item.createdAt)}
-              {isMyMessage && (
-                <Ionicons 
-                  name={item.isRead ? "checkmark-done" : "checkmark"} 
-                  size={14} 
-                  color={item.isRead ? "#34D399" : "rgba(255,255,255,0.6)"} 
-                />
-              )}
             </Text>
+            {isMyMessage && (
+              <Ionicons 
+                name={item.read ? "checkmark-done" : "checkmark"} 
+                size={14} 
+                color={item.read ? "#34B7F1" : "rgba(255,255,255,0.7)"} 
+                style={{ marginLeft: 4 }}
+              />
+            )}
           </View>
         </View>
       </View>
     );
   };
 
-  if (loading) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066FF" />
-      </View>
-    );
+  if (!user) {
+    router.replace('/auth/login');
+    return null;
   }
 
   return (
@@ -187,70 +182,78 @@ export default function ChatScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#0F172A" />
+          <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle} numberOfLines={1}>
-            {params.carTitle || 'Чат'}
-          </Text>
-          <Text style={styles.headerSubtitle}>{params.sellerPhone}</Text>
-        </View>
-        <View style={{ width: 44 }} />
+        
+        <TouchableOpacity 
+          style={styles.userInfo}
+          onPress={() => router.push(`/profile/user/${otherUserId}`)}
+        >
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>
+              {otherUser?.name?.charAt(0).toUpperCase() || '?'}
+            </Text>
+          </View>
+          <View style={styles.userDetails}>
+            <Text style={styles.userName}>{otherUser?.name || 'Загрузка...'}</Text>
+            <Text style={styles.userStatus}>онлайн</Text>
+          </View>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.headerAction}>
+          <Ionicons name="call-outline" size={24} color="#0066FF" />
+        </TouchableOpacity>
       </View>
 
-      {/* Car Info Banner */}
-      {params.carTitle && (
-        <TouchableOpacity 
-          style={styles.carBanner}
-          onPress={() => router.push({ pathname: '/car/[id]', params: { id: params.id } })}
-        >
-          <Ionicons name="car" size={20} color="#0066FF" />
-          <Text style={styles.carBannerText} numberOfLines={1}>{params.carTitle}</Text>
-          <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
-        </TouchableOpacity>
-      )}
-
+      {/* Messages */}
       <KeyboardAvoidingView 
-        style={styles.chatContainer}
+        style={styles.messagesContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        keyboardVerticalOffset={90}
       >
-        {/* Messages */}
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.messagesList}
-          showsVerticalScrollIndicator={false}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <View style={styles.emptyIcon}>
-                <Ionicons name="chatbubbles-outline" size={48} color="#94A3B8" />
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0066FF" />
+          </View>
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.messagesList}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Ionicons name="chatbubbles-outline" size={60} color="#CCC" />
+                <Text style={styles.emptyText}>Начните общение</Text>
+                <Text style={styles.emptySubtext}>
+                  Напишите первое сообщение
+                </Text>
               </View>
-              <Text style={styles.emptyTitle}>Начните диалог</Text>
-              <Text style={styles.emptySubtitle}>
-                Напишите сообщение продавцу
-              </Text>
-            </View>
-          }
-        />
+            }
+          />
+        )}
 
         {/* Input */}
         <View style={styles.inputContainer}>
+          <TouchableOpacity style={styles.attachButton}>
+            <Ionicons name="attach" size={24} color="#666" />
+          </TouchableOpacity>
+          
           <TextInput
             style={styles.input}
+            placeholder="Сообщение..."
+            placeholderTextColor="#999"
             value={newMessage}
             onChangeText={setNewMessage}
-            placeholder="Введите сообщение..."
-            placeholderTextColor="#94A3B8"
             multiline
             maxLength={1000}
           />
+          
           <TouchableOpacity 
-            style={[styles.sendButton, (!newMessage.trim() || sending) && styles.sendButtonDisabled]}
-            onPress={sendMessage}
+            style={[styles.sendButton, !newMessage.trim() && styles.sendButtonDisabled]}
+            onPress={handleSend}
             disabled={!newMessage.trim() || sending}
           >
             {sending ? (
@@ -268,105 +271,94 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#F0F2F5',
   },
   header: {
-    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: '#E0E0E0',
   },
   backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#F1F5F9',
+    padding: 4,
+  },
+  userInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  headerTitle: {
+  avatarText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '700',
-    color: '#0F172A',
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  carBanner: {
-    backgroundColor: '#E8F1FF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 10,
-  },
-  carBannerText: {
-    flex: 1,
-    fontSize: 14,
     fontWeight: '600',
-    color: '#0066FF',
   },
-  chatContainer: {
+  userDetails: {
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  userStatus: {
+    fontSize: 12,
+    color: '#10B981',
+  },
+  headerAction: {
+    padding: 8,
+  },
+  messagesContainer: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   messagesList: {
     padding: 16,
     flexGrow: 1,
   },
-  dateSeparator: {
+  dateContainer: {
     alignItems: 'center',
     marginVertical: 16,
   },
   dateText: {
     fontSize: 12,
-    color: '#64748B',
-    backgroundColor: '#F1F5F9',
+    color: '#888',
+    backgroundColor: 'rgba(0,0,0,0.05)',
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 10,
   },
   messageContainer: {
-    marginVertical: 4,
-  },
-  myMessageContainer: {
-    alignItems: 'flex-end',
-  },
-  theirMessageContainer: {
-    alignItems: 'flex-start',
-  },
-  messageBubble: {
     maxWidth: '80%',
     paddingHorizontal: 14,
     paddingVertical: 10,
     borderRadius: 18,
+    marginBottom: 8,
   },
   myMessage: {
+    alignSelf: 'flex-end',
     backgroundColor: '#0066FF',
     borderBottomRightRadius: 4,
   },
   theirMessage: {
+    alignSelf: 'flex-start',
     backgroundColor: '#FFFFFF',
     borderBottomLeftRadius: 4,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
   },
   messageText: {
     fontSize: 15,
@@ -376,20 +368,22 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   theirMessageText: {
-    color: '#0F172A',
+    color: '#333',
   },
-  messageTime: {
-    fontSize: 11,
-    marginTop: 4,
+  messageFooter: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 4,
   },
-  myMessageTime: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    textAlign: 'right',
+  timeText: {
+    fontSize: 11,
   },
-  theirMessageTime: {
-    color: '#94A3B8',
+  myTimeText: {
+    color: 'rgba(255,255,255,0.7)',
+  },
+  theirTimeText: {
+    color: '#999',
   },
   emptyContainer: {
     flex: 1,
@@ -397,54 +391,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 100,
   },
-  emptyIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#F1F5F9',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  emptyTitle: {
+  emptyText: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#0F172A',
-    marginBottom: 4,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 16,
   },
-  emptySubtitle: {
+  emptySubtext: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#666',
+    marginTop: 4,
   },
   inputContainer: {
-    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    gap: 12,
+    borderTopColor: '#E0E0E0',
+  },
+  attachButton: {
+    padding: 8,
   },
   input: {
     flex: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#F5F5F5',
     borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
     fontSize: 15,
     maxHeight: 100,
-    color: '#0F172A',
+    marginHorizontal: 8,
   },
   sendButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   sendButtonDisabled: {
-    backgroundColor: '#CBD5E1',
+    backgroundColor: '#CCC',
   },
 });
