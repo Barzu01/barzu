@@ -1213,6 +1213,23 @@ async def like_video(video_id: str, userId: str):
                 {"_id": ObjectId(video_id)},
                 {"$push": {"likedBy": userId}, "$inc": {"likesCount": 1}}
             )
+            
+            # Создаём уведомление для автора видео
+            author_id = video.get("authorId")
+            if author_id and author_id != userId:
+                user = await find_user_by_phone(userId)
+                user_name = user.get("name", "Кто-то") if user else "Кто-то"
+                notification = {
+                    "userId": author_id,
+                    "type": "video_like",
+                    "message": f"❤️ {user_name} поставил лайк на ваше видео",
+                    "videoId": video_id,
+                    "fromUserId": userId,
+                    "isRead": False,
+                    "createdAt": datetime.utcnow()
+                }
+                await db.notifications.insert_one(notification)
+            
             return {"liked": True, "likesCount": video.get("likesCount", 0) + 1}
     except Exception as e:
         return {"liked": True, "likesCount": 1, "error": str(e)}
