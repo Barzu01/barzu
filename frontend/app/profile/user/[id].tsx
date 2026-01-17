@@ -265,22 +265,32 @@ export default function UserProfileScreen() {
             </View>
 
             {/* Action Buttons */}
-            {!isOwnProfile && (
-              <View style={styles.actionButtons}>
+            <View style={styles.actionButtons}>
+              {isOwnProfile ? (
                 <TouchableOpacity 
-                  style={[styles.followButton, isFollowing && styles.followingButton]}
-                  onPress={handleFollow}
+                  style={styles.editButton}
+                  onPress={() => router.push('/(tabs)/profile')}
                 >
-                  <Text style={[styles.followButtonText, isFollowing && styles.followingButtonText]}>
-                    {isFollowing ? 'Подписан' : 'Подписаться'}
-                  </Text>
+                  <Ionicons name="pencil" size={18} color="#0066FF" />
+                  <Text style={styles.editButtonText}>Редактировать</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.chatButton} onPress={handleChat}>
-                  <Ionicons name="chatbubble-ellipses" size={20} color="#0066FF" />
-                  <Text style={styles.chatButtonText}>Чат</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+              ) : (
+                <>
+                  <TouchableOpacity 
+                    style={[styles.followButton, isFollowing && styles.followingButton]}
+                    onPress={handleFollow}
+                  >
+                    <Text style={[styles.followButtonText, isFollowing && styles.followingButtonText]}>
+                      {isFollowing ? 'Подписан' : 'Подписаться'}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.chatButton} onPress={handleChat}>
+                    <Ionicons name="chatbubble-ellipses" size={20} color="#0066FF" />
+                    <Text style={styles.chatButtonText}>Чат</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
           </View>
         </SafeAreaView>
       </View>
