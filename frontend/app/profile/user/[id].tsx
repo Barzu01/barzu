@@ -308,7 +308,7 @@ export default function UserProfileScreen() {
           onPress={() => setActiveTab('reels')}
         >
           <Text style={[styles.tabText, activeTab === 'reels' && styles.activeTabText]}>
-            Рилсы
+            Обзоры авто
           </Text>
         </TouchableOpacity>
       </View>
