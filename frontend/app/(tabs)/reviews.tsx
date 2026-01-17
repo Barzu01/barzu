@@ -13,6 +13,9 @@ import {
   AppState,
   Animated,
   Image,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
@@ -41,13 +44,31 @@ interface VideoReview {
   authorAvatar?: string;
   viewsCount: number;
   likesCount: number;
+  commentsCount?: number;
   likedBy: string[];
   savedBy: string[];
   status: string;
   createdAt: string;
+  car?: {
+    _id: string;
+    brand: string;
+    model: string;
+    price: number;
+    photos: string[];
+    region: string;
+  };
 }
 
-// Демо видео
+interface Comment {
+  _id: string;
+  videoId: string;
+  authorId: string;
+  authorName: string;
+  authorAvatar?: string;
+  text: string;
+  createdAt: string;
+}
+
 const DEMO_VIDEOS: VideoReview[] = [
   {
     _id: '1',
@@ -59,10 +80,11 @@ const DEMO_VIDEOS: VideoReview[] = [
     authorName: 'AutoExpert',
     viewsCount: 15420,
     likesCount: 892,
+    commentsCount: 45,
     likedBy: [],
     savedBy: [],
     status: 'approved',
-    createdAt: new Date().toISOString(),
+    createdAt: '2026-01-08T10:00:00Z',
   },
   {
     _id: '2',
@@ -74,25 +96,11 @@ const DEMO_VIDEOS: VideoReview[] = [
     authorName: 'CarReviews',
     viewsCount: 8934,
     likesCount: 567,
+    commentsCount: 23,
     likedBy: [],
     savedBy: [],
     status: 'approved',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: '3',
-    title: 'Audi RS6 Avant',
-    description: '👨‍👩‍👧‍👦 Идеальный семейный спорткар!',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    duration: 60,
-    authorId: 'demo3',
-    authorName: 'AvtoMir',
-    viewsCount: 23100,
-    likesCount: 1240,
-    likedBy: [],
-    savedBy: [],
-    status: 'approved',
-    createdAt: new Date().toISOString(),
+    createdAt: '2026-01-07T14:30:00Z',
   },
 ];
 
@@ -104,6 +112,7 @@ const VideoItem = React.memo(({
   onShare, 
   onCarPress,
   onAuthorPress,
+  onCommentPress,
   userId,
 }: { 
   item: VideoReview; 
@@ -113,6 +122,7 @@ const VideoItem = React.memo(({
   onShare: (item: VideoReview) => void;
   onCarPress: (carId: string) => void;
   onAuthorPress: (authorId: string) => void;
+  onCommentPress: (video: VideoReview) => void;
   userId?: string;
 }) => {
   const videoRef = useRef<Video>(null);
@@ -148,7 +158,6 @@ const VideoItem = React.memo(({
   };
 
   const handleLike = () => {
-    // Анимация лайка
     Animated.sequence([
       Animated.spring(likeScale, { toValue: 1.4, useNativeDriver: true, speed: 50 }),
       Animated.spring(likeScale, { toValue: 1, useNativeDriver: true, speed: 50 }),
@@ -170,6 +179,13 @@ const VideoItem = React.memo(({
     return count.toString();
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const months = ['янв.', 'фев.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сен.', 'окт.', 'ноя.', 'дек.'];
+    return `${day} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
   return (
     <View style={styles.videoContainer}>
       <TouchableOpacity 
@@ -188,7 +204,6 @@ const VideoItem = React.memo(({
           volume={1.0}
         />
         
-        {/* Play/Pause Icon */}
         {showPlayIcon && (
           <View style={styles.playIconOverlay}>
             <View style={styles.playIconCircle}>
@@ -198,16 +213,38 @@ const VideoItem = React.memo(({
         )}
       </TouchableOpacity>
 
-      {/* Градиент снизу - Instagram style */}
       <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.7)']}
+        colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.8)']}
         style={styles.bottomGradient}
         pointerEvents="none"
       />
 
-      {/* Контент слева внизу - Instagram style */}
+      {/* Карточка объявления - как в Manzili */}
+      {item.car && (
+        <TouchableOpacity 
+          style={styles.listingCard}
+          onPress={() => onCarPress(item.car!._id)}
+          activeOpacity={0.9}
+        >
+          <Image 
+            source={{ uri: item.car.photos[0] }} 
+            style={styles.listingImage}
+          />
+          <View style={styles.listingInfo}>
+            <View style={styles.listingBadge}>
+              <Text style={styles.listingBadgeText}>ПРОДАЖА</Text>
+            </View>
+            <Text style={styles.listingTitle}>{item.car.brand} {item.car.model}</Text>
+            <Text style={styles.listingLocation}>📍 {item.car.region}</Text>
+            <View style={styles.listingPriceContainer}>
+              <Text style={styles.listingPrice}>{item.car.price.toLocaleString()} с.</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
+
+      {/* Информация об авторе */}
       <View style={styles.contentContainer}>
-        {/* Автор */}
         <TouchableOpacity 
           style={styles.authorContainer}
           onPress={() => onAuthorPress(item.authorId)}
@@ -218,9 +255,16 @@ const VideoItem = React.memo(({
               {item.authorName.charAt(0).toUpperCase()}
             </Text>
           </View>
-          <Text style={styles.authorName}>{item.authorName}</Text>
-          <View style={styles.followButton}>
-            <Text style={styles.followText}>Подписаться</Text>
+          <View style={styles.authorInfo}>
+            <View style={styles.authorNameRow}>
+              <Text style={styles.authorName}>{item.authorName}</Text>
+              <TouchableOpacity style={styles.followBtn}>
+                <Text style={styles.followBtnText}>Подписаться</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.dateText}>
+              {formatDate(item.createdAt)} • 👁 {formatCount(item.viewsCount)} Просмотров
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -234,24 +278,16 @@ const VideoItem = React.memo(({
             {item.description}
           </Text>
         )}
-
-        {/* Музыка/Звук - как в Instagram */}
-        <View style={styles.soundRow}>
-          <Ionicons name="musical-notes" size={12} color="#FFFFFF" />
-          <Text style={styles.soundText} numberOfLines={1}>
-            Оригинальный звук · {item.authorName}
-          </Text>
-        </View>
       </View>
 
-      {/* Кнопки справа - Instagram style */}
+      {/* Кнопки справа - как в Manzili */}
       <View style={styles.actionsColumn}>
         {/* Лайк */}
         <TouchableOpacity style={styles.actionItem} onPress={handleLike}>
           <Animated.View style={{ transform: [{ scale: likeScale }] }}>
             <Ionicons 
               name={isLiked ? "heart" : "heart-outline"} 
-              size={28} 
+              size={30} 
               color={isLiked ? "#FF3B5C" : "#FFFFFF"} 
             />
           </Animated.View>
@@ -259,51 +295,30 @@ const VideoItem = React.memo(({
         </TouchableOpacity>
 
         {/* Комментарии */}
-        <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="chatbubble-outline" size={26} color="#FFFFFF" />
-          <Text style={styles.actionCount}>{formatCount(Math.floor(item.likesCount / 10))}</Text>
-        </TouchableOpacity>
-
-        {/* Поделиться */}
-        <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
-          <Ionicons name="paper-plane-outline" size={26} color="#FFFFFF" />
+        <TouchableOpacity style={styles.actionItem} onPress={() => onCommentPress(item)}>
+          <Ionicons name="chatbubble-outline" size={28} color="#FFFFFF" />
+          <Text style={styles.actionCount}>{formatCount(item.commentsCount || 0)}</Text>
         </TouchableOpacity>
 
         {/* Сохранить */}
         <TouchableOpacity style={styles.actionItem} onPress={handleSave}>
           <Ionicons 
             name={isSaved ? "bookmark" : "bookmark-outline"} 
-            size={26} 
-            color={isSaved ? "#FFFFFF" : "#FFFFFF"} 
+            size={28} 
+            color="#FFFFFF" 
           />
         </TouchableOpacity>
 
-        {/* Ещё */}
+        {/* Поделиться */}
+        <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
+          <Ionicons name="arrow-redo-outline" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        {/* Жалоба */}
         <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="ellipsis-horizontal" size={24} color="#FFFFFF" />
+          <Ionicons name="alert-circle-outline" size={26} color="#FFFFFF" />
         </TouchableOpacity>
-
-        {/* Аватар автора с музыкой - как в Instagram */}
-        <View style={styles.musicDisc}>
-          <View style={styles.musicDiscInner}>
-            <Text style={styles.musicDiscText}>
-              {item.authorName.charAt(0)}
-            </Text>
-          </View>
-        </View>
       </View>
-
-      {/* Привязка к авто (если есть) */}
-      {item.carId && (
-        <TouchableOpacity 
-          style={styles.carBadge}
-          onPress={() => onCarPress(item.carId!)}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="car-sport" size={16} color="#FFFFFF" />
-          <Text style={styles.carBadgeText}>Смотреть авто</Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 });
@@ -317,6 +332,13 @@ export default function ReviewsScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
+  
+  // Comments modal
+  const [showComments, setShowComments] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoReview | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [loadingComments, setLoadingComments] = useState(false);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
@@ -332,11 +354,22 @@ export default function ReviewsScreen() {
       if (response.ok) {
         const data = await response.json();
         if (data.length > 0) {
-          setVideos(data);
+          // Fetch car data for videos with carId
+          const videosWithCars = await Promise.all(data.map(async (video: VideoReview) => {
+            if (video.carId) {
+              try {
+                const carResponse = await fetch(`${API_URL}/api/cars/${video.carId}`);
+                if (carResponse.ok) {
+                  video.car = await carResponse.json();
+                }
+              } catch {}
+            }
+            return video;
+          }));
+          setVideos(videosWithCars);
         }
       }
     } catch (error) {
-      // Using demo videos
     } finally {
       setLoading(false);
     }
@@ -346,13 +379,48 @@ export default function ReviewsScreen() {
     fetchVideos();
   }, []);
 
+  const fetchComments = async (videoId: string) => {
+    try {
+      setLoadingComments(true);
+      const response = await fetch(`${API_URL}/api/videos/${videoId}/comments`);
+      if (response.ok) {
+        const data = await response.json();
+        setComments(data);
+      }
+    } catch {} finally {
+      setLoadingComments(false);
+    }
+  };
+
+  const handleCommentPress = (video: VideoReview) => {
+    setSelectedVideo(video);
+    setShowComments(true);
+    fetchComments(video._id);
+  };
+
+  const handleSendComment = async () => {
+    if (!newComment.trim() || !selectedVideo || !user) return;
+    
+    try {
+      const response = await fetch(
+        `${API_URL}/api/videos/${selectedVideo._id}/comments?authorId=${encodeURIComponent(user.phone)}&authorName=${encodeURIComponent(user.name || 'Пользователь')}&text=${encodeURIComponent(newComment)}`,
+        { method: 'POST' }
+      );
+      if (response.ok) {
+        const comment = await response.json();
+        setComments([comment, ...comments]);
+        setNewComment('');
+      }
+    } catch {}
+  };
+
   const handleLike = async (videoId: string) => {
     if (!user?.phone) return;
     try {
       await fetch(`${API_URL}/api/videos/${videoId}/like?userId=${encodeURIComponent(user.phone)}`, {
         method: 'POST',
       });
-    } catch (error) {}
+    } catch {}
   };
 
   const handleSave = async (videoId: string) => {
@@ -361,7 +429,7 @@ export default function ReviewsScreen() {
       await fetch(`${API_URL}/api/videos/${videoId}/save?userId=${encodeURIComponent(user.phone)}`, {
         method: 'POST',
       });
-    } catch (error) {}
+    } catch {}
   };
 
   const handleShare = async (video: VideoReview) => {
@@ -370,7 +438,7 @@ export default function ReviewsScreen() {
         message: `🚗 ${video.title}\n\nСмотрите в SafedAuto!`,
         title: video.title,
       });
-    } catch (error) {}
+    } catch {}
   };
 
   const handleCarPress = (carId: string) => {
@@ -378,7 +446,7 @@ export default function ReviewsScreen() {
   };
 
   const handleAuthorPress = (authorId: string) => {
-    // TODO: Navigate to author profile
+    router.push(`/profile/user/${authorId}`);
   };
 
   const handleAddVideo = () => {
@@ -393,7 +461,7 @@ export default function ReviewsScreen() {
     if (viewableItems.length > 0) {
       setActiveIndex(viewableItems[0].index);
       const videoId = viewableItems[0].item._id;
-      if (videoId && !videoId.startsWith('demo')) {
+      if (videoId && !videoId.startsWith('demo') && videoId.length === 24) {
         fetch(`${API_URL}/api/videos/${videoId}/view`, { method: 'POST' }).catch(() => {});
       }
     }
@@ -415,7 +483,7 @@ export default function ReviewsScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       
-      {/* Header - Instagram style */}
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Reels</Text>
         <TouchableOpacity style={styles.cameraButton} onPress={handleAddVideo}>
@@ -435,6 +503,7 @@ export default function ReviewsScreen() {
             onShare={handleShare}
             onCarPress={handleCarPress}
             onAuthorPress={handleAuthorPress}
+            onCommentPress={handleCommentPress}
             userId={user?.phone}
           />
         )}
@@ -455,6 +524,79 @@ export default function ReviewsScreen() {
         maxToRenderPerBatch={3}
         windowSize={5}
       />
+
+      {/* Comments Modal */}
+      <Modal visible={showComments} animationType="slide" transparent>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.commentsModal}
+        >
+          <TouchableOpacity 
+            style={styles.commentsBackdrop} 
+            onPress={() => setShowComments(false)}
+            activeOpacity={1}
+          />
+          <View style={styles.commentsContainer}>
+            <View style={styles.commentsHeader}>
+              <View style={styles.commentsHandle} />
+              <Text style={styles.commentsTitle}>Комментарии</Text>
+              <TouchableOpacity onPress={() => setShowComments(false)}>
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            {loadingComments ? (
+              <ActivityIndicator style={{ marginTop: 20 }} />
+            ) : (
+              <FlatList
+                data={comments}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <View style={styles.commentItem}>
+                    <View style={styles.commentAvatar}>
+                      <Text style={styles.commentAvatarText}>
+                        {item.authorName.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={styles.commentContent}>
+                      <Text style={styles.commentAuthor}>{item.authorName}</Text>
+                      <Text style={styles.commentText}>{item.text}</Text>
+                    </View>
+                  </View>
+                )}
+                ListEmptyComponent={
+                  <Text style={styles.noComments}>Пока нет комментариев</Text>
+                }
+                contentContainerStyle={{ paddingBottom: 20 }}
+              />
+            )}
+
+            {user && (
+              <View style={styles.commentInputContainer}>
+                <TextInput
+                  style={styles.commentInput}
+                  placeholder="Написать комментарий..."
+                  placeholderTextColor="#999"
+                  value={newComment}
+                  onChangeText={setNewComment}
+                  multiline
+                />
+                <TouchableOpacity 
+                  style={styles.sendButton}
+                  onPress={handleSendComment}
+                  disabled={!newComment.trim()}
+                >
+                  <Ionicons 
+                    name="send" 
+                    size={24} 
+                    color={newComment.trim() ? "#0066FF" : "#CCC"} 
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
@@ -519,24 +661,80 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 350,
+    height: 400,
   },
+  // Listing card - Manzili style
+  listingCard: {
+    position: 'absolute',
+    bottom: 180,
+    left: 12,
+    right: 70,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
+  listingImage: {
+    width: 80,
+    height: 80,
+  },
+  listingInfo: {
+    flex: 1,
+    padding: 10,
+  },
+  listingBadge: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  listingBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  listingTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  listingLocation: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  listingPriceContainer: {
+    marginTop: 4,
+  },
+  listingPrice: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0066FF',
+    backgroundColor: '#E0F2FE',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  // Content
   contentContainer: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 90,
     left: 12,
     right: 70,
   },
   authorContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    marginBottom: 10,
   },
   avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#E1306C',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#333',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -544,55 +742,52 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '700',
+  },
+  authorInfo: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  authorNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   authorName: {
     color: '#FFFFFF',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
-    marginLeft: 10,
   },
-  followButton: {
+  followBtn: {
     marginLeft: 10,
     paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 6,
+    paddingVertical: 4,
+    backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: '#FFFFFF',
+    borderRadius: 4,
   },
-  followText: {
+  followBtnText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '500',
+  },
+  dateText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    marginTop: 2,
   },
   description: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',
-    marginBottom: 6,
-    lineHeight: 20,
+    marginBottom: 4,
   },
   caption: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontSize: 13,
-    marginBottom: 10,
   },
-  soundRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-  },
-  soundText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    marginLeft: 6,
-    maxWidth: 180,
-  },
+  // Actions
   actionsColumn: {
     position: 'absolute',
     right: 12,
@@ -601,49 +796,113 @@ const styles = StyleSheet.create({
   },
   actionItem: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 18,
   },
   actionCount: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 4,
+    marginTop: 2,
   },
-  musicDisc: {
-    width: 35,
-    height: 35,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#3D3D3D',
-    overflow: 'hidden',
-    marginTop: 5,
-  },
-  musicDiscInner: {
+  // Comments Modal
+  commentsModal: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
+    justifyContent: 'flex-end',
+  },
+  commentsBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  commentsContainer: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: SCREEN_HEIGHT * 0.7,
+    minHeight: SCREEN_HEIGHT * 0.5,
+  },
+  commentsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  commentsHandle: {
+    position: 'absolute',
+    top: 8,
+    left: '50%',
+    marginLeft: -20,
+    width: 40,
+    height: 4,
+    backgroundColor: '#DDD',
+    borderRadius: 2,
+  },
+  commentsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  commentItem: {
+    flexDirection: 'row',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+  },
+  commentAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  musicDiscText: {
+  commentAvatarText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
-  carBadge: {
-    position: 'absolute',
-    bottom: 85,
-    left: 12,
+  commentContent: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  commentAuthor: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#333',
+  },
+  commentText: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 2,
+  },
+  noComments: {
+    textAlign: 'center',
+    color: '#999',
+    marginTop: 40,
+    fontSize: 14,
+  },
+  commentInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 102, 255, 0.9)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    padding: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
+    backgroundColor: '#FAFAFA',
   },
-  carBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-    marginLeft: 6,
+  commentInput: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    maxHeight: 80,
+  },
+  sendButton: {
+    marginLeft: 10,
+    padding: 8,
   },
 });
