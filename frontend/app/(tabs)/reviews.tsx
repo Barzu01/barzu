@@ -616,12 +616,16 @@ export default function ReviewsScreen() {
                 renderItem={({ item }) => (
                   <View style={styles.commentItem}>
                     <View style={styles.commentAvatar}>
-                      <Text style={styles.commentAvatarText}>
-                        {item.authorName.charAt(0).toUpperCase()}
-                      </Text>
+                      {item.authorName ? (
+                        <Text style={styles.commentAvatarText}>
+                          {item.authorName.charAt(0).toUpperCase()}
+                        </Text>
+                      ) : (
+                        <Ionicons name="person" size={18} color="#FFFFFF" />
+                      )}
                     </View>
                     <View style={styles.commentContent}>
-                      <Text style={styles.commentAuthor}>{item.authorName}</Text>
+                      <Text style={styles.commentAuthor}>{item.authorName || 'Пользователь'}</Text>
                       <Text style={styles.commentText}>{item.text}</Text>
                     </View>
                     {/* Кнопка удаления для админа или автора */}
