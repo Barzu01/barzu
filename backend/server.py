@@ -1323,12 +1323,16 @@ async def get_comments_count(video_id: str):
 
 @api_router.delete("/videos/comments/{comment_id}")
 async def delete_comment(comment_id: str, userId: str):
-    """Delete a comment (only author)"""
+    """Delete a comment (author or admin)"""
     comment = await db.video_comments.find_one({"_id": ObjectId(comment_id)})
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
     
-    if comment.get("authorId") != userId:
+    # Check if user is author or admin
+    user = await db.users.find_one({"phone": userId})
+    is_admin = user and user.get("isAdmin", False)
+    
+    if comment.get("authorId") != userId and not is_admin:
         raise HTTPException(status_code=403, detail="Not authorized")
     
     await db.video_comments.delete_one({"_id": ObjectId(comment_id)})
