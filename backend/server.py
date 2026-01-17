@@ -208,7 +208,9 @@ class RecentlyViewed(BaseModel):
 class Notification(BaseModel):
     userId: str
     carId: Optional[str] = None
-    type: Literal['approved', 'rejected', 'price_drop', 'chat', 'promotion']
+    videoId: Optional[str] = None
+    fromUserId: Optional[str] = None
+    type: Literal['approved', 'rejected', 'price_drop', 'chat', 'promotion', 'video_like', 'video_comment', 'new_follower']
     message: str
     isRead: bool = False
     createdAt: datetime = Field(default_factory=datetime.utcnow)
