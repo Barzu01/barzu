@@ -90,9 +90,13 @@ export default function ChatsListScreen() {
       activeOpacity={0.7}
     >
       <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {(item.otherUserName || item.otherUserPhone || '?').charAt(0).toUpperCase()}
-        </Text>
+        {(item.otherUserName || item.otherUserPhone) ? (
+          <Text style={styles.avatarText}>
+            {(item.otherUserName || item.otherUserPhone || '').charAt(0).toUpperCase()}
+          </Text>
+        ) : (
+          <Ionicons name="person" size={22} color="#FFFFFF" />
+        )}
       </View>
       
       <View style={styles.chatInfo}>
