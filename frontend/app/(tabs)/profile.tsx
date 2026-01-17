@@ -283,6 +283,7 @@ export default function ProfileScreen() {
               onPress={() => router.push('/notifications')}
               iconBg="#FEF3C7"
               iconColor="#F59E0B"
+              badge={unreadCount > 0 ? (unreadCount > 9 ? '9+' : unreadCount.toString()) : undefined}
             />
           </View>
         </View>
