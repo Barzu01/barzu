@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+import { notificationAPI } from '../../services/api';
 import i18n from '../../i18n';
 
 export default function ProfileScreen() {
@@ -29,6 +30,26 @@ export default function ProfileScreen() {
   const [logoutModalVisible, setLogoutModalVisible] = React.useState(false);
   const [newName, setNewName] = React.useState('');
   const [saving, setSaving] = React.useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Загрузка количества непрочитанных уведомлений
+  useEffect(() => {
+    const loadUnreadCount = async () => {
+      if (user?.phone) {
+        try {
+          const count = await notificationAPI.getUnreadCount(user.phone);
+          setUnreadCount(count);
+        } catch (error) {
+          console.error('Error loading unread count:', error);
+        }
+      }
+    };
+    
+    loadUnreadCount();
+    // Обновляем каждые 30 секунд
+    const interval = setInterval(loadUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [user?.phone]);
 
   const handleLogout = () => {
     setLogoutModalVisible(true);
