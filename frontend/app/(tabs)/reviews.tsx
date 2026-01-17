@@ -562,6 +562,15 @@ export default function ReviewsScreen() {
                       <Text style={styles.commentAuthor}>{item.authorName}</Text>
                       <Text style={styles.commentText}>{item.text}</Text>
                     </View>
+                    {/* Кнопка удаления для админа или автора */}
+                    {(user?.isAdmin || item.authorId === user?.phone) && (
+                      <TouchableOpacity 
+                        style={styles.deleteCommentBtn}
+                        onPress={() => handleDeleteComment(item._id)}
+                      >
+                        <Ionicons name="trash-outline" size={18} color="#FF3B30" />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 )}
                 ListEmptyComponent={
@@ -582,14 +591,14 @@ export default function ReviewsScreen() {
                   multiline
                 />
                 <TouchableOpacity 
-                  style={styles.sendButton}
+                  style={[styles.sendCommentButton, !newComment.trim() && styles.sendCommentButtonDisabled]}
                   onPress={handleSendComment}
                   disabled={!newComment.trim()}
                 >
                   <Ionicons 
                     name="send" 
-                    size={24} 
-                    color={newComment.trim() ? "#0066FF" : "#CCC"} 
+                    size={22} 
+                    color="#FFFFFF" 
                   />
                 </TouchableOpacity>
               </View>
