@@ -245,6 +245,31 @@ class VideoReviewResponse(VideoReview):
         populate_by_name = True
 
 
+# ===== VIDEO COMMENTS =====
+class VideoComment(BaseModel):
+    videoId: str
+    authorId: str
+    authorName: str
+    authorAvatar: Optional[str] = None
+    text: str
+    likesCount: int = 0
+    likedBy: List[str] = Field(default_factory=list)
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+class VideoCommentResponse(VideoComment):
+    id: str = Field(alias="_id")
+
+    class Config:
+        populate_by_name = True
+
+
+# ===== USER FOLLOWS =====
+class UserFollow(BaseModel):
+    followerId: str  # Кто подписался
+    followingId: str  # На кого подписался
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+
 class SearchFilters(BaseModel):
     brand: Optional[str] = None
     model: Optional[str] = None
