@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,7 +32,10 @@ export default function ChatsListScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchChats = async () => {
-    if (!user?.phone) return;
+    if (!user?.phone) {
+      setLoading(false);
+      return;
+    }
     
     try {
       const response = await fetch(`${API_URL}/api/chats/${encodeURIComponent(user.phone)}`);
@@ -48,11 +50,9 @@ export default function ChatsListScreen() {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchChats();
-    }, [user?.phone])
-  );
+  useEffect(() => {
+    fetchChats();
+  }, [user?.phone]);
 
   const onRefresh = async () => {
     setRefreshing(true);
