@@ -1406,6 +1406,23 @@ async def follow_user(user_id: str, followerId: str):
         # Follow
         follow = UserFollow(followerId=followerId, followingId=user_id)
         await db.user_follows.insert_one(follow.model_dump())
+        
+        # Создаём уведомление для пользователя на которого подписались
+        try:
+            follower = await find_user_by_phone(followerId)
+            follower_name = follower.get("name", "Кто-то") if follower else "Кто-то"
+            notification = {
+                "userId": user_id,
+                "type": "new_follower",
+                "message": f"👤 {follower_name} подписался на вас",
+                "fromUserId": followerId,
+                "isRead": False,
+                "createdAt": datetime.utcnow()
+            }
+            await db.notifications.insert_one(notification)
+        except Exception:
+            pass
+        
         return {"following": True}
 
 
