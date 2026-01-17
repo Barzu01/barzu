@@ -20,16 +20,21 @@ const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.p
 
 interface Message {
   _id: string;
+  chatId: string;
   senderId: string;
   receiverId: string;
-  text: string;
+  message: string;
   createdAt: string;
-  read: boolean;
+  isRead: boolean;
 }
 
-interface UserInfo {
-  phone: string;
-  name: string;
+interface ChatInfo {
+  _id: string;
+  participants: string[];
+  otherUserName?: string;
+  otherUserPhone: string;
+  carId?: string;
+  carTitle?: string;
 }
 
 export default function ChatScreen() {
@@ -42,48 +47,79 @@ export default function ChatScreen() {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [otherUser, setOtherUser] = useState<UserInfo | null>(null);
+  const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
+  const [otherUserName, setOtherUserName] = useState<string>('');
 
-  const fetchOtherUser = async () => {
-    if (!otherUserId) return;
+  // Найти или создать чат
+  const findOrCreateChat = async () => {
+    if (!user?.phone || !otherUserId) return null;
     
     try {
-      const response = await fetch(`${API_URL}/api/users/${encodeURIComponent(otherUserId)}`);
+      // Получить список чатов пользователя
+      const response = await fetch(`${API_URL}/api/chats/${encodeURIComponent(user.phone)}`);
       if (response.ok) {
-        const data = await response.json();
-        setOtherUser(data);
+        const chats = await response.json();
+        // Найти чат с этим пользователем
+        const existingChat = chats.find((chat: ChatInfo) => 
+          chat.otherUserPhone === otherUserId || 
+          chat.participants?.includes(otherUserId)
+        );
+        
+        if (existingChat) {
+          setChatInfo(existingChat);
+          setOtherUserName(existingChat.otherUserName || otherUserId);
+          return existingChat._id;
+        }
       }
+      
+      // Если чата нет - создадим при первом сообщении
+      // Пока получим имя пользователя
+      const userResponse = await fetch(`${API_URL}/api/users/${encodeURIComponent(otherUserId)}`);
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setOtherUserName(userData.name || otherUserId);
+      } else {
+        setOtherUserName(otherUserId);
+      }
+      
+      return null;
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error finding chat:', error);
+      return null;
     }
   };
 
   const fetchMessages = async () => {
-    if (!user?.phone || !otherUserId) return;
+    if (!chatInfo?._id) return;
     
     try {
-      const response = await fetch(
-        `${API_URL}/api/chats/${encodeURIComponent(user.phone)}/${encodeURIComponent(otherUserId)}/messages`
-      );
+      const response = await fetch(`${API_URL}/api/chats/${chatInfo._id}/messages`);
       if (response.ok) {
         const data = await response.json();
-        setMessages(data.reverse());
+        setMessages(data);
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOtherUser();
-    fetchMessages();
-    
-    // Poll for new messages every 5 seconds
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
+    const init = async () => {
+      setLoading(true);
+      await findOrCreateChat();
+      setLoading(false);
+    };
+    init();
   }, [otherUserId, user?.phone]);
+
+  useEffect(() => {
+    if (chatInfo?._id) {
+      fetchMessages();
+      // Poll for new messages every 3 seconds
+      const interval = setInterval(fetchMessages, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [chatInfo?._id]);
 
   const handleSend = async () => {
     if (!newMessage.trim() || !user?.phone || !otherUserId) return;
@@ -91,22 +127,34 @@ export default function ChatScreen() {
     setSending(true);
     
     try {
-      const response = await fetch(`${API_URL}/api/chats/send`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          senderId: user.phone,
-          receiverId: otherUserId,
-          text: newMessage.trim(),
-        }),
-      });
+      let chatId = chatInfo?._id;
+      
+      // Если чата нет - создаём
+      if (!chatId) {
+        const createResponse = await fetch(
+          `${API_URL}/api/chats?sellerId=${encodeURIComponent(otherUserId)}&buyerId=${encodeURIComponent(user.phone)}`,
+          { method: 'POST' }
+        );
+        if (createResponse.ok) {
+          const newChat = await createResponse.json();
+          chatId = newChat._id;
+          setChatInfo(newChat);
+        } else {
+          throw new Error('Failed to create chat');
+        }
+      }
+      
+      // Отправляем сообщение
+      const response = await fetch(
+        `${API_URL}/api/chats/${chatId}/messages?senderId=${encodeURIComponent(user.phone)}&receiverId=${encodeURIComponent(otherUserId)}&message=${encodeURIComponent(newMessage.trim())}`,
+        { method: 'POST' }
+      );
       
       if (response.ok) {
         const message = await response.json();
-        setMessages([...messages, message]);
+        setMessages(prev => [...prev, message]);
         setNewMessage('');
         
-        // Scroll to bottom
         setTimeout(() => {
           flatListRef.current?.scrollToEnd({ animated: true });
         }, 100);
@@ -152,7 +200,7 @@ export default function ChatScreen() {
         )}
         <View style={[styles.messageContainer, isMyMessage ? styles.myMessage : styles.theirMessage]}>
           <Text style={[styles.messageText, isMyMessage ? styles.myMessageText : styles.theirMessageText]}>
-            {item.text}
+            {item.message}
           </Text>
           <View style={styles.messageFooter}>
             <Text style={[styles.timeText, isMyMessage ? styles.myTimeText : styles.theirTimeText]}>
@@ -160,9 +208,9 @@ export default function ChatScreen() {
             </Text>
             {isMyMessage && (
               <Ionicons 
-                name={item.read ? "checkmark-done" : "checkmark"} 
+                name={item.isRead ? "checkmark-done" : "checkmark"} 
                 size={14} 
-                color={item.read ? "#34B7F1" : "rgba(255,255,255,0.7)"} 
+                color={item.isRead ? "#34B7F1" : "rgba(255,255,255,0.7)"} 
                 style={{ marginLeft: 4 }}
               />
             )}
@@ -191,11 +239,11 @@ export default function ChatScreen() {
         >
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
-              {otherUser?.name?.charAt(0).toUpperCase() || '?'}
+              {(otherUserName || '?').charAt(0).toUpperCase()}
             </Text>
           </View>
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>{otherUser?.name || 'Загрузка...'}</Text>
+            <Text style={styles.userName}>{otherUserName || 'Загрузка...'}</Text>
             <Text style={styles.userStatus}>онлайн</Text>
           </View>
         </TouchableOpacity>
@@ -237,10 +285,6 @@ export default function ChatScreen() {
 
         {/* Input */}
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.attachButton}>
-            <Ionicons name="attach" size={24} color="#666" />
-          </TouchableOpacity>
-          
           <TextInput
             style={styles.input}
             placeholder="Сообщение..."
@@ -411,9 +455,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
   },
-  attachButton: {
-    padding: 8,
-  },
   input: {
     flex: 1,
     backgroundColor: '#F5F5F5',
@@ -422,12 +463,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 15,
     maxHeight: 100,
-    marginHorizontal: 8,
+    marginRight: 10,
   },
   sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: '#0066FF',
     justifyContent: 'center',
     alignItems: 'center',
