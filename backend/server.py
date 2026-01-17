@@ -1291,6 +1291,191 @@ async def update_video_status(video_id: str, status: str, userId: str):
     return {"message": f"Video status updated to {status}"}
 
 
+# ===== VIDEO COMMENTS API =====
+@api_router.post("/videos/{video_id}/comments")
+async def create_comment(video_id: str, authorId: str, authorName: str, text: str, authorAvatar: Optional[str] = None):
+    """Create a new comment on a video"""
+    comment = VideoComment(
+        videoId=video_id,
+        authorId=authorId,
+        authorName=authorName,
+        authorAvatar=authorAvatar,
+        text=text
+    )
+    result = await db.video_comments.insert_one(comment.model_dump())
+    new_comment = await db.video_comments.find_one({"_id": result.inserted_id})
+    return serialize_doc(new_comment)
+
+
+@api_router.get("/videos/{video_id}/comments")
+async def get_video_comments(video_id: str, limit: int = 50, skip: int = 0):
+    """Get all comments for a video"""
+    comments = await db.video_comments.find({"videoId": video_id}).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(comment) for comment in comments]
+
+
+@api_router.get("/videos/{video_id}/comments/count")
+async def get_comments_count(video_id: str):
+    """Get comments count for a video"""
+    count = await db.video_comments.count_documents({"videoId": video_id})
+    return {"count": count}
+
+
+@api_router.delete("/videos/comments/{comment_id}")
+async def delete_comment(comment_id: str, userId: str):
+    """Delete a comment (only author)"""
+    comment = await db.video_comments.find_one({"_id": ObjectId(comment_id)})
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    
+    if comment.get("authorId") != userId:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    await db.video_comments.delete_one({"_id": ObjectId(comment_id)})
+    return {"message": "Comment deleted"}
+
+
+# ===== USER FOLLOWS API =====
+@api_router.post("/users/{user_id}/follow")
+async def follow_user(user_id: str, followerId: str):
+    """Follow a user"""
+    if user_id == followerId:
+        raise HTTPException(status_code=400, detail="Cannot follow yourself")
+    
+    # Check if already following
+    existing = await db.user_follows.find_one({
+        "followerId": followerId,
+        "followingId": user_id
+    })
+    
+    if existing:
+        # Unfollow
+        await db.user_follows.delete_one({"_id": existing["_id"]})
+        return {"following": False}
+    else:
+        # Follow
+        follow = UserFollow(followerId=followerId, followingId=user_id)
+        await db.user_follows.insert_one(follow.model_dump())
+        return {"following": True}
+
+
+@api_router.get("/users/{user_id}/followers")
+async def get_followers(user_id: str, limit: int = 50, skip: int = 0):
+    """Get followers of a user"""
+    follows = await db.user_follows.find({"followingId": user_id}).skip(skip).limit(limit).to_list(limit)
+    
+    followers = []
+    for follow in follows:
+        user = await db.users.find_one({"phone": follow["followerId"]})
+        if user:
+            followers.append({
+                "phone": user["phone"],
+                "name": user.get("name", "Пользователь"),
+                "followedAt": follow["createdAt"]
+            })
+    
+    return followers
+
+
+@api_router.get("/users/{user_id}/following")
+async def get_following(user_id: str, limit: int = 50, skip: int = 0):
+    """Get users that this user follows"""
+    follows = await db.user_follows.find({"followerId": user_id}).skip(skip).limit(limit).to_list(limit)
+    
+    following = []
+    for follow in follows:
+        user = await db.users.find_one({"phone": follow["followingId"]})
+        if user:
+            following.append({
+                "phone": user["phone"],
+                "name": user.get("name", "Пользователь"),
+                "followedAt": follow["createdAt"]
+            })
+    
+    return following
+
+
+@api_router.get("/users/{user_id}/followers/count")
+async def get_followers_count(user_id: str):
+    """Get followers count"""
+    count = await db.user_follows.count_documents({"followingId": user_id})
+    return {"count": count}
+
+
+@api_router.get("/users/{user_id}/following/count")
+async def get_following_count(user_id: str):
+    """Get following count"""
+    count = await db.user_follows.count_documents({"followerId": user_id})
+    return {"count": count}
+
+
+@api_router.get("/users/{user_id}/is-following/{target_id}")
+async def check_is_following(user_id: str, target_id: str):
+    """Check if user is following another user"""
+    follow = await db.user_follows.find_one({
+        "followerId": user_id,
+        "followingId": target_id
+    })
+    return {"isFollowing": follow is not None}
+
+
+# ===== USER PROFILE API =====
+@api_router.get("/users/{user_id}/profile")
+async def get_user_profile(user_id: str, viewer_id: Optional[str] = None):
+    """Get full user profile with stats"""
+    user = await find_user_by_phone(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get counts
+    followers_count = await db.user_follows.count_documents({"followingId": user_id})
+    following_count = await db.user_follows.count_documents({"followerId": user_id})
+    listings_count = await db.cars.count_documents({"sellerId": user_id, "status": "approved"})
+    videos_count = await db.videos.count_documents({"authorId": user_id, "status": "approved"})
+    
+    # Check if viewer is following this user
+    is_following = False
+    if viewer_id:
+        follow = await db.user_follows.find_one({
+            "followerId": viewer_id,
+            "followingId": user_id
+        })
+        is_following = follow is not None
+    
+    return {
+        "phone": user["phone"],
+        "name": user.get("name", "Пользователь"),
+        "avatar": user.get("avatar"),
+        "isAdmin": user.get("isAdmin", False),
+        "createdAt": user.get("createdAt"),
+        "followersCount": followers_count,
+        "followingCount": following_count,
+        "listingsCount": listings_count,
+        "videosCount": videos_count,
+        "isFollowing": is_following
+    }
+
+
+@api_router.get("/users/{user_id}/listings")
+async def get_user_listings(user_id: str, limit: int = 20, skip: int = 0):
+    """Get all listings by a user"""
+    cars = await db.cars.find({
+        "sellerId": user_id,
+        "status": "approved"
+    }).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(car) for car in cars]
+
+
+@api_router.get("/users/{user_id}/videos")
+async def get_user_videos(user_id: str, limit: int = 20, skip: int = 0):
+    """Get all videos by a user"""
+    videos = await db.videos.find({
+        "authorId": user_id,
+        "status": "approved"
+    }).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    return [serialize_doc(video) for video in videos]
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
