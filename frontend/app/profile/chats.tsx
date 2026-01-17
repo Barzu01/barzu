@@ -86,23 +86,23 @@ export default function ChatsListScreen() {
   const renderChatItem = ({ item }: { item: ChatPreview }) => (
     <TouchableOpacity 
       style={styles.chatItem}
-      onPress={() => router.push(`/chat/${item.otherUserId}`)}
+      onPress={() => router.push(`/chat/${item.otherUserPhone}`)}
       activeOpacity={0.7}
     >
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {item.otherUserName.charAt(0).toUpperCase()}
+          {(item.otherUserName || item.otherUserPhone || '?').charAt(0).toUpperCase()}
         </Text>
       </View>
       
       <View style={styles.chatInfo}>
         <View style={styles.chatHeader}>
-          <Text style={styles.chatName}>{item.otherUserName}</Text>
-          <Text style={styles.chatTime}>{formatTime(item.lastMessageTime)}</Text>
+          <Text style={styles.chatName}>{item.otherUserName || item.otherUserPhone}</Text>
+          <Text style={styles.chatTime}>{formatTime(item.lastMessageAt)}</Text>
         </View>
         <View style={styles.chatFooter}>
           <Text style={styles.chatLastMessage} numberOfLines={1}>
-            {item.lastMessage}
+            {item.lastMessage || item.carTitle || 'Нет сообщений'}
           </Text>
           {item.unreadCount > 0 && (
             <View style={styles.unreadBadge}>
