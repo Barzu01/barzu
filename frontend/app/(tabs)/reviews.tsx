@@ -940,4 +940,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 8,
   },
+  sendCommentButton: {
+    marginLeft: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#0066FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sendCommentButtonDisabled: {
+    backgroundColor: '#CCC',
+  },
+  deleteCommentBtn: {
+    padding: 8,
+    marginLeft: 'auto',
+  },
 });
