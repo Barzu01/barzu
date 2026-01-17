@@ -149,7 +149,7 @@ export default function ChatsListScreen() {
         <FlatList
           data={chats}
           renderItem={renderChatItem}
-          keyExtractor={(item) => item.otherUserId}
+          keyExtractor={(item) => item._id}
           contentContainerStyle={styles.chatsList}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
