@@ -6,17 +6,30 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { notificationAPI } from '../../services/api';
-import { Notification } from '../../types';
+
+interface Notification {
+  _id: string;
+  userId: string;
+  carId?: string;
+  videoId?: string;
+  fromUserId?: string;
+  type: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
 
 export default function NotificationsScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -36,14 +49,28 @@ export default function NotificationsScreen() {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadNotifications();
+    setRefreshing(false);
+  };
+
   const handleNotificationPress = async (notification: Notification) => {
     if (!notification.isRead) {
-      await notificationAPI.markAsRead(notification._id!);
+      await notificationAPI.markAsRead(notification._id);
       setNotifications(notifications.map(n => 
         n._id === notification._id ? { ...n, isRead: true } : n
       ));
     }
-    router.push({ pathname: '/car/[id]', params: { id: notification.carId } });
+    
+    // Переход в зависимости от типа уведомления
+    if (notification.videoId) {
+      router.push('/(tabs)/reviews');
+    } else if (notification.carId) {
+      router.push(`/car/${notification.carId}`);
+    } else if (notification.fromUserId) {
+      router.push(`/profile/user/${notification.fromUserId}`);
+    }
   };
 
   const handleMarkAllRead = async () => {
@@ -57,11 +84,49 @@ export default function NotificationsScreen() {
   };
 
   const getNotificationIcon = (type: string) => {
-    return type === 'approved' ? 'checkmark-circle' : 'close-circle';
+    switch (type) {
+      case 'video_like':
+        return 'heart';
+      case 'video_comment':
+        return 'chatbubble';
+      case 'new_follower':
+        return 'person-add';
+      case 'chat':
+        return 'chatbubbles';
+      case 'approved':
+        return 'checkmark-circle';
+      case 'rejected':
+        return 'close-circle';
+      case 'price_drop':
+        return 'pricetag';
+      case 'promotion':
+        return 'megaphone';
+      default:
+        return 'notifications';
+    }
   };
 
   const getNotificationColor = (type: string) => {
-    return type === 'approved' ? '#34C759' : '#FF3B30';
+    switch (type) {
+      case 'video_like':
+        return '#FF3B5C';
+      case 'video_comment':
+        return '#0066FF';
+      case 'new_follower':
+        return '#10B981';
+      case 'chat':
+        return '#8B5CF6';
+      case 'approved':
+        return '#34C759';
+      case 'rejected':
+        return '#FF3B30';
+      case 'price_drop':
+        return '#F59E0B';
+      case 'promotion':
+        return '#EC4899';
+      default:
+        return '#6B7280';
+    }
   };
 
   const formatDate = (dateString?: string) => {
@@ -88,10 +153,10 @@ export default function NotificationsScreen() {
       style={[styles.notificationCard, !item.isRead && styles.unreadCard]}
       onPress={() => handleNotificationPress(item)}
     >
-      <View style={styles.iconContainer}>
+      <View style={[styles.iconContainer, { backgroundColor: getNotificationColor(item.type) + '20' }]}>
         <Ionicons 
-          name={getNotificationIcon(item.type)} 
-          size={32} 
+          name={getNotificationIcon(item.type) as any} 
+          size={24} 
           color={getNotificationColor(item.type)} 
         />
       </View>
@@ -108,7 +173,7 @@ export default function NotificationsScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0066CC" />
+        <ActivityIndicator size="large" color="#0066FF" />
       </View>
     );
   }
@@ -117,7 +182,7 @@ export default function NotificationsScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity 
-          onPress={() => router.replace('/(tabs)/home')} 
+          onPress={() => router.back()} 
           style={styles.backButton}
           activeOpacity={0.7}
         >
@@ -126,21 +191,27 @@ export default function NotificationsScreen() {
         <Text style={styles.headerTitle}>Уведомления</Text>
         {notifications.some(n => !n.isRead) && (
           <TouchableOpacity onPress={handleMarkAllRead}>
-            <Text style={styles.markAllText}>Все прочитано</Text>
+            <Text style={styles.markAllText}>Прочитать все</Text>
           </TouchableOpacity>
         )}
-        {!notifications.some(n => !n.isRead) && <View style={{ width: 100 }} />}
+        {!notifications.some(n => !n.isRead) && <View style={{ width: 90 }} />}
       </View>
 
       <FlatList
         data={notifications}
         renderItem={renderNotification}
-        keyExtractor={(item) => item._id || Math.random().toString()}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="notifications-off-outline" size={80} color="#C7C7CC" />
             <Text style={styles.emptyText}>Нет уведомлений</Text>
+            <Text style={styles.emptySubtext}>
+              Здесь будут уведомления о лайках, комментариях и подписчиках
+            </Text>
           </View>
         }
       />
@@ -169,74 +240,89 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    padding: 8,
+    padding: 4,
   },
   headerTitle: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#000000',
-    textAlign: 'center',
-    marginLeft: -40,
   },
   markAllText: {
     fontSize: 14,
-    color: '#0066CC',
-    fontWeight: '600',
+    color: '#0066FF',
+    fontWeight: '500',
   },
   listContainer: {
     padding: 16,
+    flexGrow: 1,
   },
   notificationCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
   },
   unreadCard: {
-    backgroundColor: '#E5F0FF',
-    borderLeftWidth: 4,
-    borderLeftColor: '#0066CC',
+    backgroundColor: '#F0F7FF',
+    borderLeftWidth: 3,
+    borderLeftColor: '#0066FF',
   },
   iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 12,
   },
   content: {
     flex: 1,
   },
   message: {
-    fontSize: 15,
-    color: '#000000',
-    marginBottom: 4,
+    fontSize: 14,
+    color: '#333333',
+    lineHeight: 20,
   },
   unreadText: {
     fontWeight: '600',
+    color: '#000000',
   },
   time: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#8E8E93',
+    marginTop: 4,
   },
   unreadDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#0066CC',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#0066FF',
     marginLeft: 8,
   },
   emptyContainer: {
+    flex: 1,
     alignItems: 'center',
-    paddingTop: 60,
+    justifyContent: 'center',
+    paddingTop: 80,
+    paddingHorizontal: 40,
   },
   emptyText: {
     fontSize: 18,
-    color: '#8E8E93',
+    fontWeight: '600',
+    color: '#333',
     marginTop: 16,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#8E8E93',
+    textAlign: 'center',
+    marginTop: 8,
   },
 });
