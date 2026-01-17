@@ -238,12 +238,16 @@ export default function ChatScreen() {
           onPress={() => router.push(`/profile/user/${otherUserId}`)}
         >
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {(otherUserName || '?').charAt(0).toUpperCase()}
-            </Text>
+            {otherUserName ? (
+              <Text style={styles.avatarText}>
+                {otherUserName.charAt(0).toUpperCase()}
+              </Text>
+            ) : (
+              <Ionicons name="person" size={20} color="#FFFFFF" />
+            )}
           </View>
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>{otherUserName || 'Загрузка...'}</Text>
+            <Text style={styles.userName}>{otherUserName || 'Пользователь'}</Text>
             <Text style={styles.userStatus}>онлайн</Text>
           </View>
         </TouchableOpacity>
