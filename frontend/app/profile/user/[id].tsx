@@ -528,6 +528,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 8,
+    gap: 8,
+  },
+  editButtonText: {
+    color: '#0066FF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   tabsContainer: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
