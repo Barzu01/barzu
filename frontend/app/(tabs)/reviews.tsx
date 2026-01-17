@@ -414,6 +414,32 @@ export default function ReviewsScreen() {
     } catch {}
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    if (!user?.phone) return;
+    try {
+      const response = await fetch(
+        `${API_URL}/api/videos/comments/${commentId}?userId=${encodeURIComponent(user.phone)}`,
+        { method: 'DELETE' }
+      );
+      if (response.ok) {
+        setComments(comments.filter(c => c._id !== commentId));
+      }
+    } catch {}
+  };
+
+  const handleDeleteVideo = async (videoId: string) => {
+    if (!user?.phone) return;
+    try {
+      const response = await fetch(
+        `${API_URL}/api/videos/${videoId}?userId=${encodeURIComponent(user.phone)}`,
+        { method: 'DELETE' }
+      );
+      if (response.ok) {
+        setVideos(videos.filter(v => v._id !== videoId));
+      }
+    } catch {}
+  };
+
   const handleLike = async (videoId: string) => {
     if (!user?.phone) return;
     try {
