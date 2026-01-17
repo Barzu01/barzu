@@ -834,10 +834,17 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
     borderRadius: 4,
   },
+  followingBtn: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+  },
   followBtnText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '500',
+  },
+  followingBtnText: {
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   dateText: {
     color: 'rgba(255, 255, 255, 0.8)',
@@ -853,6 +860,12 @@ const styles = StyleSheet.create({
   caption: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontSize: 13,
+  },
+  moreBtn: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 13,
+    fontWeight: '500',
+    marginTop: 2,
   },
   // Actions
   actionsColumn: {
