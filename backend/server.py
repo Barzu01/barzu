@@ -1321,6 +1321,35 @@ async def create_comment(video_id: str, authorId: str, authorName: str, text: st
     )
     result = await db.video_comments.insert_one(comment.model_dump())
     new_comment = await db.video_comments.find_one({"_id": result.inserted_id})
+    
+    # Создаём уведомление для автора видео
+    try:
+        video = await db.videos.find_one({"_id": ObjectId(video_id)})
+        if video:
+            video_author_id = video.get("authorId")
+            if video_author_id and video_author_id != authorId:
+                notification = {
+                    "userId": video_author_id,
+                    "type": "video_comment",
+                    "message": f"💬 {authorName} прокомментировал ваше видео: {text[:50]}...",
+                    "videoId": video_id,
+                    "fromUserId": authorId,
+                    "isRead": False,
+                    "createdAt": datetime.utcnow()
+                }
+                await db.notifications.insert_one(notification)
+    except Exception:
+        pass
+    
+    # Увеличиваем счётчик комментариев
+    try:
+        await db.videos.update_one(
+            {"_id": ObjectId(video_id)},
+            {"$inc": {"commentsCount": 1}}
+        )
+    except Exception:
+        pass
+    
     return serialize_doc(new_comment)
 
 
