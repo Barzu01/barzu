@@ -1476,6 +1476,104 @@ async def get_user_videos(user_id: str, limit: int = 20, skip: int = 0):
     return [serialize_doc(video) for video in videos]
 
 
+# ===== CHAT API =====
+class ChatMessage(BaseModel):
+    senderId: str
+    receiverId: str
+    text: str
+    read: bool = False
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+
+@api_router.post("/chats/send")
+async def send_message(message: ChatMessage):
+    """Send a chat message"""
+    message_dict = message.model_dump()
+    message_dict['createdAt'] = datetime.utcnow()
+    result = await db.chat_messages.insert_one(message_dict)
+    new_message = await db.chat_messages.find_one({"_id": result.inserted_id})
+    return serialize_doc(new_message)
+
+
+@api_router.get("/chats/{user_id}/{other_user_id}/messages")
+async def get_chat_messages(user_id: str, other_user_id: str, limit: int = 100, skip: int = 0):
+    """Get messages between two users"""
+    messages = await db.chat_messages.find({
+        "$or": [
+            {"senderId": user_id, "receiverId": other_user_id},
+            {"senderId": other_user_id, "receiverId": user_id}
+        ]
+    }).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+    
+    # Mark messages as read
+    await db.chat_messages.update_many(
+        {"senderId": other_user_id, "receiverId": user_id, "read": False},
+        {"$set": {"read": True}}
+    )
+    
+    return [serialize_doc(msg) for msg in messages]
+
+
+@api_router.get("/chats/{user_id}")
+async def get_user_chats(user_id: str):
+    """Get all chat previews for a user"""
+    # Find all unique users this user has chatted with
+    pipeline = [
+        {
+            "$match": {
+                "$or": [
+                    {"senderId": user_id},
+                    {"receiverId": user_id}
+                ]
+            }
+        },
+        {
+            "$sort": {"createdAt": -1}
+        },
+        {
+            "$group": {
+                "_id": {
+                    "$cond": [
+                        {"$eq": ["$senderId", user_id]},
+                        "$receiverId",
+                        "$senderId"
+                    ]
+                },
+                "lastMessage": {"$first": "$text"},
+                "lastMessageTime": {"$first": "$createdAt"},
+                "unreadCount": {
+                    "$sum": {
+                        "$cond": [
+                            {"$and": [
+                                {"$eq": ["$receiverId", user_id]},
+                                {"$eq": ["$read", False]}
+                            ]},
+                            1,
+                            0
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+    
+    chats = await db.chat_messages.aggregate(pipeline).to_list(100)
+    
+    # Get user names
+    result = []
+    for chat in chats:
+        other_user = await find_user_by_phone(chat["_id"])
+        result.append({
+            "otherUserId": chat["_id"],
+            "otherUserName": other_user.get("name", "Пользователь") if other_user else "Пользователь",
+            "lastMessage": chat["lastMessage"],
+            "lastMessageTime": chat["lastMessageTime"].isoformat() if chat["lastMessageTime"] else None,
+            "unreadCount": chat["unreadCount"]
+        })
+    
+    return result
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
