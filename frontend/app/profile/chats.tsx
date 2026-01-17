@@ -17,10 +17,15 @@ import Constants from 'expo-constants';
 const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
 
 interface ChatPreview {
-  otherUserId: string;
-  otherUserName: string;
-  lastMessage: string;
-  lastMessageTime: string;
+  _id: string;
+  participants: string[];
+  carId?: string;
+  carTitle?: string;
+  lastMessage?: string;
+  lastMessageAt: string;
+  createdAt: string;
+  otherUserName?: string;
+  otherUserPhone: string;
   unreadCount: number;
 }
 
