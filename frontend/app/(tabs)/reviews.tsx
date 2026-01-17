@@ -260,9 +260,13 @@ const VideoItem = React.memo(({
           activeOpacity={0.8}
         >
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {item.authorName.charAt(0).toUpperCase()}
-            </Text>
+            {item.authorName ? (
+              <Text style={styles.avatarText}>
+                {item.authorName.charAt(0).toUpperCase()}
+              </Text>
+            ) : (
+              <Ionicons name="person" size={20} color="#FFFFFF" />
+            )}
           </View>
           <View style={styles.authorInfo}>
             <View style={styles.authorNameRow}>
