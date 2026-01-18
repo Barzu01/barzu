@@ -776,7 +776,7 @@ const styles = StyleSheet.create({
   notFoundText: { fontSize: 18, color: '#64748B', fontWeight: '600' },
   backToHomeBtn: { marginTop: 8, paddingVertical: 12, paddingHorizontal: 24, backgroundColor: '#0066FF', borderRadius: 12 },
   backToHomeText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
-  imageSection: { position: 'relative', height: 320, overflow: 'hidden' },
+  imageSection: { position: 'relative', overflow: 'hidden', marginTop: Platform.OS === 'ios' ? 90 : 60 },
   carImage: { width: width, height: 320, backgroundColor: '#E2E8F0' },
   noImage: { justifyContent: 'center', alignItems: 'center' },
   topGradient: { position: 'absolute', top: 0, left: 0, right: 0, height: 120 },
