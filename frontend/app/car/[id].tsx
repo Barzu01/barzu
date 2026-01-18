@@ -532,6 +532,61 @@ export default function CarDetailsScreen() {
           </View>
         </View>
 
+        {/* Similar Cars - Похожие автомобили */}
+        {similarCars.length > 0 && (
+          <View style={styles.similarSection}>
+            <View style={styles.similarHeader}>
+              <Text style={styles.cardTitle}>Похожие автомобили</Text>
+              <Text style={styles.similarCount}>{similarCars.length} авто</Text>
+            </View>
+            <FlatList
+              data={similarCars}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item) => item._id || ''}
+              contentContainerStyle={styles.similarList}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  style={styles.similarCard}
+                  onPress={() => router.push({ pathname: '/car/[id]', params: { id: item._id } })}
+                  activeOpacity={0.9}
+                >
+                  <Image
+                    source={{ uri: item.photos?.[0] || 'https://via.placeholder.com/200x150?text=No+Image' }}
+                    style={styles.similarImage}
+                    resizeMode="cover"
+                  />
+                  <LinearGradient
+                    colors={['transparent', 'rgba(0,0,0,0.7)']}
+                    style={styles.similarGradient}
+                  />
+                  <View style={styles.similarInfo}>
+                    <Text style={styles.similarTitle} numberOfLines={1}>
+                      {item.brand} {item.model}
+                    </Text>
+                    <Text style={styles.similarYear}>{item.year} г.</Text>
+                    <Text style={styles.similarPrice}>
+                      {item.price.toLocaleString()} TJS
+                    </Text>
+                  </View>
+                  {item.brand === car.brand && (
+                    <View style={styles.sameBrandBadge}>
+                      <Text style={styles.sameBrandText}>Та же марка</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
+        
+        {loadingSimilar && (
+          <View style={styles.similarLoading}>
+            <ActivityIndicator size="small" color="#0066FF" />
+            <Text style={styles.similarLoadingText}>Ищем похожие...</Text>
+          </View>
+        )}
+
         {/* Report button */}
         {!isOwner && (
           <TouchableOpacity style={styles.reportButton} onPress={() => setReportModalVisible(true)}>
