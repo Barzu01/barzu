@@ -312,7 +312,7 @@ export default function ProfileScreen() {
               subtitle="SafedAuto v1.0.0"
               iconBg="#F1F5F9"
               iconColor="#64748B"
-              showArrow={false}
+              onPress={() => router.push('/about')}
             />
           </View>
         </View>
