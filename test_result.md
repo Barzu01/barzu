@@ -183,3 +183,18 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: "Completed comprehensive backend API testing for SafedAuto application. All 16 test scenarios passed successfully. Created backend_test.py with realistic Tajikistan data. All endpoints working correctly including user management, car listings, favorites, my listings, and admin functions. API properly handles phone number URL encoding, base64 images, and Tajikistan-specific data (dushanbe region, TJS currency). One minor display issue in test output for user creation but functionality is correct. Backend API is fully functional and ready for production use."
+  - agent: "main"
+    message: "Реализовал анимированный сворачивающийся header на странице деталей автомобиля (car/[id].tsx). При прокрутке вниз галерея изображений плавно скрывается (высота уменьшается до 0, opacity до 0). При прокрутке вверх - появляется обратно. Использован Animated.ScrollView и Animated.View с интерполяцией scrollY. Стили обновлены для правильного позиционирования header кнопок и секции изображений."
+
+frontend:
+  - task: "Animated Collapsing Header on Car Detail Page"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/car/[id].tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Реализована анимация сворачивающегося header. Использован Animated.ScrollView с onScroll event, Animated.View для галереи изображений, интерполяция для height (IMAGE_HEIGHT -> 0) и opacity (1 -> 0). Требуется тестирование на мобильном устройстве через Expo Go."
