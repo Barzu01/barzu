@@ -47,6 +47,8 @@ export default function CarDetailsScreen() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [sellerName, setSellerName] = useState<string>('Загрузка...');
+  const [similarCars, setSimilarCars] = useState<CarListing[]>([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   
   // Анимация для скрытия/показа фото при прокрутке
