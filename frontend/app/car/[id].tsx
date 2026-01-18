@@ -48,6 +48,19 @@ export default function CarDetailsScreen() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [sellerName, setSellerName] = useState<string>('Загрузка...');
   const scrollViewRef = useRef<ScrollView>(null);
+  
+  // Анимация для скрытия/показа фото при прокрутке
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const imageHeight = scrollY.interpolate({
+    inputRange: [0, IMAGE_HEIGHT],
+    outputRange: [IMAGE_HEIGHT, 0],
+    extrapolate: 'clamp',
+  });
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, IMAGE_HEIGHT / 2],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useAuth();
