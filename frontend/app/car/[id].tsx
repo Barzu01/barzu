@@ -157,6 +157,9 @@ export default function CarDetailsScreen() {
         const favorites = await favoritesAPI.getAll(user.phone);
         setIsFavorite(favorites.some((fav: CarListing) => fav._id === id));
       }
+      
+      // Загружаем похожие автомобили
+      loadSimilarCars(data);
     } catch (error) {
       console.error('Error loading car:', error);
       Alert.alert(t('messages.error'), 'Не удалось загрузить объявление');
