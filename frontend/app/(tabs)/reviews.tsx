@@ -116,6 +116,7 @@ const VideoItem = React.memo(({
   onFollow,
   onDelete,
   userId,
+  isAdmin,
 }: { 
   item: VideoReview; 
   isActive: boolean;
@@ -128,6 +129,7 @@ const VideoItem = React.memo(({
   onFollow: (authorId: string) => Promise<boolean>;
   onDelete: (id: string) => void;
   userId?: string;
+  isAdmin?: boolean;
 }) => {
   const videoRef = useRef<Video>(null);
   const [isPlaying, setIsPlaying] = useState(false);
