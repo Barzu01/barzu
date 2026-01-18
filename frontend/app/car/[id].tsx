@@ -15,6 +15,7 @@ import {
   FlatList,
   StatusBar,
   Platform,
+  Animated,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -27,8 +28,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const COMPARE_STORAGE_KEY = 'compare_cars';
+const IMAGE_HEIGHT = 300;
 
 export default function CarDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
