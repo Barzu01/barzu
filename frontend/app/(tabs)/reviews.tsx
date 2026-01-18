@@ -340,6 +340,13 @@ const VideoItem = React.memo(({
         <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
           <Ionicons name="arrow-redo-outline" size={28} color="#FFFFFF" />
         </TouchableOpacity>
+
+        {/* Удалить (только для автора или админа) */}
+        {(userId && (item.authorId === userId || userId === 'admin')) && (
+          <TouchableOpacity style={styles.actionItem} onPress={() => onDelete(item._id)}>
+            <Ionicons name="trash-outline" size={28} color="#FF3B30" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
