@@ -114,6 +114,7 @@ const VideoItem = React.memo(({
   onAuthorPress,
   onCommentPress,
   onFollow,
+  onDelete,
   userId,
 }: { 
   item: VideoReview; 
@@ -125,6 +126,7 @@ const VideoItem = React.memo(({
   onAuthorPress: (authorId: string) => void;
   onCommentPress: (video: VideoReview) => void;
   onFollow: (authorId: string) => Promise<boolean>;
+  onDelete: (id: string) => void;
   userId?: string;
 }) => {
   const videoRef = useRef<Video>(null);
