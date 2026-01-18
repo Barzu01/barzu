@@ -165,6 +165,33 @@ export default function CarDetailsScreen() {
     }
   };
 
+  // Загрузка похожих автомобилей
+  const loadSimilarCars = async (currentCar: CarListing) => {
+    setLoadingSimilar(true);
+    try {
+      // Ищем похожие по марке или ценовому диапазону
+      const allCars = await carAPI.getAll({ status: 'approved', limit: 20 });
+      
+      // Фильтруем: похожие по марке или близкие по цене (±30%)
+      const similar = allCars.filter((c: CarListing) => {
+        if (c._id === currentCar._id) return false; // Исключаем текущую машину
+        
+        const sameModel = c.brand === currentCar.brand;
+        const priceRange = currentCar.price * 0.3;
+        const similarPrice = Math.abs(c.price - currentCar.price) <= priceRange;
+        const sameRegion = c.region === currentCar.region;
+        
+        return sameModel || (similarPrice && sameRegion);
+      }).slice(0, 10); // Максимум 10 похожих
+      
+      setSimilarCars(similar);
+    } catch (error) {
+      console.error('Error loading similar cars:', error);
+    } finally {
+      setLoadingSimilar(false);
+    }
+  };
+
   const toggleFavorite = async () => {
     if (!user || !car) return;
     try {
