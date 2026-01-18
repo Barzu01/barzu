@@ -281,7 +281,7 @@ const VideoItem = React.memo(({
               </TouchableOpacity>
             </View>
             <Text style={styles.dateText}>
-              {formatDate(item.createdAt)} • 👁 {formatCount(item.viewsCount)} Просмотров
+              {formatDate(item.createdAt)} • {formatCount(item.viewsCount)} просмотров
             </Text>
           </View>
         </TouchableOpacity>
