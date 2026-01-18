@@ -793,7 +793,7 @@ const styles = StyleSheet.create({
   promotedText: { color: '#FFFFFF', fontSize: 12, fontWeight: '700' },
   viewsBadge: { position: 'absolute', bottom: 16, left: 16, flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(15, 23, 42, 0.6)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   viewsText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
-  content: { paddingTop: 24, paddingHorizontal: 20, borderTopLeftRadius: 24, borderTopRightRadius: 24, backgroundColor: '#F8FAFC', marginTop: -20 },
+  content: { paddingTop: 24, paddingHorizontal: 20, borderTopLeftRadius: 24, borderTopRightRadius: 24, backgroundColor: '#F8FAFC' },
   contentContainer: { paddingTop: 24, paddingHorizontal: 20 },
   titleSection: { marginBottom: 20 },
   titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
