@@ -240,11 +240,14 @@ export default function CarDetailsScreen() {
 
   const handleImageScroll = (event: any) => {
     const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-    setCurrentImageIndex(slideIndex);
+    if (slideIndex >= 0 && car?.photos && slideIndex < car.photos.length) {
+      setCurrentImageIndex(slideIndex);
+    }
   };
 
   const openFullScreen = (index: number) => {
-    setFullScreenIndex(index);
+    // Устанавливаем правильный индекс - тот который на экране
+    setFullScreenIndex(currentImageIndex);
     setFullScreenVisible(true);
   };
 
