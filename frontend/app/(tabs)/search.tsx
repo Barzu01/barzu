@@ -21,7 +21,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { REGIONS } from '../../constants/carData';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://safewheels-dev.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://auto-social-hub-2.preview.emergentagent.com';
 
 export default function SearchScreen() {
   const router = useRouter();
