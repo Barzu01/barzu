@@ -758,6 +758,19 @@ const SpecItem = ({ icon, label, value }: { icon: string; label: string; value: 
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8FAFC' },
+  headerButtonsFixed: { 
+    position: 'absolute', 
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    paddingHorizontal: 16, 
+    paddingVertical: 8,
+    zIndex: 100,
+    backgroundColor: 'transparent',
+  },
+  mainScroll: { flex: 1, paddingTop: Platform.OS === 'ios' ? 90 : 70 },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8FAFC', gap: 16 },
   notFoundText: { fontSize: 18, color: '#64748B', fontWeight: '600' },
   backToHomeBtn: { marginTop: 8, paddingVertical: 12, paddingHorizontal: 24, backgroundColor: '#0066FF', borderRadius: 12 },
