@@ -531,7 +531,8 @@ export default function CarDetailsScreen() {
         )}
 
         <View style={{ height: 120 }} />
-      </ScrollView>
+        </View>
+      </Animated.ScrollView>
 
       {/* Bottom Actions */}
       {!isOwner && (
