@@ -579,6 +579,7 @@ export default function ReviewsScreen() {
             onFollow={handleFollow}
             onDelete={handleDeleteVideo}
             userId={user?.phone}
+            isAdmin={user?.isAdmin}
           />
         )}
         keyExtractor={(item) => item._id}
