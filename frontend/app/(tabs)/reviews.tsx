@@ -793,10 +793,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignSelf: 'flex-start',
   },
-  // Content - спущен ниже
+  // Content - спущен ещё ниже
   contentContainer: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 50,
     left: 12,
     right: 70,
   },
