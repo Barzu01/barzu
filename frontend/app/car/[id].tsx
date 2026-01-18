@@ -294,93 +294,101 @@ export default function CarDetailsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Image Gallery */}
-      <View style={styles.imageSection}>
-        {car.photos && car.photos.length > 0 ? (
-          <>
-            <ScrollView 
-              ref={scrollViewRef}
-              horizontal 
-              pagingEnabled 
-              showsHorizontalScrollIndicator={false}
-              onScroll={handleImageScroll}
-              scrollEventThrottle={16}
-            >
-              {car.photos.map((photo, index) => (
-                <TouchableOpacity 
-                  key={index} 
-                  activeOpacity={0.95}
-                  onPress={() => openFullScreen(index)}
-                >
-                  <Image
-                    source={{ uri: photo }}
-                    style={styles.carImage}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            
-            {car.photos.length > 1 && (
-              <View style={styles.pagination}>
-                {car.photos.map((_, index) => (
-                  <View 
-                    key={index} 
-                    style={[styles.paginationDot, currentImageIndex === index && styles.paginationDotActive]} 
-                  />
-                ))}
-              </View>
-            )}
-            
-            <View style={styles.imageCounter}>
-              <Ionicons name="images" size={14} color="#FFFFFF" />
-              <Text style={styles.imageCounterText}>{currentImageIndex + 1}/{car.photos.length}</Text>
-            </View>
-          </>
-        ) : (
-          <View style={[styles.carImage, styles.noImage]}>
-            <Ionicons name="car-sport" size={80} color="#CBD5E1" />
-          </View>
-        )}
-        
-        <LinearGradient colors={['rgba(0,0,0,0.4)', 'transparent', 'transparent']} style={styles.topGradient} />
-        
-        {/* Header buttons */}
-        <SafeAreaView style={styles.headerButtons} edges={['top']}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+      {/* Header buttons - всегда видны сверху */}
+      <SafeAreaView style={styles.headerButtonsFixed} edges={['top']}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={toggleCompare} style={[styles.headerBtn, isInCompare && styles.headerBtnActive]}>
+            <Ionicons name="git-compare" size={22} color={isInCompare ? '#0066FF' : '#000'} />
           </TouchableOpacity>
-          <View style={styles.headerRight}>
-            <TouchableOpacity onPress={toggleCompare} style={[styles.headerBtn, isInCompare && styles.headerBtnActive]}>
-              <Ionicons name="git-compare" size={22} color={isInCompare ? '#0066FF' : '#FFFFFF'} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShareModalVisible(true)} style={styles.headerBtn}>
-              <Ionicons name="share-social" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={toggleFavorite} style={styles.headerBtn}>
-              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? '#EF4444' : '#FFFFFF'} />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
+          <TouchableOpacity onPress={() => setShareModalVisible(true)} style={styles.headerBtn}>
+            <Ionicons name="share-social" size={24} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleFavorite} style={styles.headerBtn}>
+            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? '#EF4444' : '#000'} />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
 
-        {/* Promoted badge */}
-        {car.isPromoted && (
-          <View style={styles.promotedBadge}>
-            <Ionicons name="star" size={14} color="#FFFFFF" />
-            <Text style={styles.promotedText}>TOP</Text>
-          </View>
+      <Animated.ScrollView 
+        style={styles.mainScroll}
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
         )}
+        scrollEventThrottle={16}
+      >
+        {/* Image Gallery - анимированная секция */}
+        <Animated.View style={[styles.imageSection, { height: imageHeight, opacity: imageOpacity }]}>
+          {car.photos && car.photos.length > 0 ? (
+            <>
+              <ScrollView 
+                ref={scrollViewRef}
+                horizontal 
+                pagingEnabled 
+                showsHorizontalScrollIndicator={false}
+                onScroll={handleImageScroll}
+                scrollEventThrottle={16}
+              >
+                {car.photos.map((photo, index) => (
+                  <TouchableOpacity 
+                    key={index} 
+                    activeOpacity={0.95}
+                    onPress={() => openFullScreen(index)}
+                  >
+                    <Image
+                      source={{ uri: photo }}
+                      style={[styles.carImage, { height: IMAGE_HEIGHT }]}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+              
+              {car.photos.length > 1 && (
+                <View style={styles.pagination}>
+                  {car.photos.map((_, index) => (
+                    <View 
+                      key={index} 
+                      style={[styles.paginationDot, currentImageIndex === index && styles.paginationDotActive]} 
+                    />
+                  ))}
+                </View>
+              )}
+              
+              <View style={styles.imageCounter}>
+                <Ionicons name="images" size={14} color="#FFFFFF" />
+                <Text style={styles.imageCounterText}>{currentImageIndex + 1}/{car.photos.length}</Text>
+              </View>
+            </>
+          ) : (
+            <View style={[styles.carImage, styles.noImage, { height: IMAGE_HEIGHT }]}>
+              <Ionicons name="car-sport" size={80} color="#CBD5E1" />
+            </View>
+          )}
 
-        {/* Views count */}
-        {car.viewsCount > 0 && (
-          <View style={styles.viewsBadge}>
-            <Ionicons name="eye" size={14} color="#FFFFFF" />
-            <Text style={styles.viewsText}>{car.viewsCount}</Text>
-          </View>
-        )}
-      </View>
+          {/* Promoted badge */}
+          {car.isPromoted && (
+            <View style={styles.promotedBadge}>
+              <Ionicons name="star" size={14} color="#FFFFFF" />
+              <Text style={styles.promotedText}>TOP</Text>
+            </View>
+          )}
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainer}>
+          {/* Views count */}
+          {car.viewsCount > 0 && (
+            <View style={styles.viewsBadge}>
+              <Ionicons name="eye" size={14} color="#FFFFFF" />
+              <Text style={styles.viewsText}>{car.viewsCount}</Text>
+            </View>
+          )}
+        </Animated.View>
+
+        {/* Content */}
+        <View style={styles.content}>
         {/* Title & Price */}
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
