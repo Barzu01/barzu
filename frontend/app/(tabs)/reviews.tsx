@@ -575,6 +575,7 @@ export default function ReviewsScreen() {
             onAuthorPress={handleAuthorPress}
             onCommentPress={handleCommentPress}
             onFollow={handleFollow}
+            onDelete={handleDeleteVideo}
             userId={user?.phone}
           />
         )}
