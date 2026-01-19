@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -48,6 +49,7 @@ export default function ChatScreen() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
+  const [otherUserHasListings, setOtherUserHasListings] = useState(false);
   const [otherUserName, setOtherUserName] = useState<string>('');
 
   // Найти или создать чат
