@@ -132,7 +132,7 @@ export default function ChatScreen() {
       // Если чата нет - создаём
       if (!chatId) {
         const createResponse = await fetch(
-          `${API_URL}/api/chats?sellerId=${encodeURIComponent(otherUserId)}&buyerId=${encodeURIComponent(user.phone)}`,
+          `${API_URL}/api/chats?senderId=${encodeURIComponent(user.phone)}&receiverId=${encodeURIComponent(otherUserId)}`,
           { method: 'POST' }
         );
         if (createResponse.ok) {
@@ -140,6 +140,8 @@ export default function ChatScreen() {
           chatId = newChat._id;
           setChatInfo(newChat);
         } else {
+          const errorText = await createResponse.text();
+          console.error('Failed to create chat:', errorText);
           throw new Error('Failed to create chat');
         }
       }
@@ -158,6 +160,9 @@ export default function ChatScreen() {
         setTimeout(() => {
           flatListRef.current?.scrollToEnd({ animated: true });
         }, 100);
+      } else {
+        const errorText = await response.text();
+        console.error('Failed to send message:', errorText);
       }
     } catch (error) {
       console.error('Error sending message:', error);
