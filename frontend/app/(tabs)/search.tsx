@@ -486,7 +486,7 @@ export default function SearchScreen() {
                   ]}
                   onPress={() => searchByBrand(brand.name)}
                 >
-                  <View style={[styles.brandLogoContainer, { backgroundColor: brand.color }]}>
+                  <View style={styles.brandLogoContainer}>
                     <Image
                       source={{ uri: brand.logo }}
                       style={styles.brandLogoImage}
