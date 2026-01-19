@@ -349,6 +349,15 @@ export default function ProfileScreen() {
                 iconBg="#FEE2E2"
                 iconColor="#EF4444"
               />
+              <View style={styles.menuDivider} />
+              <MenuItem
+                icon="headset"
+                title="Обращения в поддержку"
+                subtitle="Ответить пользователям"
+                onPress={() => router.push('/support/admin')}
+                iconBg="#D1FAE5"
+                iconColor="#10B981"
+              />
             </View>
           </View>
         )}
