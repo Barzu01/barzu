@@ -52,6 +52,39 @@ export default function ChatScreen() {
   const [otherUserHasListings, setOtherUserHasListings] = useState(false);
   const [otherUserName, setOtherUserName] = useState<string>('');
 
+  // Проверить есть ли у собеседника объявления
+  const checkOtherUserListings = async () => {
+    if (!otherUserId) return;
+    try {
+      const response = await fetch(`${API_URL}/api/my-listings/${encodeURIComponent(otherUserId)}`);
+      if (response.ok) {
+        const listings = await response.json();
+        setOtherUserHasListings(listings.length > 0);
+      }
+    } catch (error) {
+      console.error('Error checking listings:', error);
+    }
+  };
+
+  // Пометить сообщения как прочитанные
+  const markMessagesAsRead = async () => {
+    if (!chatInfo?._id || !user?.phone) return;
+    try {
+      await fetch(`${API_URL}/api/chats/${chatInfo._id}/mark-read?user_phone=${encodeURIComponent(user.phone)}`, {
+        method: 'POST'
+      });
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  };
+
+  // Функция звонка
+  const handleCall = () => {
+    if (otherUserId) {
+      Linking.openURL(`tel:${otherUserId}`);
+    }
+  };
+
   // Найти или создать чат
   const findOrCreateChat = async () => {
     if (!user?.phone || !otherUserId) return null;
