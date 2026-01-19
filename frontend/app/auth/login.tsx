@@ -23,8 +23,9 @@ import {
 } from '../../services/firebaseAuth';
 
 // На мобильных устройствах (Expo Go) Firebase Phone Auth требует нативную сборку
-// Поэтому на мобильных используем тестовый режим, а на веб - реальный Firebase SMS
-const USE_TEST_MODE_DEFAULT = Platform.OS !== 'web';
+// В preview/development режиме используем тестовый режим
+// Реальный Firebase SMS работает только в production сборке с настроенным доменом
+const USE_TEST_MODE_DEFAULT = true;
 const TEST_CODE = '1234';
 
 export default function LoginScreen() {
