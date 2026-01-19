@@ -965,12 +965,14 @@ const styles = StyleSheet.create({
   brandLogoContainer: {
     width: 52,
     height: 52,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   brandLogoImage: {
     width: 36,
