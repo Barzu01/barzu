@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
+import { fonts } from '../../constants/fonts';
 
 const { width } = Dimensions.get('window');
 const HEADER_MAX_HEIGHT = 100; // Max height for categories only
