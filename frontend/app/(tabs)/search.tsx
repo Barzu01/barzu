@@ -995,13 +995,13 @@ const styles = StyleSheet.create({
   },
   brandName: {
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     color: '#0F172A',
     textAlign: 'center',
   },
   brandNameSelected: {
     color: '#0066FF',
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   // Стили для результатов поиска по бренду
   selectedBrandHeader: {
