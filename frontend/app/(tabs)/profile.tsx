@@ -249,6 +249,7 @@ export default function ProfileScreen() {
               onPress={() => router.push('/profile/chats')}
               iconBg="#D1FAE5"
               iconColor="#10B981"
+              badge={unreadMessagesCount > 0 ? (unreadMessagesCount > 9 ? '9+' : String(unreadMessagesCount)) : undefined}
             />
             <View style={styles.menuDivider} />
             <MenuItem
