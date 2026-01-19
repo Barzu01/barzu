@@ -388,10 +388,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Sticky Header - Always visible */}
       <View style={styles.stickyHeader}>
-        <View>
-          <Text style={styles.headerGreeting}>{t('app.welcome')} 👋</Text>
-          <Text style={styles.headerTitle}>SafedAuto</Text>
-        </View>
+        <Text style={styles.headerTitle}>SafedAuto</Text>
         <TouchableOpacity 
           style={styles.notificationButton}
           onPress={() => router.push('/notifications')}
