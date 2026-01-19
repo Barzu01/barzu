@@ -218,12 +218,13 @@ export default function CarDetailsScreen() {
 
   const openChat = () => {
     if (!user || !car) return;
+    // Передаём телефон продавца как ID чата
+    const sellerPhone = car.sellerPhone || car.sellerId;
     router.push({
       pathname: '/chat/[id]',
       params: { 
-        id: car._id,
-        sellerId: car.sellerId || car.sellerPhone,
-        sellerPhone: car.sellerPhone,
+        id: sellerPhone,
+        carId: car._id,
         carTitle: `${car.brand} ${car.model}`
       }
     });
