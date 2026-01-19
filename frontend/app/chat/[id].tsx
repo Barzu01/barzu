@@ -297,9 +297,11 @@ export default function ChatScreen() {
           </View>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.headerAction}>
-          <Ionicons name="call-outline" size={24} color="#0066FF" />
-        </TouchableOpacity>
+        {otherUserHasListings && (
+          <TouchableOpacity style={styles.headerAction} onPress={handleCall}>
+            <Ionicons name="call-outline" size={24} color="#0066FF" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Messages */}
