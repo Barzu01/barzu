@@ -142,6 +142,7 @@ export default function ChatScreen() {
     const init = async () => {
       setLoading(true);
       await findOrCreateChat();
+      await checkOtherUserListings();
       setLoading(false);
     };
     init();
@@ -150,8 +151,12 @@ export default function ChatScreen() {
   useEffect(() => {
     if (chatInfo?._id) {
       fetchMessages();
+      markMessagesAsRead(); // Отметить как прочитанные
       // Poll for new messages every 3 seconds
-      const interval = setInterval(fetchMessages, 3000);
+      const interval = setInterval(() => {
+        fetchMessages();
+        markMessagesAsRead();
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [chatInfo?._id]);
