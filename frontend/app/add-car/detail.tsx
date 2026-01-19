@@ -4616,10 +4616,10 @@ export default function AddCarDetailScreen() {
 
     if (!result.canceled && result.assets[0].base64) {
       const base64Size = result.assets[0].base64.length;
-      const fileSizeKB = Math.round(base64Size / 1024 / 1.33);
+      const fileSizeMB = (base64Size / 1024 / 1024 / 1.33).toFixed(2);
       
-      if (fileSizeKB > 1500) {
-        showMessage('error', t('messages.error'), `Фото слишком большое (${fileSizeKB}KB). Максимум 1.5MB`);
+      if (parseFloat(fileSizeMB) > 5) {
+        showMessage('error', t('messages.error'), `Фото слишком большое (${fileSizeMB}MB). Максимум 5MB`);
         return;
       }
       
