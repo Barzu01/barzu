@@ -1545,24 +1545,7 @@ async def get_user_videos(user_id: str, limit: int = 20, skip: int = 0):
     return [serialize_doc(video) for video in videos]
 
 
-# ===== CHAT API =====
-class ChatMessage(BaseModel):
-    senderId: str
-    receiverId: str
-    text: str
-    read: bool = False
-    createdAt: datetime = Field(default_factory=datetime.utcnow)
-
-
-@api_router.post("/chats/send")
-async def send_message(message: ChatMessage):
-    """Send a chat message"""
-    message_dict = message.model_dump()
-    message_dict['createdAt'] = datetime.utcnow()
-    result = await db.chat_messages.insert_one(message_dict)
-    new_message = await db.chat_messages.find_one({"_id": result.inserted_id})
-    return serialize_doc(new_message)
-
+# ===== CHAT API (Additional endpoints) =====
 
 @api_router.get("/chats/{user_id}/{other_user_id}/messages")
 async def get_chat_messages(user_id: str, other_user_id: str, limit: int = 100, skip: int = 0):
