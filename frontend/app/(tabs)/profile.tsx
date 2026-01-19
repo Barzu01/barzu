@@ -55,6 +55,27 @@ export default function ProfileScreen() {
     return () => clearInterval(interval);
   }, [user?.phone]);
 
+  // Загрузка количества непрочитанных сообщений
+  useEffect(() => {
+    const loadUnreadMessages = async () => {
+      if (user?.phone) {
+        try {
+          const response = await fetch(`${API_URL}/api/chats/${encodeURIComponent(user.phone)}/unread-count`);
+          if (response.ok) {
+            const data = await response.json();
+            setUnreadMessagesCount(data.count || 0);
+          }
+        } catch (error) {
+          console.error('Error loading unread messages:', error);
+        }
+      }
+    };
+    
+    loadUnreadMessages();
+    const interval = setInterval(loadUnreadMessages, 15000);
+    return () => clearInterval(interval);
+  }, [user?.phone]);
+
   const handleLogout = () => {
     setLogoutModalVisible(true);
   };
