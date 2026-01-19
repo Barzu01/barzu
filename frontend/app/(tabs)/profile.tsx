@@ -20,6 +20,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { notificationAPI } from '../../services/api';
 import i18n from '../../i18n';
+import Constants from 'expo-constants';
+
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://auto-social-hub-2.preview.emergentagent.com';
 
 export default function ProfileScreen() {
   const { user, logout, updateUserProfile } = useAuth();
@@ -31,6 +34,7 @@ export default function ProfileScreen() {
   const [newName, setNewName] = React.useState('');
   const [saving, setSaving] = React.useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   // Загрузка количества непрочитанных уведомлений
   useEffect(() => {
