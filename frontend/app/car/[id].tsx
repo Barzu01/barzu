@@ -173,7 +173,7 @@ export default function CarDetailsScreen() {
     setLoadingSimilar(true);
     try {
       // Ищем похожие по марке или ценовому диапазону
-      const allCars = await carAPI.getAll({ status: 'approved', limit: 20 });
+      const allCars = await carAPI.getAll('approved', 30, 0);
       
       // Фильтруем: похожие по марке или близкие по цене (±30%)
       const similar = allCars.filter((c: CarListing) => {
