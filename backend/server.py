@@ -806,6 +806,30 @@ async def get_chat_messages(chat_id: str, limit: int = 50, skip: int = 0):
     return [serialize_doc(msg) for msg in messages]
 
 
+@api_router.get("/chats/{user_phone}/unread-count")
+async def get_unread_messages_count(user_phone: str):
+    """Get count of unread messages for a user"""
+    count = await db.chat_messages.count_documents({
+        "receiverId": user_phone,
+        "isRead": False
+    })
+    return {"count": count}
+
+
+@api_router.post("/chats/{chat_id}/mark-read")
+async def mark_messages_as_read(chat_id: str, user_phone: str):
+    """Mark all messages in chat as read for user"""
+    result = await db.chat_messages.update_many(
+        {
+            "chatId": chat_id,
+            "receiverId": user_phone,
+            "isRead": False
+        },
+        {"$set": {"isRead": True}}
+    )
+    return {"marked_count": result.modified_count}
+
+
 @api_router.post("/chats/{chat_id}/messages")
 async def send_message(
     chat_id: str,
