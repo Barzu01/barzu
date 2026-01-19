@@ -569,17 +569,18 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: '#64748B',
-    fontWeight: '500',
+    fontFamily: fonts.medium,
   },
   headerGreeting: {
     fontSize: 14,
     color: '#64748B',
     marginBottom: 8,
     marginTop: 4,
+    fontFamily: fonts.regular,
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     color: '#0066FF',
     letterSpacing: -0.5,
   },
