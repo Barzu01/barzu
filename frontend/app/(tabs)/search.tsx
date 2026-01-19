@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     color: '#0F172A',
     letterSpacing: -0.5,
   },
@@ -747,6 +747,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#64748B',
     marginTop: 4,
+    fontFamily: fonts.regular,
   },
   searchSection: {
     backgroundColor: '#FFFFFF',
