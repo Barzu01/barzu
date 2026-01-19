@@ -196,20 +196,14 @@ export default function SearchScreen() {
     return `${price.toLocaleString()} ${t('car.currency')}`;
   };
 
-  // Популярные бренды с цветами
+  // Популярные бренды с цветами (максимум 6)
   const popularBrands = [
     { name: 'Toyota', color: '#EB0A1E', letter: 'T', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carance%2C_emblem.svg/200px-Toyota_carancy%2C_emblem.svg.png' },
     { name: 'Mercedes-Benz', color: '#333333', letter: 'M', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/200px-Mercedes-Logo.svg.png' },
     { name: 'BMW', color: '#0066B1', letter: 'B', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png' },
     { name: 'Hyundai', color: '#002C5F', letter: 'H', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png' },
     { name: 'Honda', color: '#E40521', letter: 'H', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png' },
-    { name: 'Lada', color: '#154988', letter: 'L', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Lada_Logo.svg/200px-Lada_Logo.svg.png' },
-    { name: 'Kia', color: '#05141F', letter: 'K', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/200px-Kia-logo.svg.png' },
     { name: 'Lexus', color: '#1A1A1A', letter: 'L', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Lexus_division_emblem.svg/200px-Lexus_division_emblem.svg.png' },
-    { name: 'Volkswagen', color: '#001E50', letter: 'V', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/200px-Volkswagen_logo_2019.svg.png' },
-    { name: 'Audi', color: '#BB0A30', letter: 'A', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/200px-Audi-Logo_2016.svg.png' },
-    { name: 'Nissan', color: '#C3002F', letter: 'N', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nissan_logo_2020.svg/200px-Nissan_logo_2020.svg.png' },
-    { name: 'Chevrolet', color: '#D4A017', letter: 'C', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Chevrolet-logo.svg/200px-Chevrolet-logo.svg.png' },
   ];
 
   // Состояние для выбранного бренда
