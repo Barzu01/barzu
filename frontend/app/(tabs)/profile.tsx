@@ -291,6 +291,29 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
+          <Text style={styles.sectionLabel}>Помощь</Text>
+          <View style={styles.menuCard}>
+            <MenuItem
+              icon="headset"
+              title="Служба поддержки"
+              subtitle="Напишите нам"
+              onPress={() => router.push('/support/chat')}
+              iconBg="#D1FAE5"
+              iconColor="#10B981"
+            />
+            <View style={styles.menuDivider} />
+            <MenuItem
+              icon="information-circle"
+              title="О приложении"
+              subtitle="SafedAuto v1.0"
+              onPress={() => router.push('/about')}
+              iconBg="#E0E7FF"
+              iconColor="#6366F1"
+            />
+          </View>
+        </View>
+
+        <View style={styles.menuSection}>
           <Text style={styles.sectionLabel}>{t('profile.settingsSection')}</Text>
           <View style={styles.menuCard}>
             <MenuItem
