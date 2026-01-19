@@ -647,13 +647,13 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     color: '#64748B',
     textAlign: 'center',
   },
   categoryNameActive: {
     color: '#0066FF',
-    fontWeight: '700',
+    fontFamily: fonts.bold,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -665,12 +665,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     color: '#0F172A',
   },
   sectionCount: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     color: '#64748B',
     backgroundColor: '#F1F5F9',
     paddingHorizontal: 10,
