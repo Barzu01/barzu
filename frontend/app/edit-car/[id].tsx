@@ -212,6 +212,14 @@ export default function EditCarScreen() {
     });
 
     if (!result.canceled && result.assets[0].base64) {
+      const base64Size = result.assets[0].base64.length;
+      const fileSizeMB = (base64Size / 1024 / 1024 / 1.33).toFixed(2);
+      
+      if (parseFloat(fileSizeMB) > 5) {
+        Alert.alert('Ошибка', `Фото слишком большое (${fileSizeMB}MB). Максимум 5MB`);
+        return;
+      }
+      
       const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
       setPhotos([...photos, base64Image]);
     }
@@ -237,6 +245,14 @@ export default function EditCarScreen() {
     });
 
     if (!result.canceled && result.assets[0].base64) {
+      const base64Size = result.assets[0].base64.length;
+      const fileSizeMB = (base64Size / 1024 / 1024 / 1.33).toFixed(2);
+      
+      if (parseFloat(fileSizeMB) > 5) {
+        Alert.alert('Ошибка', `Фото слишком большое (${fileSizeMB}MB). Максимум 5MB`);
+        return;
+      }
+      
       const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
       setPhotos([...photos, base64Image]);
     }
