@@ -712,6 +712,100 @@ async def root():
     return {"message": "SafedAuto API", "version": "1.0.0"}
 
 
+# ===== SUPPORT CHAT =====
+class SupportMessage(BaseModel):
+    userId: str
+    userName: Optional[str] = None
+    userPhone: str
+    message: str
+    isFromSupport: bool = False
+    isRead: bool = False
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+# Номер телефона службы поддержки (админ)
+SUPPORT_PHONE = "+992111222333"
+
+@api_router.post("/support/messages")
+async def send_support_message(
+    userPhone: str,
+    userName: Optional[str] = None,
+    message: str = "",
+    isFromSupport: bool = False
+):
+    """Send a message to/from support"""
+    support_message = SupportMessage(
+        userId=userPhone,
+        userName=userName,
+        userPhone=userPhone,
+        message=message,
+        isFromSupport=isFromSupport
+    )
+    result = await db.support_messages.insert_one(support_message.model_dump())
+    new_message = await db.support_messages.find_one({"_id": result.inserted_id})
+    return serialize_doc(new_message)
+
+
+@api_router.get("/support/messages/{user_phone}")
+async def get_support_messages(user_phone: str, limit: int = 100):
+    """Get support messages for a user"""
+    messages = await db.support_messages.find({
+        "userPhone": user_phone
+    }).sort("createdAt", 1).limit(limit).to_list(limit)
+    return [serialize_doc(msg) for msg in messages]
+
+
+@api_router.get("/support/all-conversations")
+async def get_all_support_conversations():
+    """Get all support conversations (for admin)"""
+    # Группируем по пользователям
+    pipeline = [
+        {"$sort": {"createdAt": -1}},
+        {"$group": {
+            "_id": "$userPhone",
+            "userName": {"$first": "$userName"},
+            "lastMessage": {"$first": "$message"},
+            "lastMessageAt": {"$first": "$createdAt"},
+            "unreadCount": {
+                "$sum": {
+                    "$cond": [{"$and": [{"$eq": ["$isFromSupport", False]}, {"$eq": ["$isRead", False]}]}, 1, 0]
+                }
+            }
+        }},
+        {"$sort": {"lastMessageAt": -1}}
+    ]
+    conversations = await db.support_messages.aggregate(pipeline).to_list(100)
+    return conversations
+
+
+@api_router.post("/support/messages/{user_phone}/mark-read")
+async def mark_support_messages_read(user_phone: str, is_admin: bool = False):
+    """Mark support messages as read"""
+    if is_admin:
+        # Админ читает сообщения пользователя
+        await db.support_messages.update_many(
+            {"userPhone": user_phone, "isFromSupport": False},
+            {"$set": {"isRead": True}}
+        )
+    else:
+        # Пользователь читает сообщения от поддержки
+        await db.support_messages.update_many(
+            {"userPhone": user_phone, "isFromSupport": True},
+            {"$set": {"isRead": True}}
+        )
+    return {"status": "ok"}
+
+
+@api_router.get("/support/unread-count/{user_phone}")
+async def get_support_unread_count(user_phone: str):
+    """Get unread support messages count for user"""
+    count = await db.support_messages.count_documents({
+        "userPhone": user_phone,
+        "isFromSupport": True,
+        "isRead": False
+    })
+    return {"count": count}
+
+
 # ===== CHAT MODELS =====
 class ChatMessage(BaseModel):
     chatId: str
