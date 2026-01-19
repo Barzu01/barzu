@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
   },
   newBadgeText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     color: '#FFFFFF',
   },
   carInfo: {
@@ -788,12 +788,12 @@ const styles = StyleSheet.create({
   carTitle: {
     flex: 1,
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: fonts.bold,
     color: '#0F172A',
   },
   carYear: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: fonts.semiBold,
     color: '#64748B',
     backgroundColor: '#F1F5F9',
     paddingHorizontal: 8,
@@ -802,7 +802,7 @@ const styles = StyleSheet.create({
   },
   carPrice: {
     fontSize: 22,
-    fontWeight: '800',
+    fontFamily: fonts.extraBold,
     color: '#0066FF',
     marginBottom: 4,
   },
