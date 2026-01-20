@@ -730,6 +730,8 @@ const styles = StyleSheet.create({
   video: {
     width: '100%',
     height: '100%',
+    // @ts-ignore - for web compatibility
+    objectFit: 'contain',
   },
   playIconOverlay: {
     ...StyleSheet.absoluteFillObject,
