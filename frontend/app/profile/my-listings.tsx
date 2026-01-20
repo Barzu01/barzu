@@ -190,7 +190,8 @@ export default function MyListingsScreen() {
             style={styles.deleteButton}
             onPress={() => handleDelete(item._id!, `${item.brand} ${item.model}`)}
           >
-            <Ionicons name="trash-outline" size={20} color="#EF4444" />
+            <Ionicons name="trash-outline" size={18} color="#EF4444" />
+            <Text style={styles.deleteButtonText}>Удалить</Text>
           </TouchableOpacity>
         </View>
       </View>
