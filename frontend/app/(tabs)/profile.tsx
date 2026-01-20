@@ -301,15 +301,6 @@ export default function ProfileScreen() {
               iconBg="#D1FAE5"
               iconColor="#10B981"
             />
-            <View style={styles.menuDivider} />
-            <MenuItem
-              icon="information-circle"
-              title="О приложении"
-              subtitle="SafedAuto v1.0"
-              onPress={() => router.push('/about')}
-              iconBg="#E0E7FF"
-              iconColor="#6366F1"
-            />
           </View>
         </View>
 
