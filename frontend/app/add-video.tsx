@@ -117,8 +117,8 @@ export default function AddVideoScreen() {
 
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      quality: 0.8,
+      allowsEditing: false,
+      quality: 1,
       videoMaxDuration: MAX_DURATION,
     });
 
