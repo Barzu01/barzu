@@ -814,8 +814,6 @@ const styles = StyleSheet.create({
   },
   previewVideo: {
     flex: 1,
-    // @ts-ignore - for web compatibility
-    objectFit: 'contain',
   },
   previewInfoOverlay: {
     position: 'absolute',
