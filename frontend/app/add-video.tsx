@@ -485,6 +485,7 @@ export default function AddVideoScreen() {
                   source={{ uri: videoUri }}
                   style={styles.previewVideo}
                   resizeMode={ResizeMode.CONTAIN}
+                  videoStyle={{ width: '100%', height: '100%' }}
                   shouldPlay={true}
                   isLooping={true}
                   isMuted={false}
