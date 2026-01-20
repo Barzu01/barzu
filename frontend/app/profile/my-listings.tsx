@@ -451,12 +451,19 @@ const styles = StyleSheet.create({
     color: '#0066FF',
   },
   deleteButton: {
-    width: 44,
-    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 10,
     backgroundColor: '#FEE2E2',
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  deleteButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#EF4444',
   },
   promotedBadge: {
     position: 'absolute',
