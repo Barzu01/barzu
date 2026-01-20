@@ -588,18 +588,17 @@ const styles = StyleSheet.create({
   videoPreviewContainer: {
     backgroundColor: '#000000',
     borderRadius: 16,
-    overflow: 'hidden',
-    aspectRatio: 9 / 16,
-    maxHeight: 450,
+    overflow: 'visible',
+    height: 400,
     alignSelf: 'center',
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   videoPreview: {
     width: '100%',
     height: '100%',
     backgroundColor: '#000000',
-    // @ts-ignore - for web compatibility
-    objectFit: 'contain',
   },
   videoDurationBadge: {
     position: 'absolute',
