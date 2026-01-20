@@ -589,11 +589,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderRadius: 16,
     overflow: 'hidden',
-    height: 280,
+    aspectRatio: 9 / 16,
+    maxHeight: 450,
+    alignSelf: 'center',
+    width: '100%',
   },
   videoPreview: {
     width: '100%',
     height: '100%',
+    backgroundColor: '#000000',
   },
   videoDurationBadge: {
     position: 'absolute',
