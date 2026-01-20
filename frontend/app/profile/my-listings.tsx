@@ -52,6 +52,7 @@ export default function MyListingsScreen() {
   };
 
   const handleDelete = (carId: string, carTitle: string) => {
+    console.log('Delete clicked for car:', carId, carTitle);
     Alert.alert(
       'Удалить объявление',
       `Вы уверены, что хотите удалить "${carTitle}"?`,
@@ -61,11 +62,14 @@ export default function MyListingsScreen() {
           text: 'Удалить',
           style: 'destructive',
           onPress: async () => {
+            console.log('Confirmed delete for:', carId);
             try {
               await carAPI.delete(carId);
+              console.log('Delete successful');
               setCars(cars.filter(car => car._id !== carId));
               Alert.alert('Успешно', 'Объявление удалено');
             } catch (error) {
+              console.error('Delete error:', error);
               Alert.alert('Ошибка', 'Не удалось удалить объявление');
             }
           }
