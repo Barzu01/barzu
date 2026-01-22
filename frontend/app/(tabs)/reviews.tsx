@@ -760,6 +760,8 @@ const styles = StyleSheet.create({
   },
   videoTouchable: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   video: {
     width: '100%',
