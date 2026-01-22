@@ -240,6 +240,46 @@ Email: info@safedauto.tj
                   </>
                 )}
               </TouchableOpacity>
+
+              {/* ВРЕМЕННО: Тестовый вход без кода - УДАЛИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ В APP STORE */}
+              <TouchableOpacity
+                style={styles.testButton}
+                onPress={async () => {
+                  if (phone.length < 12) {
+                    Alert.alert('Ошибка', 'Введите номер телефона');
+                    return;
+                  }
+                  if (!agreedToTerms) {
+                    Alert.alert('Ошибка', 'Примите условия использования');
+                    return;
+                  }
+                  setLoading(true);
+                  try {
+                    // Создаём/получаем пользователя напрямую
+                    const response = await fetch(
+                      `${API_URL}/api/auth/test-login?phone=${encodeURIComponent(phone)}`,
+                      { method: 'POST' }
+                    );
+                    if (response.ok) {
+                      const data = await response.json();
+                      if (data.success && data.user) {
+                        await login(data.user);
+                        router.replace('/(tabs)/home');
+                      }
+                    } else {
+                      Alert.alert('Ошибка', 'Не удалось войти');
+                    }
+                  } catch (error) {
+                    Alert.alert('Ошибка', 'Проверьте подключение');
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={loading}
+              >
+                <Ionicons name="flash" size={20} color="#F59E0B" />
+                <Text style={styles.testButtonText}>Тестовый вход (без SMS)</Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.formContainer}>
