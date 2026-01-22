@@ -826,7 +826,7 @@ async def verify_sms_code(phone: str, code: str):
             "phone": phone,
             "name": "",
             "avatar": "",
-            "isAdmin": phone == "+992111222333",
+            "isAdmin": phone == "+992919895434",  # Администратор
             "createdAt": datetime.utcnow()
         }
         await db.users.insert_one(new_user)
