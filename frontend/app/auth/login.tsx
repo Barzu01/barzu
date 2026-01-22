@@ -552,6 +552,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#92400E',
   },
+  adminButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EDE9FE',
+    borderRadius: 16,
+    paddingVertical: 14,
+    marginTop: 12,
+    gap: 8,
+    borderWidth: 2,
+    borderColor: '#7C3AED',
+  },
+  adminButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#5B21B6',
+  },
   backButton: {
     marginBottom: 16,
   },
