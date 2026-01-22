@@ -105,12 +105,24 @@ Email: info@safedauto.tj
         setGeneratedCode(data.code_for_test || '');
         setStep('code');
         
-        // Показываем инструкцию
-        Alert.alert(
-          '📱 Код отправлен',
-          `Код для входа: ${data.code_for_test}\n\nВ будущем код будет приходить в Telegram бот @${TELEGRAM_BOT}`,
-          [{ text: 'OK' }]
-        );
+        if (data.code_sent_to_telegram) {
+          // Код отправлен автоматически в Telegram
+          Alert.alert(
+            '✅ Код отправлен',
+            'Проверьте Telegram - код уже там!',
+            [{ text: 'OK' }]
+          );
+        } else {
+          // Нужно открыть бота и отправить номер
+          Alert.alert(
+            '📱 Привяжите Telegram',
+            `Чтобы получать коды автоматически:\n\n1. Откройте бот @${TELEGRAM_BOT}\n2. Нажмите /start\n3. Отправьте свой номер телефона\n\nКод для теста: ${data.code_for_test}`,
+            [
+              { text: 'Открыть бот', onPress: openTelegramBot },
+              { text: 'OK' }
+            ]
+          );
+        }
       } else {
         Alert.alert('Ошибка', 'Не удалось отправить код');
       }
