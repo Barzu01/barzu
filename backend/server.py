@@ -717,6 +717,111 @@ async def root():
     return {"message": "SafedAuto API", "version": "1.0.0"}
 
 
+# ===== TELEGRAM AUTH =====
+class TelegramAuthCode(BaseModel):
+    phone: str
+    code: str
+    telegram_chat_id: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime = None
+    used: bool = False
+
+async def send_telegram_message(chat_id: str, message: str):
+    """Send message via Telegram bot"""
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json={
+            "chat_id": chat_id,
+            "text": message,
+            "parse_mode": "HTML"
+        })
+        return response.json()
+
+@api_router.post("/auth/telegram/request-code")
+async def request_telegram_code(phone: str, telegram_username: str = None):
+    """Request verification code via Telegram"""
+    # Generate 4-digit code
+    code = ''.join(random.choices(string.digits, k=4))
+    
+    # Save code to database with expiration (5 minutes)
+    auth_code = TelegramAuthCode(
+        phone=phone,
+        code=code,
+        telegram_chat_id=telegram_username,
+        expires_at=datetime.utcnow() + timedelta(minutes=5)
+    )
+    
+    # Delete old codes for this phone
+    await db.telegram_auth_codes.delete_many({"phone": phone})
+    
+    # Save new code
+    await db.telegram_auth_codes.insert_one(auth_code.model_dump())
+    
+    return {
+        "success": True,
+        "message": "Код отправлен. Напишите боту @safedauto_auth_bot для получения кода.",
+        "bot_username": "safedauto_auth_bot",
+        "code_for_test": code  # В production убрать!
+    }
+
+@api_router.post("/auth/telegram/verify-code")
+async def verify_telegram_code(phone: str, code: str):
+    """Verify the code entered by user"""
+    # Find code in database
+    auth_record = await db.telegram_auth_codes.find_one({
+        "phone": phone,
+        "code": code,
+        "used": False
+    })
+    
+    if not auth_record:
+        raise HTTPException(status_code=400, detail="Неверный код")
+    
+    # Check expiration
+    if datetime.utcnow() > auth_record.get('expires_at', datetime.utcnow()):
+        raise HTTPException(status_code=400, detail="Код истёк. Запросите новый.")
+    
+    # Mark code as used
+    await db.telegram_auth_codes.update_one(
+        {"_id": auth_record["_id"]},
+        {"$set": {"used": True}}
+    )
+    
+    # Create or get user
+    user = await db.users.find_one({"phone": phone})
+    if not user:
+        new_user = {
+            "phone": phone,
+            "name": "",
+            "avatar": "",
+            "isAdmin": phone == "+992111222333",
+            "createdAt": datetime.utcnow()
+        }
+        await db.users.insert_one(new_user)
+        user = await db.users.find_one({"phone": phone})
+    
+    return {
+        "success": True,
+        "user": serialize_doc(user)
+    }
+
+@api_router.get("/auth/telegram/get-code/{phone}")
+async def get_code_for_telegram(phone: str):
+    """Get code for Telegram bot to send to user"""
+    auth_record = await db.telegram_auth_codes.find_one({
+        "phone": phone,
+        "used": False
+    })
+    
+    if not auth_record:
+        return {"code": None}
+    
+    if datetime.utcnow() > auth_record.get('expires_at', datetime.utcnow()):
+        return {"code": None, "expired": True}
+    
+    return {"code": auth_record["code"]}
+
+
 # ===== SUPPORT CHAT =====
 class SupportMessage(BaseModel):
     userId: str
