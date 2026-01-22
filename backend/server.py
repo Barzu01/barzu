@@ -745,8 +745,9 @@ async def telegram_webhook(request_data: dict):
         message = request_data.get("message", {})
         chat_id = message.get("chat", {}).get("id")
         text = message.get("text", "").strip()
+        contact = message.get("contact")  # Если пользователь поделился контактом
         
-        if not chat_id or not text:
+        if not chat_id:
             return {"ok": True}
         
         # Если пользователь отправил /start
@@ -754,66 +755,80 @@ async def telegram_webhook(request_data: dict):
             await send_telegram_message(
                 chat_id,
                 "👋 <b>Добро пожаловать в SafedAuto!</b>\n\n"
-                "Для получения кода входа отправьте свой номер телефона в формате:\n"
-                "<code>+992XXXXXXXXX</code>\n\n"
-                "Например: <code>+992901234567</code>"
+                "📱 Отправьте свой номер телефона, чтобы получать коды для входа автоматически.\n\n"
+                "Формат: <code>+992XXXXXXXXX</code>\n\n"
+                "Или нажмите кнопку ниже 👇"
             )
+            # Отправляем кнопку для отправки контакта
+            keyboard_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+            async with httpx.AsyncClient() as http_client:
+                await http_client.post(keyboard_url, json={
+                    "chat_id": chat_id,
+                    "text": "Нажмите кнопку чтобы отправить номер:",
+                    "reply_markup": {
+                        "keyboard": [[{"text": "📱 Отправить номер телефона", "request_contact": True}]],
+                        "resize_keyboard": True,
+                        "one_time_keyboard": True
+                    }
+                })
             return {"ok": True}
         
-        # Если пользователь отправил номер телефона
-        phone = text
-        if not phone.startswith("+"):
-            phone = "+" + phone
+        phone = None
         
-        # Очищаем номер от пробелов и других символов
-        phone = ''.join(c for c in phone if c.isdigit() or c == '+')
+        # Если пользователь поделился контактом
+        if contact:
+            phone = contact.get("phone_number", "")
+            if not phone.startswith("+"):
+                phone = "+" + phone
+        # Если пользователь отправил номер текстом
+        elif text:
+            phone = text
+            if not phone.startswith("+"):
+                phone = "+" + phone
+            # Очищаем номер от пробелов и других символов
+            phone = ''.join(c for c in phone if c.isdigit() or c == '+')
         
-        # Проверяем формат номера (должен начинаться с +992)
-        if not phone.startswith("+992") or len(phone) < 12:
-            await send_telegram_message(
-                chat_id,
-                "❌ Неверный формат номера.\n\n"
-                "Отправьте номер в формате: <code>+992XXXXXXXXX</code>"
+        if phone:
+            # Проверяем формат номера (должен начинаться с +992)
+            if not phone.startswith("+992") or len(phone) < 12:
+                await send_telegram_message(
+                    chat_id,
+                    "❌ Неверный формат номера.\n\n"
+                    "Отправьте номер в формате: <code>+992XXXXXXXXX</code>"
+                )
+                return {"ok": True}
+            
+            # Сохраняем связку телефон -> chat_id
+            await db.telegram_users.update_one(
+                {"phone": phone},
+                {"$set": {"phone": phone, "chat_id": str(chat_id), "updated_at": datetime.utcnow()}},
+                upsert=True
             )
-            return {"ok": True}
-        
-        # Ищем код для этого номера
-        auth_record = await db.telegram_auth_codes.find_one({
-            "phone": phone,
-            "used": False
-        })
-        
-        if not auth_record:
-            await send_telegram_message(
-                chat_id,
-                "📱 Номер <code>" + phone + "</code> не найден.\n\n"
-                "Сначала запросите код в приложении SafedAuto, затем вернитесь сюда."
-            )
-            return {"ok": True}
-        
-        # Проверяем срок действия
-        if datetime.utcnow() > auth_record.get('expires_at', datetime.utcnow()):
-            await send_telegram_message(
-                chat_id,
-                "⏰ Код истёк. Запросите новый код в приложении."
-            )
-            return {"ok": True}
-        
-        # Отправляем код
-        code = auth_record["code"]
-        await send_telegram_message(
-            chat_id,
-            f"🔐 <b>Ваш код для входа в SafedAuto:</b>\n\n"
-            f"<code>{code}</code>\n\n"
-            f"Введите этот код в приложении.\n"
-            f"Код действителен 5 минут."
-        )
-        
-        # Сохраняем chat_id для будущего использования
-        await db.telegram_auth_codes.update_one(
-            {"_id": auth_record["_id"]},
-            {"$set": {"telegram_chat_id": str(chat_id)}}
-        )
+            
+            # Проверяем есть ли ожидающий код
+            auth_record = await db.telegram_auth_codes.find_one({
+                "phone": phone,
+                "used": False
+            })
+            
+            if auth_record and datetime.utcnow() < auth_record.get('expires_at', datetime.utcnow()):
+                # Есть код - отправляем его
+                code = auth_record["code"]
+                await send_telegram_message(
+                    chat_id,
+                    f"🔐 <b>Ваш код для входа в SafedAuto:</b>\n\n"
+                    f"<code>{code}</code>\n\n"
+                    f"Введите этот код в приложении.\n"
+                    f"Код действителен 5 минут."
+                )
+            else:
+                # Кода нет - номер привязан
+                await send_telegram_message(
+                    chat_id,
+                    f"✅ <b>Номер {phone} привязан!</b>\n\n"
+                    f"Теперь коды для входа будут приходить автоматически в этот чат.\n\n"
+                    f"Откройте приложение SafedAuto и запросите код."
+                )
         
         return {"ok": True}
         
@@ -841,11 +856,31 @@ async def request_telegram_code(phone: str, telegram_username: str = None):
     # Save new code
     await db.telegram_auth_codes.insert_one(auth_code.model_dump())
     
+    # Проверяем есть ли привязанный Telegram аккаунт
+    telegram_user = await db.telegram_users.find_one({"phone": phone})
+    
+    code_sent_to_telegram = False
+    if telegram_user and telegram_user.get("chat_id"):
+        # Автоматически отправляем код в Telegram
+        try:
+            result = await send_telegram_message(
+                telegram_user["chat_id"],
+                f"🔐 <b>Код для входа в SafedAuto:</b>\n\n"
+                f"<code>{code}</code>\n\n"
+                f"Введите этот код в приложении.\n"
+                f"Код действителен 5 минут."
+            )
+            if result.get("ok"):
+                code_sent_to_telegram = True
+        except Exception as e:
+            logging.error(f"Failed to send code to Telegram: {e}")
+    
     return {
         "success": True,
-        "message": "Код отправлен. Напишите боту @safedauto_auth_bot для получения кода.",
+        "code_sent_to_telegram": code_sent_to_telegram,
+        "message": "Код отправлен в Telegram!" if code_sent_to_telegram else "Откройте бот @safedauto_auth_bot чтобы получить код",
         "bot_username": "safedauto_auth_bot",
-        "code_for_test": code  # В production убрать!
+        "code_for_test": code if not code_sent_to_telegram else None  # Показываем код только если не отправили в Telegram
     }
 
 @api_router.post("/auth/telegram/verify-code")
