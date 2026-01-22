@@ -738,6 +738,8 @@ const styles = StyleSheet.create({
   video: {
     width: SCREEN_WIDTH,
     height: VIDEO_HEIGHT,
+    // @ts-ignore - for web compatibility
+    objectFit: 'contain',
   },
   playIconOverlay: {
     ...StyleSheet.absoluteFillObject,
