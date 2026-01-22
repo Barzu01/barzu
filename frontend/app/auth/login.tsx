@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   Modal,
   ScrollView,
-  Linking,
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -20,7 +19,6 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 
 const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carmarket-38.preview.emergentagent.com';
-const TELEGRAM_BOT = 'safedauto_auth_bot';
 
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');
@@ -96,7 +94,7 @@ Email: info@safedauto.tj
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_URL}/api/auth/telegram/request-code?phone=${encodeURIComponent(phone)}`,
+        `${API_URL}/api/auth/sms/request-code?phone=${encodeURIComponent(phone)}`,
         { method: 'POST' }
       );
       
@@ -105,28 +103,17 @@ Email: info@safedauto.tj
         setGeneratedCode(data.code_for_test || '');
         setStep('code');
         
-        if (data.code_sent_to_telegram) {
-          // Код отправлен автоматически в Telegram
+        if (data.sms_sent) {
           Alert.alert(
-            '✅ Код отправлен',
-            'Проверьте Telegram - код уже там!',
+            '✅ SMS отправлено',
+            'Код подтверждения отправлен на ваш номер телефона',
             [{ text: 'OK' }]
           );
         } else {
-          // Телеграм не привязан - открываем бота автоматически
           Alert.alert(
-            '📱 Получите код в Telegram',
-            `Для получения кода:\n\n1. Откройте бота SafedAuto в Telegram\n2. Нажмите кнопку "Отправить номер телефона"\n3. Код придёт автоматически!\n\nВаш код: ${data.code_for_test}`,
-            [
-              { 
-                text: 'Открыть Telegram', 
-                onPress: () => {
-                  // Открываем бота с start параметром
-                  Linking.openURL(`https://t.me/${TELEGRAM_BOT}?start=auth`);
-                }
-              },
-              { text: 'Ввести код вручную' }
-            ]
+            '⚠️ Ошибка отправки SMS',
+            `Не удалось отправить SMS. Код для входа: ${data.code_for_test}`,
+            [{ text: 'OK' }]
           );
         }
       } else {
@@ -149,7 +136,7 @@ Email: info@safedauto.tj
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_URL}/api/auth/telegram/verify-code?phone=${encodeURIComponent(phone)}&code=${code}`,
+        `${API_URL}/api/auth/sms/verify-code?phone=${encodeURIComponent(phone)}&code=${code}`,
         { method: 'POST' }
       );
       
@@ -169,10 +156,6 @@ Email: info@safedauto.tj
     } finally {
       setLoading(false);
     }
-  };
-
-  const openTelegramBot = () => {
-    Linking.openURL(`https://t.me/${TELEGRAM_BOT}`);
   };
 
   return (
@@ -198,7 +181,7 @@ Email: info@safedauto.tj
             <View style={styles.formContainer}>
               <Text style={styles.title}>Вход в аккаунт</Text>
               <Text style={styles.subtitle}>
-                Введите номер телефона для входа
+                Введите номер телефона для получения SMS с кодом
               </Text>
 
               {/* Phone Input */}
@@ -252,16 +235,10 @@ Email: info@safedauto.tj
                   <ActivityIndicator color="#FFF" />
                 ) : (
                   <>
-                    <Ionicons name="paper-plane" size={20} color="#FFF" />
-                    <Text style={styles.buttonText}>Получить код</Text>
+                    <Ionicons name="chatbubble" size={20} color="#FFF" />
+                    <Text style={styles.buttonText}>Получить SMS-код</Text>
                   </>
                 )}
-              </TouchableOpacity>
-
-              {/* Telegram Bot Link */}
-              <TouchableOpacity style={styles.telegramLink} onPress={openTelegramBot}>
-                <Ionicons name="send" size={20} color="#0088cc" />
-                <Text style={styles.telegramLinkText}>Открыть бот @{TELEGRAM_BOT}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -275,7 +252,7 @@ Email: info@safedauto.tj
 
               <Text style={styles.title}>Введите код</Text>
               <Text style={styles.subtitle}>
-                Код отправлен на {phone}
+                SMS-код отправлен на {phone}
               </Text>
 
               {/* Show code hint for testing */}
@@ -286,7 +263,7 @@ Email: info@safedauto.tj
                 </View>
               )}
 
-              {/* Code Input - нормальное поле ввода */}
+              {/* Code Input */}
               <TextInput
                 style={styles.codeInput}
                 value={code}
@@ -492,18 +469,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
-  telegramLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 24,
-    gap: 8,
-  },
-  telegramLinkText: {
-    fontSize: 14,
-    color: '#0088cc',
-    fontWeight: '500',
   },
   backButton: {
     marginBottom: 16,
