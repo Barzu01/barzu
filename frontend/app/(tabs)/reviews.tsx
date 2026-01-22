@@ -242,12 +242,13 @@ const VideoItem = React.memo(({
         <Video
           ref={videoRef}
           source={{ uri: item.videoUrl }}
-          style={styles.video}
+          style={[styles.video, videoStyle]}
           resizeMode={ResizeMode.CONTAIN}
           isLooping
           shouldPlay={isActive}
           isMuted={false}
           volume={1.0}
+          onReadyForDisplay={handleReadyForDisplay}
         />
         
         {showPlayIcon && (
