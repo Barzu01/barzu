@@ -210,11 +210,13 @@ const VideoItem = React.memo(({
           ref={videoRef}
           source={{ uri: item.videoUrl }}
           style={styles.video}
-          resizeMode={ResizeMode.CONTAIN}
+          resizeMode="contain"
+          videoStyle={{ width: '100%', height: '100%' }}
           isLooping
           shouldPlay={isActive}
           isMuted={false}
           volume={1.0}
+          posterStyle={{ resizeMode: 'contain' }}
         />
         
         {showPlayIcon && (
