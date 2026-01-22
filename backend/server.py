@@ -4,10 +4,12 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import random
+import string
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson import ObjectId
 import httpx
 
@@ -19,6 +21,9 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Telegram Bot Token
+TELEGRAM_BOT_TOKEN = "8392212489:AAHAdUPfSPHDUO2F7ZLTNdAC9AHy4AmIYJ0"
 
 # Create the main app without a prefix
 app = FastAPI()
