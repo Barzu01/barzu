@@ -353,7 +353,6 @@ export default function AddVideoScreen() {
                 source={{ uri: videoUri }}
                 style={styles.videoPreview}
                 resizeMode={ResizeMode.CONTAIN}
-                videoStyle={{ width: '100%', height: '100%' }}
                 shouldPlay={false}
                 isLooping={false}
                 useNativeControls
