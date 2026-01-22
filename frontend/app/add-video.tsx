@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   videoPreviewContainer: {
     backgroundColor: '#000000',
     borderRadius: 16,
-    overflow: 'visible',
+    overflow: 'hidden',
     height: 400,
     alignSelf: 'center',
     width: '100%',
