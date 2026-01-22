@@ -728,12 +728,20 @@ const styles = StyleSheet.create({
   },
   videoTouchable: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000',
+  },
+  videoWrapper: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   video: {
-    width: '100%',
-    height: '100%',
-    // @ts-ignore - for web compatibility
-    objectFit: 'contain',
+    width: SCREEN_WIDTH,
+    height: VIDEO_HEIGHT,
+    backgroundColor: '#000000',
   },
   playIconOverlay: {
     ...StyleSheet.absoluteFillObject,
