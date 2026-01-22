@@ -22,7 +22,7 @@ import { REGIONS } from '../../constants/carData';
 import { fonts } from '../../constants/fonts';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://auto-social-hub-2.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carmarket-38.preview.emergentagent.com';
 
 export default function SearchScreen() {
   const router = useRouter();

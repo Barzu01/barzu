@@ -22,7 +22,7 @@ import { notificationAPI } from '../../services/api';
 import i18n from '../../i18n';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://auto-social-hub-2.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carmarket-38.preview.emergentagent.com';
 
 export default function ProfileScreen() {
   const { user, logout, updateUserProfile } = useAuth();
