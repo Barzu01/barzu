@@ -206,17 +206,18 @@ const VideoItem = React.memo(({
         onPress={togglePlay}
         style={styles.videoTouchable}
       >
-        <Video
-          ref={videoRef}
-          source={{ uri: item.videoUrl }}
-          style={styles.video}
-          resizeMode={ResizeMode.CONTAIN}
-          videoStyle={{ width: '100%', height: '100%' }}
-          isLooping
-          shouldPlay={isActive}
-          isMuted={false}
-          volume={1.0}
-        />
+        <View style={styles.videoWrapper}>
+          <Video
+            ref={videoRef}
+            source={{ uri: item.videoUrl }}
+            style={styles.video}
+            resizeMode={ResizeMode.CONTAIN}
+            isLooping
+            shouldPlay={isActive}
+            isMuted={false}
+            volume={1.0}
+          />
+        </View>
         
         {showPlayIcon && (
           <View style={styles.playIconOverlay}>
