@@ -723,7 +723,121 @@ async def root():
     return {"message": "SafedAuto API", "version": "1.0.0"}
 
 
-# ===== TELEGRAM AUTH =====
+# ===== SMS AUTH (SMS-Aero) =====
+class AuthCode(BaseModel):
+    phone: str
+    code: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime = None
+    used: bool = False
+
+async def send_sms_aero(phone: str, message: str) -> dict:
+    """Отправка SMS через SMS-Aero API"""
+    # Убираем + из номера для SMS-Aero
+    phone_clean = phone.replace("+", "")
+    
+    # Формируем Basic Auth
+    auth_string = f"{SMSAERO_EMAIL}:{SMSAERO_API_KEY}"
+    auth_bytes = base64.b64encode(auth_string.encode()).decode()
+    
+    url = "https://gate.smsaero.ru/v2/sms/send"
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as http_client:
+            response = await http_client.post(
+                url,
+                params={
+                    "number": phone_clean,
+                    "text": message,
+                    "sign": SMSAERO_SIGN
+                },
+                headers={
+                    "Authorization": f"Basic {auth_bytes}"
+                }
+            )
+            result = response.json()
+            logging.info(f"SMS-Aero response for {phone}: {result}")
+            return result
+    except Exception as e:
+        logging.error(f"SMS-Aero error: {e}")
+        return {"success": False, "error": str(e)}
+
+# Новый endpoint для SMS авторизации
+@api_router.post("/auth/sms/request-code")
+async def request_sms_code(phone: str):
+    """Запросить код подтверждения по SMS"""
+    # Генерируем 4-значный код
+    code = ''.join(random.choices(string.digits, k=4))
+    
+    # Сохраняем код в базу с истечением через 5 минут
+    auth_code = AuthCode(
+        phone=phone,
+        code=code,
+        expires_at=datetime.utcnow() + timedelta(minutes=5)
+    )
+    
+    # Удаляем старые коды для этого номера
+    await db.auth_codes.delete_many({"phone": phone})
+    
+    # Сохраняем новый код
+    await db.auth_codes.insert_one(auth_code.model_dump())
+    
+    # Отправляем SMS
+    sms_text = f"SafedAuto: Ваш код для входа: {code}"
+    sms_result = await send_sms_aero(phone, sms_text)
+    
+    sms_sent = sms_result.get("success", False)
+    
+    return {
+        "success": True,
+        "sms_sent": sms_sent,
+        "message": "SMS с кодом отправлено!" if sms_sent else "Ошибка отправки SMS",
+        "code_for_test": code if not sms_sent else None  # Показываем код только если SMS не отправилось
+    }
+
+@api_router.post("/auth/sms/verify-code")
+async def verify_sms_code(phone: str, code: str):
+    """Проверить код из SMS"""
+    # Ищем код в базе
+    auth_record = await db.auth_codes.find_one({
+        "phone": phone,
+        "code": code,
+        "used": False
+    })
+    
+    if not auth_record:
+        raise HTTPException(status_code=400, detail="Неверный код")
+    
+    # Проверяем истечение
+    if datetime.utcnow() > auth_record.get('expires_at', datetime.utcnow()):
+        raise HTTPException(status_code=400, detail="Код истёк. Запросите новый.")
+    
+    # Помечаем код как использованный
+    await db.auth_codes.update_one(
+        {"_id": auth_record["_id"]},
+        {"$set": {"used": True}}
+    )
+    
+    # Создаём или получаем пользователя
+    user = await db.users.find_one({"phone": phone})
+    if not user:
+        new_user = {
+            "phone": phone,
+            "name": "",
+            "avatar": "",
+            "isAdmin": phone == "+992111222333",
+            "createdAt": datetime.utcnow()
+        }
+        await db.users.insert_one(new_user)
+        user = await db.users.find_one({"phone": phone})
+    
+    return {
+        "success": True,
+        "user": serialize_doc(user)
+    }
+
+
+# ===== TELEGRAM AUTH (старый, для обратной совместимости) =====
 class TelegramAuthCode(BaseModel):
     phone: str
     code: str
