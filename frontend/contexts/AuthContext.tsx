@@ -62,11 +62,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (phone: string) => {
+  const login = async (userData: User | string) => {
     try {
-      const userData = await userAPI.createOrGet(phone);
-      await AsyncStorage.setItem('userPhone', phone);
-      setUser(userData);
+      let user: User;
+      if (typeof userData === 'string') {
+        // Если передан только номер телефона
+        user = await userAPI.createOrGet(userData);
+        await AsyncStorage.setItem('userPhone', userData);
+      } else {
+        // Если передан объект пользователя
+        user = userData;
+        await AsyncStorage.setItem('userPhone', userData.phone);
+      }
+      setUser(user);
     } catch (error) {
       console.error('Error logging in:', error);
       throw error;
