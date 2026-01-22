@@ -268,22 +268,17 @@ Email: info@safedauto.tj
                 </View>
               )}
 
-              {/* Code Input */}
-              <View style={styles.codeContainer}>
-                {[0, 1, 2, 3].map((index) => (
-                  <View key={index} style={styles.codeBox}>
-                    <Text style={styles.codeDigit}>{code[index] || ''}</Text>
-                  </View>
-                ))}
-              </View>
-              
+              {/* Code Input - нормальное поле ввода */}
               <TextInput
-                style={styles.hiddenInput}
+                style={styles.codeInput}
                 value={code}
                 onChangeText={(text) => setCode(text.replace(/\D/g, '').slice(0, 4))}
                 keyboardType="number-pad"
                 maxLength={4}
+                placeholder="0000"
+                placeholderTextColor="#CBD5E1"
                 autoFocus
+                textAlign="center"
               />
 
               {/* Verify Button */}
