@@ -139,7 +139,40 @@ const VideoItem = React.memo(({
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [videoStyle, setVideoStyle] = useState<any>({ width: '100%', height: '100%' });
   const likeScale = useRef(new Animated.Value(1)).current;
+
+  // Обработчик готовности видео - определяем ориентацию для iOS
+  const handleReadyForDisplay = (event: any) => {
+    const { naturalSize } = event;
+    if (naturalSize) {
+      const { width, height, orientation } = naturalSize;
+      const isPortrait = orientation === 'portrait' || height > width;
+      
+      if (isPortrait && Platform.OS === 'ios') {
+        // Для вертикального видео на iOS - вычисляем правильные размеры
+        const videoAspectRatio = width / height;
+        const screenAspectRatio = SCREEN_WIDTH / VIDEO_HEIGHT;
+        
+        let videoWidth, videoHeight;
+        if (videoAspectRatio < screenAspectRatio) {
+          // Видео уже экрана - подгоняем по высоте
+          videoHeight = VIDEO_HEIGHT;
+          videoWidth = VIDEO_HEIGHT * videoAspectRatio;
+        } else {
+          // Видео шире экрана - подгоняем по ширине
+          videoWidth = SCREEN_WIDTH;
+          videoHeight = SCREEN_WIDTH / videoAspectRatio;
+        }
+        
+        setVideoStyle({
+          width: videoWidth,
+          height: videoHeight,
+          alignSelf: 'center',
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (isActive) {
