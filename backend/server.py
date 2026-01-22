@@ -6,6 +6,7 @@ import os
 import logging
 import random
 import string
+import base64
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
@@ -22,7 +23,12 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Telegram Bot Token
+# SMS-Aero настройки
+SMSAERO_EMAIL = "rahmatovbarzu01@gmail.com"
+SMSAERO_API_KEY = "LgTBnOphXOgj71w7zZVfvX7gl5A9kNEt"
+SMSAERO_SIGN = "SMS Aero"  # Имя отправителя
+
+# Telegram Bot Token (оставляем для обратной совместимости)
 TELEGRAM_BOT_TOKEN = "8392212489:AAHAdUPfSPHDUO2F7ZLTNdAC9AHy4AmIYJ0"
 
 # Create the main app without a prefix
