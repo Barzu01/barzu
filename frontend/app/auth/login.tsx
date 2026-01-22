@@ -249,27 +249,24 @@ Email: info@safedauto.tj
                     Alert.alert('Ошибка', 'Введите номер телефона');
                     return;
                   }
-                  if (!agreedToTerms) {
-                    Alert.alert('Ошибка', 'Примите условия использования');
-                    return;
-                  }
                   setLoading(true);
                   try {
-                    // Создаём/получаем пользователя напрямую
+                    console.log('Test login for:', phone);
                     const response = await fetch(
                       `${API_URL}/api/auth/test-login?phone=${encodeURIComponent(phone)}`,
                       { method: 'POST' }
                     );
-                    if (response.ok) {
-                      const data = await response.json();
-                      if (data.success && data.user) {
-                        await login(data.user);
-                        router.replace('/(tabs)/home');
-                      }
+                    console.log('Response status:', response.status);
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    if (data.success && data.user) {
+                      await login(data.user);
+                      router.replace('/(tabs)/home');
                     } else {
                       Alert.alert('Ошибка', 'Не удалось войти');
                     }
                   } catch (error) {
+                    console.error('Test login error:', error);
                     Alert.alert('Ошибка', 'Проверьте подключение');
                   } finally {
                     setLoading(false);
@@ -279,6 +276,34 @@ Email: info@safedauto.tj
               >
                 <Ionicons name="flash" size={20} color="#F59E0B" />
                 <Text style={styles.testButtonText}>Тестовый вход (без SMS)</Text>
+              </TouchableOpacity>
+
+              {/* Быстрый вход как АДМИН */}
+              <TouchableOpacity
+                style={styles.adminButton}
+                onPress={async () => {
+                  setLoading(true);
+                  try {
+                    const adminPhone = '+992919895434';
+                    const response = await fetch(
+                      `${API_URL}/api/auth/test-login?phone=${encodeURIComponent(adminPhone)}`,
+                      { method: 'POST' }
+                    );
+                    const data = await response.json();
+                    if (data.success && data.user) {
+                      await login(data.user);
+                      router.replace('/(tabs)/home');
+                    }
+                  } catch (error) {
+                    Alert.alert('Ошибка', 'Проверьте подключение');
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={loading}
+              >
+                <Ionicons name="shield-checkmark" size={20} color="#7C3AED" />
+                <Text style={styles.adminButtonText}>Войти как Админ</Text>
               </TouchableOpacity>
             </View>
           ) : (
