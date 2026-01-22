@@ -113,13 +113,19 @@ Email: info@safedauto.tj
             [{ text: 'OK' }]
           );
         } else {
-          // Нужно открыть бота и отправить номер
+          // Телеграм не привязан - открываем бота автоматически
           Alert.alert(
-            '📱 Привяжите Telegram',
-            `Чтобы получать коды автоматически:\n\n1. Откройте бот @${TELEGRAM_BOT}\n2. Нажмите /start\n3. Отправьте свой номер телефона\n\nКод для теста: ${data.code_for_test}`,
+            '📱 Получите код в Telegram',
+            `Для получения кода:\n\n1. Откройте бота SafedAuto в Telegram\n2. Нажмите кнопку "Отправить номер телефона"\n3. Код придёт автоматически!\n\nВаш код: ${data.code_for_test}`,
             [
-              { text: 'Открыть бот', onPress: openTelegramBot },
-              { text: 'OK' }
+              { 
+                text: 'Открыть Telegram', 
+                onPress: () => {
+                  // Открываем бота с start параметром
+                  Linking.openURL(`https://t.me/${TELEGRAM_BOT}?start=auth`);
+                }
+              },
+              { text: 'Ввести код вручную' }
             ]
           );
         }
