@@ -746,13 +746,14 @@ async def send_sms_aero(phone: str, message: str) -> dict:
         async with httpx.AsyncClient(timeout=30.0) as http_client:
             response = await http_client.post(
                 url,
-                params={
+                json={
                     "number": phone_clean,
                     "text": message,
                     "sign": SMSAERO_SIGN
                 },
                 headers={
-                    "Authorization": f"Basic {auth_bytes}"
+                    "Authorization": f"Basic {auth_bytes}",
+                    "Content-Type": "application/json"
                 }
             )
             result = response.json()
