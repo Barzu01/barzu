@@ -504,31 +504,18 @@ const styles = StyleSheet.create({
     color: '#0066FF',
     fontWeight: '600',
   },
-  codeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 12,
-    marginBottom: 8,
-  },
-  codeBox: {
-    width: 60,
-    height: 70,
+  codeInput: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     borderWidth: 2,
     borderColor: '#E2E8F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  codeDigit: {
-    fontSize: 28,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    fontSize: 32,
     fontWeight: '700',
     color: '#0F172A',
-  },
-  hiddenInput: {
-    position: 'absolute',
-    opacity: 0,
-    height: 0,
+    letterSpacing: 16,
+    marginBottom: 24,
   },
   resendButton: {
     marginTop: 24,
