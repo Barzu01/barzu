@@ -254,7 +254,7 @@ Email: info@safedauto.tj
 
               {/* Telegram Bot Link */}
               <TouchableOpacity style={styles.telegramLink} onPress={openTelegramBot}>
-                <Ionicons name="logo-telegram" size={20} color="#0088cc" />
+                <Ionicons name="send" size={20} color="#0088cc" />
                 <Text style={styles.telegramLinkText}>Открыть бот @{TELEGRAM_BOT}</Text>
               </TouchableOpacity>
             </View>
