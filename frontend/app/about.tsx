@@ -95,18 +95,18 @@ export default function AboutScreen() {
           
           <TouchableOpacity 
             style={styles.contactItem}
-            onPress={() => Linking.openURL('mailto:support@safedauto.com')}
+            onPress={() => Linking.openURL('mailto:support@safedauto.tj')}
           >
             <Ionicons name="mail-outline" size={22} color="#666" />
-            <Text style={styles.contactText}>support@safedauto.com</Text>
+            <Text style={styles.contactText}>support@safedauto.tj</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.contactItem}
-            onPress={() => Linking.openURL('https://safedauto.com')}
+            onPress={() => Linking.openURL('https://safedauto.tj')}
           >
             <Ionicons name="globe-outline" size={22} color="#666" />
-            <Text style={styles.contactText}>safedauto.com</Text>
+            <Text style={styles.contactText}>safedauto.tj</Text>
           </TouchableOpacity>
         </View>
 
