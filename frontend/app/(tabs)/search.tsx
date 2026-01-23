@@ -215,15 +215,23 @@ export default function SearchScreen() {
     setSelectedBrand(brandName);
     setLoadingBrand(true);
     setHasSearched(true);
+    setSearchText(brandName);
     try {
+      console.log('Searching for brand:', brandName);
       const allCars = await carAPI.getAll();
-      const filtered = allCars.filter((car: CarListing) => 
-        car.brand?.toLowerCase().includes(brandName.toLowerCase())
-      );
+      console.log('Total cars:', allCars.length);
+      const filtered = allCars.filter((car: CarListing) => {
+        const carBrand = car.brand?.toLowerCase() || '';
+        const searchBrand = brandName.toLowerCase();
+        return carBrand.includes(searchBrand) || searchBrand.includes(carBrand);
+      });
+      console.log('Filtered cars:', filtered.length);
       setBrandResults(filtered);
       setSearchResults(filtered);
     } catch (error) {
       console.error('Error searching by brand:', error);
+      setBrandResults([]);
+      setSearchResults([]);
     } finally {
       setLoadingBrand(false);
     }
