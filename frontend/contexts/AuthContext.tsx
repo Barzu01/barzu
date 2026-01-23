@@ -64,17 +64,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (userData: User | string) => {
     try {
-      let user: User;
+      let userToSet: User;
       if (typeof userData === 'string') {
         // Если передан только номер телефона
-        user = await userAPI.createOrGet(userData);
+        userToSet = await userAPI.createOrGet(userData);
         await AsyncStorage.setItem('userPhone', userData);
       } else {
         // Если передан объект пользователя
-        user = userData;
+        userToSet = userData;
         await AsyncStorage.setItem('userPhone', userData.phone);
       }
-      setUser(user);
+      setUser(userToSet);
     } catch (error) {
       console.error('Error logging in:', error);
       throw error;
