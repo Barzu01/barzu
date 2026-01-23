@@ -168,14 +168,6 @@ export default function ProfileScreen() {
           
           <Text style={styles.userName}>{user?.name || t('profile.user')}</Text>
           <Text style={styles.userPhone}>{user?.phone}</Text>
-          
-          <TouchableOpacity 
-            style={styles.editProfileButton}
-            onPress={handleEditProfile}
-          >
-            <Ionicons name="create-outline" size={18} color="#0066FF" />
-            <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Edit Name Modal */}
