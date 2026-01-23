@@ -69,40 +69,7 @@ interface Comment {
   createdAt: string;
 }
 
-const DEMO_VIDEOS: VideoReview[] = [
-  {
-    _id: '1',
-    title: 'Обзор BMW M5 Competition 2024',
-    description: '🔥 Полный обзор нового BMW M5! 625 л.с., разгон до 100 за 3.3 сек',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    duration: 15,
-    authorId: 'demo1',
-    authorName: 'AutoExpert',
-    viewsCount: 15420,
-    likesCount: 892,
-    commentsCount: 45,
-    likedBy: [],
-    savedBy: [],
-    status: 'approved',
-    createdAt: '2026-01-08T10:00:00Z',
-  },
-  {
-    _id: '2',
-    title: 'Mercedes-AMG GT 63 S',
-    description: '🚗 Тестируем Mercedes-AMG GT 63 S на трассе!',
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    duration: 15,
-    authorId: 'demo2',
-    authorName: 'CarReviews',
-    viewsCount: 8934,
-    likesCount: 567,
-    commentsCount: 23,
-    likedBy: [],
-    savedBy: [],
-    status: 'approved',
-    createdAt: '2026-01-07T14:30:00Z',
-  },
-];
+ 
 
 const VideoItem = React.memo(({ 
   item, 
