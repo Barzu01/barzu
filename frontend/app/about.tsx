@@ -112,7 +112,7 @@ export default function AboutScreen() {
 
         {/* Copyright */}
         <Text style={styles.copyright}>
-          © 2024-2026 SafedAuto. Все права защищены.
+          © 2026 SafedAuto. Все права защищены.
         </Text>
 
         <View style={{ height: 40 }} />
