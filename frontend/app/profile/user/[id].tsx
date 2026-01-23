@@ -242,7 +242,7 @@ export default function UserProfileScreen() {
           <View style={styles.profileSection}>
             <View style={styles.avatarLarge}>
               <Text style={styles.avatarLargeText}>
-                {profile.name.charAt(0).toUpperCase()}
+                {(profile.name || 'U').charAt(0).toUpperCase()}
               </Text>
             </View>
 
@@ -257,7 +257,7 @@ export default function UserProfileScreen() {
               </View>
             </View>
 
-            <Text style={styles.userName}>{profile.name}</Text>
+            <Text style={styles.userName}>{profile.name || 'Пользователь'}</Text>
             <View style={styles.userTypeBadge}>
               <Text style={styles.userTypeText}>
                 {profile.isAdmin ? 'Админ' : 'Покупатель'}
