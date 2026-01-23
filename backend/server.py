@@ -838,29 +838,6 @@ async def verify_sms_code(phone: str, code: str):
     }
 
 
-# ВРЕМЕННО: Тестовый вход без SMS - УДАЛИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ В APP STORE
-@api_router.post("/auth/test-login")
-async def test_login(phone: str):
-    """Тестовый вход без SMS-кода (УДАЛИТЬ ПЕРЕД ПУБЛИКАЦИЕЙ)"""
-    # Создаём или получаем пользователя
-    user = await db.users.find_one({"phone": phone})
-    if not user:
-        new_user = {
-            "phone": phone,
-            "name": "",
-            "avatar": "",
-            "isAdmin": phone == "+992919895434",  # Администратор
-            "createdAt": datetime.utcnow()
-        }
-        await db.users.insert_one(new_user)
-        user = await db.users.find_one({"phone": phone})
-    
-    return {
-        "success": True,
-        "user": serialize_doc(user)
-    }
-
-
 # ===== TELEGRAM AUTH (старый, для обратной совместимости) =====
 class TelegramAuthCode(BaseModel):
     phone: str
