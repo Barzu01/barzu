@@ -324,7 +324,7 @@ const VideoItem = React.memo(({
 });
 
 export default function ReviewsScreen() {
-  const [videos, setVideos] = useState<VideoReview[]>(DEMO_VIDEOS);
+  const [videos, setVideos] = useState<VideoReview[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const isFocused = useIsFocused();
