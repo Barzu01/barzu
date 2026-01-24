@@ -288,6 +288,14 @@ Email: support@safedauto.tj`;
                   </Text>
                 </Text>
               </TouchableOpacity>
+              
+              {/* Error Message */}
+              {showTermsError && (
+                <View style={styles.errorContainer}>
+                  <Ionicons name="warning" size={18} color="#DC2626" />
+                  <Text style={styles.errorText}>Поставьте галочку для продолжения</Text>
+                </View>
+              )}
 
               {/* Send Code Button */}
               <TouchableOpacity
