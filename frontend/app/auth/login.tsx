@@ -499,8 +499,16 @@ const styles = StyleSheet.create({
   termsContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 24,
+    marginBottom: 12,
     gap: 12,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'transparent',
+  },
+  termsContainerError: {
+    backgroundColor: '#FEF2F2',
+    borderWidth: 2,
+    borderColor: '#DC2626',
   },
   checkbox: {
     width: 24,
