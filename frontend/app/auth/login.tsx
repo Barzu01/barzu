@@ -147,10 +147,11 @@ Email: support@safedauto.tj`;
     }
     
     if (!agreedToTerms) {
-      Alert.alert('Ошибка', 'Примите условия использования');
+      setShowTermsError(true);
       return;
     }
-
+    
+    setShowTermsError(false);
     setLoading(true);
     try {
       const response = await fetch(
