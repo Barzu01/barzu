@@ -262,13 +262,16 @@ Email: support@safedauto.tj`;
 
               {/* Terms Checkbox */}
               <TouchableOpacity 
-                style={styles.termsContainer}
-                onPress={() => setAgreedToTerms(!agreedToTerms)}
+                style={[styles.termsContainer, showTermsError && styles.termsContainerError]}
+                onPress={() => {
+                  setAgreedToTerms(!agreedToTerms);
+                  setShowTermsError(false);
+                }}
               >
-                <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked]}>
+                <View style={[styles.checkbox, agreedToTerms && styles.checkboxChecked, showTermsError && styles.checkboxError]}>
                   {agreedToTerms && <Ionicons name="checkmark" size={16} color="#FFF" />}
                 </View>
-                <Text style={styles.termsText}>
+                <Text style={[styles.termsText, showTermsError && styles.termsTextError]}>
                   Я принимаю{' '}
                   <Text 
                     style={styles.termsLink}
