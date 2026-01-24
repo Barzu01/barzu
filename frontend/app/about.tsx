@@ -95,14 +95,6 @@ export default function AboutScreen() {
           
           <TouchableOpacity 
             style={styles.contactItem}
-            onPress={() => Linking.openURL('tel:+992919895434')}
-          >
-            <Ionicons name="call-outline" size={22} color="#666" />
-            <Text style={styles.contactText}>+992 919 89 54 34</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.contactItem}
             onPress={() => Linking.openURL('mailto:support@safedauto.tj')}
           >
             <Ionicons name="mail-outline" size={22} color="#666" />
