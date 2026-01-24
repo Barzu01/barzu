@@ -523,15 +523,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#0066FF',
     borderColor: '#0066FF',
   },
+  checkboxError: {
+    borderColor: '#DC2626',
+  },
   termsText: {
     flex: 1,
     fontSize: 14,
     color: '#64748B',
     lineHeight: 20,
   },
+  termsTextError: {
+    color: '#DC2626',
+  },
   termsLink: {
     color: '#0066FF',
     fontWeight: '600',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF2F2',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    gap: 8,
+  },
+  errorText: {
+    color: '#DC2626',
+    fontSize: 14,
+    fontWeight: '500',
   },
   button: {
     flexDirection: 'row',
