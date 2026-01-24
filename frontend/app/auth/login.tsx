@@ -47,7 +47,6 @@ SafedAuto — это мобильное приложение для размещ
 - Пользователь несёт ответственность за достоверность данных
 
 3. Контактная информация
-Телефон: +992 919 89 54 34
 Email: support@safedauto.tj`;
 
   const privacyPolicyText = `🔒 Политика конфиденциальности "SafedAuto"
@@ -66,7 +65,6 @@ Email: support@safedauto.tj`;
 - Данные хранятся на защищённых серверах
 - Мы не передаём данные третьим лицам
 
-Контакт: +992 919 89 54 34
 Email: support@safedauto.tj`;
 
   const formatPhone = (value: string) => {
