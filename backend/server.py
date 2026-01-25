@@ -23,13 +23,13 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# SMS-Aero настройки
-SMSAERO_EMAIL = "rahmatovbarzu01@gmail.com"
-SMSAERO_API_KEY = "LgTBnOphXOgj71w7zZVfvX7gl5A9kNEt"
-SMSAERO_SIGN = "SMS Aero"  # Имя отправителя
+# SMS-Aero настройки (из переменных окружения)
+SMSAERO_EMAIL = os.environ.get('SMSAERO_EMAIL', '')
+SMSAERO_API_KEY = os.environ.get('SMSAERO_API_KEY', '')
+SMSAERO_SIGN = os.environ.get('SMSAERO_SIGN', 'SMS Aero')
 
-# Telegram Bot Token (оставляем для обратной совместимости)
-TELEGRAM_BOT_TOKEN = "8392212489:AAHAdUPfSPHDUO2F7ZLTNdAC9AHy4AmIYJ0"
+# Telegram Bot Token (из переменных окружения)
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 
 # Create the main app without a prefix
 app = FastAPI()
