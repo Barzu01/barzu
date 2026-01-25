@@ -1,389 +1,394 @@
-diff --git a/frontend/app/(tabs)/reviews.tsx b/frontend/app/(tabs)/reviews.tsx
-index 3baa9b12..8143d926 100644
---- a/frontend/app/(tabs)/reviews.tsx
-+++ b/frontend/app/(tabs)/reviews.tsx
-@@ -69,40 +69,7 @@ interface Comment {
-   createdAt: string;
- }
- 
--const DEMO_VIDEOS: VideoReview[] = [
--  {
--    _id: '1',
--    title: 'Обзор BMW M5 Competition 2024',
--    description: '🔥 Полный обзор нового BMW M5! 625 л.с., разгон до 100 за 3.3 сек',
--    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
--    duration: 15,
--    authorId: 'demo1',
--    authorName: 'AutoExpert',
--    viewsCount: 15420,
--    likesCount: 892,
--    commentsCount: 45,
--    likedBy: [],
--    savedBy: [],
--    status: 'approved',
--    createdAt: '2026-01-08T10:00:00Z',
--  },
--  {
--    _id: '2',
--    title: 'Mercedes-AMG GT 63 S',
--    description: '🚗 Тестируем Mercedes-AMG GT 63 S на трассе!',
--    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
--    duration: 15,
--    authorId: 'demo2',
--    authorName: 'CarReviews',
--    viewsCount: 8934,
--    likesCount: 567,
--    commentsCount: 23,
--    likedBy: [],
--    savedBy: [],
--    status: 'approved',
--    createdAt: '2026-01-07T14:30:00Z',
--  },
--];
-+ 
- 
- const VideoItem = React.memo(({ 
-   item, 
-@@ -357,7 +324,7 @@ const VideoItem = React.memo(({
- });
- 
- export default function ReviewsScreen() {
--  const [videos, setVideos] = useState<VideoReview[]>(DEMO_VIDEOS);
-+  const [videos, setVideos] = useState<VideoReview[]>([]);
-   const [loading, setLoading] = useState(false);
-   const [activeIndex, setActiveIndex] = useState(0);
-   const isFocused = useIsFocused();
 diff --git a/model.patch b/model.patch
-index bfa79594..e69de29b 100644
+index 38e11c68..e69de29b 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,329 +0,0 @@
+@@ -1,389 +0,0 @@
+-diff --git a/frontend/app/(tabs)/reviews.tsx b/frontend/app/(tabs)/reviews.tsx
+-index 3baa9b12..8143d926 100644
+---- a/frontend/app/(tabs)/reviews.tsx
+-+++ b/frontend/app/(tabs)/reviews.tsx
+-@@ -69,40 +69,7 @@ interface Comment {
+-   createdAt: string;
+- }
+- 
+--const DEMO_VIDEOS: VideoReview[] = [
+--  {
+--    _id: '1',
+--    title: 'Обзор BMW M5 Competition 2024',
+--    description: '🔥 Полный обзор нового BMW M5! 625 л.с., разгон до 100 за 3.3 сек',
+--    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+--    duration: 15,
+--    authorId: 'demo1',
+--    authorName: 'AutoExpert',
+--    viewsCount: 15420,
+--    likesCount: 892,
+--    commentsCount: 45,
+--    likedBy: [],
+--    savedBy: [],
+--    status: 'approved',
+--    createdAt: '2026-01-08T10:00:00Z',
+--  },
+--  {
+--    _id: '2',
+--    title: 'Mercedes-AMG GT 63 S',
+--    description: '🚗 Тестируем Mercedes-AMG GT 63 S на трассе!',
+--    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+--    duration: 15,
+--    authorId: 'demo2',
+--    authorName: 'CarReviews',
+--    viewsCount: 8934,
+--    likesCount: 567,
+--    commentsCount: 23,
+--    likedBy: [],
+--    savedBy: [],
+--    status: 'approved',
+--    createdAt: '2026-01-07T14:30:00Z',
+--  },
+--];
+-+ 
+- 
+- const VideoItem = React.memo(({ 
+-   item, 
+-@@ -357,7 +324,7 @@ const VideoItem = React.memo(({
+- });
+- 
+- export default function ReviewsScreen() {
+--  const [videos, setVideos] = useState<VideoReview[]>(DEMO_VIDEOS);
+-+  const [videos, setVideos] = useState<VideoReview[]>([]);
+-   const [loading, setLoading] = useState(false);
+-   const [activeIndex, setActiveIndex] = useState(0);
+-   const isFocused = useIsFocused();
 -diff --git a/model.patch b/model.patch
--index 49566e7e..e69de29b 100644
+-index bfa79594..e69de29b 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,324 +0,0 @@
---diff --git a/frontend/app/auth/login.tsx b/frontend/app/auth/login.tsx
---index 52f730ba..c54f6a11 100644
------ a/frontend/app/auth/login.tsx
---+++ b/frontend/app/auth/login.tsx
---@@ -254,7 +254,7 @@ Email: info@safedauto.tj
--- 
---               {/* Telegram Bot Link */}
---               <TouchableOpacity style={styles.telegramLink} onPress={openTelegramBot}>
----                <Ionicons name="logo-telegram" size={20} color="#0088cc" />
---+                <Ionicons name="send" size={20} color="#0088cc" />
---                 <Text style={styles.telegramLinkText}>Открыть бот @{TELEGRAM_BOT}</Text>
---               </TouchableOpacity>
---             </View>
+-@@ -1,329 +0,0 @@
 --diff --git a/model.patch b/model.patch
---index 0bb9d656..e69de29b 100644
+--index 49566e7e..e69de29b 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,306 +0,0 @@
----diff --git a/frontend/app/(tabs)/reviews.tsx b/frontend/app/(tabs)/reviews.tsx
----index a11dbf6..9642fc3 100644
------- a/frontend/app/(tabs)/reviews.tsx
----+++ b/frontend/app/(tabs)/reviews.tsx
----@@ -114,7 +114,9 @@ const VideoItem = React.memo(({
----   onAuthorPress,
----   onCommentPress,
----   onFollow,
----+  onDelete,
----   userId,
----+  isAdmin,
---- }: { 
----   item: VideoReview; 
----   isActive: boolean;
----@@ -125,7 +127,9 @@ const VideoItem = React.memo(({
----   onAuthorPress: (authorId: string) => void;
----   onCommentPress: (video: VideoReview) => void;
----   onFollow: (authorId: string) => Promise<boolean>;
----+  onDelete: (id: string) => void;
----   userId?: string;
----+  isAdmin?: boolean;
---- }) => {
----   const videoRef = useRef<Video>(null);
----   const [isPlaying, setIsPlaying] = useState(false);
----@@ -338,6 +342,13 @@ const VideoItem = React.memo(({
----         <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
----           <Ionicons name="arrow-redo-outline" size={28} color="#FFFFFF" />
----         </TouchableOpacity>
----+
----+        {/* Удалить (только для автора или админа) */}
----+        {(userId && (item.authorId === userId || isAdmin)) && (
----+          <TouchableOpacity style={styles.actionItem} onPress={() => onDelete(item._id)}>
----+            <Ionicons name="trash-outline" size={28} color="#FF3B30" />
----+          </TouchableOpacity>
----+        )}
----       </View>
----     </View>
----   );
----@@ -566,7 +577,9 @@ export default function ReviewsScreen() {
----             onAuthorPress={handleAuthorPress}
----             onCommentPress={handleCommentPress}
----             onFollow={handleFollow}
----+            onDelete={handleDeleteVideo}
----             userId={user?.phone}
----+            isAdmin={user?.isAdmin}
----           />
----         )}
----         keyExtractor={(item) => item._id}
+--@@ -1,324 +0,0 @@
+---diff --git a/frontend/app/auth/login.tsx b/frontend/app/auth/login.tsx
+---index 52f730ba..c54f6a11 100644
+------ a/frontend/app/auth/login.tsx
+---+++ b/frontend/app/auth/login.tsx
+---@@ -254,7 +254,7 @@ Email: info@safedauto.tj
+--- 
+---               {/* Telegram Bot Link */}
+---               <TouchableOpacity style={styles.telegramLink} onPress={openTelegramBot}>
+----                <Ionicons name="logo-telegram" size={20} color="#0088cc" />
+---+                <Ionicons name="send" size={20} color="#0088cc" />
+---                 <Text style={styles.telegramLinkText}>Открыть бот @{TELEGRAM_BOT}</Text>
+---               </TouchableOpacity>
+---             </View>
 ---diff --git a/model.patch b/model.patch
----index 04059b8..e69de29 100644
+---index 0bb9d656..e69de29b 100644
 ------ a/model.patch
 ---+++ b/model.patch
----@@ -1,253 +0,0 @@
+---@@ -1,306 +0,0 @@
+----diff --git a/frontend/app/(tabs)/reviews.tsx b/frontend/app/(tabs)/reviews.tsx
+----index a11dbf6..9642fc3 100644
+------- a/frontend/app/(tabs)/reviews.tsx
+----+++ b/frontend/app/(tabs)/reviews.tsx
+----@@ -114,7 +114,9 @@ const VideoItem = React.memo(({
+----   onAuthorPress,
+----   onCommentPress,
+----   onFollow,
+----+  onDelete,
+----   userId,
+----+  isAdmin,
+---- }: { 
+----   item: VideoReview; 
+----   isActive: boolean;
+----@@ -125,7 +127,9 @@ const VideoItem = React.memo(({
+----   onAuthorPress: (authorId: string) => void;
+----   onCommentPress: (video: VideoReview) => void;
+----   onFollow: (authorId: string) => Promise<boolean>;
+----+  onDelete: (id: string) => void;
+----   userId?: string;
+----+  isAdmin?: boolean;
+---- }) => {
+----   const videoRef = useRef<Video>(null);
+----   const [isPlaying, setIsPlaying] = useState(false);
+----@@ -338,6 +342,13 @@ const VideoItem = React.memo(({
+----         <TouchableOpacity style={styles.actionItem} onPress={() => onShare(item)}>
+----           <Ionicons name="arrow-redo-outline" size={28} color="#FFFFFF" />
+----         </TouchableOpacity>
+----+
+----+        {/* Удалить (только для автора или админа) */}
+----+        {(userId && (item.authorId === userId || isAdmin)) && (
+----+          <TouchableOpacity style={styles.actionItem} onPress={() => onDelete(item._id)}>
+----+            <Ionicons name="trash-outline" size={28} color="#FF3B30" />
+----+          </TouchableOpacity>
+----+        )}
+----       </View>
+----     </View>
+----   );
+----@@ -566,7 +577,9 @@ export default function ReviewsScreen() {
+----             onAuthorPress={handleAuthorPress}
+----             onCommentPress={handleCommentPress}
+----             onFollow={handleFollow}
+----+            onDelete={handleDeleteVideo}
+----             userId={user?.phone}
+----+            isAdmin={user?.isAdmin}
+----           />
+----         )}
+----         keyExtractor={(item) => item._id}
 ----diff --git a/model.patch b/model.patch
-----index 64bda1a..e69de29 100644
+----index 04059b8..e69de29 100644
 ------- a/model.patch
 ----+++ b/model.patch
-----@@ -1,248 +0,0 @@
+----@@ -1,253 +0,0 @@
 -----diff --git a/model.patch b/model.patch
------index 71fc529..e69de29 100644
+-----index 64bda1a..e69de29 100644
 -------- a/model.patch
 -----+++ b/model.patch
------@@ -1,243 +0,0 @@
-------diff --git a/frontend/app/add-car/detail.tsx b/frontend/app/add-car/detail.tsx
-------index 5b4909b..6196ade 100644
---------- a/frontend/app/add-car/detail.tsx
-------+++ b/frontend/app/add-car/detail.tsx
-------@@ -4335,60 +4335,60 @@ const BRAND_LOGOS: { [key: string]: string } = {
-------   'Volkswagen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/200px-Volkswagen_logo_2019.svg.png',
-------   'Toyota': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/200px-Toyota.svg.png',
-------   'Hyundai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png',
--------  'Kia': 'https://www.carlogos.org/logo/Kia-logo-640x321.png',
-------+  'Kia': 'https://logos-world.net/wp-content/uploads/2021/03/Kia-Logo.png',
-------   'Nissan': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Nissan_2020_logo.svg/200px-Nissan_2020_logo.svg.png',
-------   'Honda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png',
--------  'Lexus': 'https://www.carlogos.org/logo/Lexus-logo-1988-640x266.png',
-------+  'Lexus': 'https://logos-world.net/wp-content/uploads/2020/04/Lexus-Logo.png',
-------   'Ford': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/200px-Ford_logo_flat.svg.png',
--------  'Chevrolet': 'https://www.carlogos.org/logo/Chevrolet-logo-640x281.png',
--------  'Mazda': 'https://www.carlogos.org/logo/Mazda-logo-1997-640x550.png',
--------  'Subaru': 'https://www.carlogos.org/logo/Subaru-logo-2003-640x236.png',
-------+  'Chevrolet': 'https://logos-world.net/wp-content/uploads/2021/03/Chevrolet-Logo.png',
-------+  'Mazda': 'https://logos-world.net/wp-content/uploads/2020/05/Mazda-Logo.png',
-------+  'Subaru': 'https://logos-world.net/wp-content/uploads/2020/04/Subaru-Logo.png',
-------   'Mitsubishi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Mitsubishi_logo.svg/200px-Mitsubishi_logo.svg.png',
--------  'Porsche': 'https://www.carlogos.org/logo/Porsche-logo-2008-640x550.png',
--------  'Land Rover': 'https://www.carlogos.org/logo/Land-Rover-logo-2011-640x335.png',
--------  'Jeep': 'https://www.carlogos.org/logo/Jeep-logo-green-640x124.png',
--------  'Volvo': 'https://www.carlogos.org/logo/Volvo-logo-2014-640x550.png',
--------  'Peugeot': 'https://www.carlogos.org/logo/Peugeot-logo-2010-640x451.png',
-------+  'Porsche': 'https://logos-world.net/wp-content/uploads/2020/04/Porsche-Logo.png',
-------+  'Land Rover': 'https://logos-world.net/wp-content/uploads/2020/05/Land-Rover-Logo.png',
-------+  'Jeep': 'https://logos-world.net/wp-content/uploads/2021/11/Jeep-Logo.png',
-------+  'Volvo': 'https://logos-world.net/wp-content/uploads/2020/04/Volvo-Logo.png',
-------+  'Peugeot': 'https://logos-world.net/wp-content/uploads/2020/05/Peugeot-Logo.png',
-------   'Renault': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2009_logo.svg/200px-Renault_2009_logo.svg.png',
--------  'Skoda': 'https://www.carlogos.org/logo/Skoda-logo-2016-640x550.png',
--------  'Infiniti': 'https://www.carlogos.org/logo/Infiniti-logo-1989-640x550.png',
--------  'Acura': 'https://www.carlogos.org/logo/Acura-logo-1990-640x550.png',
--------  'Cadillac': 'https://www.carlogos.org/logo/Cadillac-logo-2014-640x550.png',
--------  'Genesis': 'https://www.carlogos.org/logo/Genesis-logo-640x161.png',
--------  'Opel': 'https://www.carlogos.org/logo/Opel-logo-2017-640x550.png',
--------  'Lada': 'https://www.carlogos.org/logo/Lada-logo-640x436.png',
--------  'Jaguar': 'https://www.carlogos.org/logo/Jaguar-logo-2012-640x287.png',
--------  'Alfa Romeo': 'https://www.carlogos.org/logo/Alfa-Romeo-logo-2015-640x550.png',
--------  'Fiat': 'https://www.carlogos.org/logo/Fiat-logo-2006-640x550.png',
-------+  'Skoda': 'https://logos-world.net/wp-content/uploads/2020/05/Skoda-Logo.png',
-------+  'Infiniti': 'https://logos-world.net/wp-content/uploads/2020/04/Infiniti-Logo.png',
-------+  'Acura': 'https://logos-world.net/wp-content/uploads/2020/04/Acura-Logo.png',
-------+  'Cadillac': 'https://logos-world.net/wp-content/uploads/2021/03/Cadillac-Logo.png',
-------+  'Genesis': 'https://logos-world.net/wp-content/uploads/2021/04/Genesis-Logo.png',
-------+  'Opel': 'https://logos-world.net/wp-content/uploads/2021/03/Opel-Logo.png',
-------+  'Lada': 'https://logos-world.net/wp-content/uploads/2021/09/Lada-Logo.png',
-------+  'Jaguar': 'https://logos-world.net/wp-content/uploads/2020/04/Jaguar-Logo.png',
-------+  'Alfa Romeo': 'https://logos-world.net/wp-content/uploads/2020/04/Alfa-Romeo-Logo.png',
-------+  'Fiat': 'https://logos-world.net/wp-content/uploads/2021/03/Fiat-Logo.png',
-------   'Citroën': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Citroen_2016_logo.svg/200px-Citroen_2016_logo.svg.png',
--------  'SEAT': 'https://www.carlogos.org/logo/SEAT-logo-2012-640x550.png',
--------  'MINI': 'https://www.carlogos.org/logo/Mini-logo-2018-640x550.png',
--------  'Dodge': 'https://www.carlogos.org/logo/Dodge-logo-2011-640x550.png',
--------  'Chrysler': 'https://www.carlogos.org/logo/Chrysler-logo-2010-640x550.png',
--------  'Lincoln': 'https://www.carlogos.org/logo/Lincoln-logo-2019-640x550.png',
-------+  'SEAT': 'https://logos-world.net/wp-content/uploads/2021/03/SEAT-Logo.png',
-------+  'MINI': 'https://logos-world.net/wp-content/uploads/2021/04/Mini-Logo.png',
-------+  'Dodge': 'https://logos-world.net/wp-content/uploads/2020/04/Dodge-Logo.png',
-------+  'Chrysler': 'https://logos-world.net/wp-content/uploads/2020/04/Chrysler-Logo.png',
-------+  'Lincoln': 'https://logos-world.net/wp-content/uploads/2021/04/Lincoln-Logo.png',
-------   'GMC': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/GMC_logo.svg/200px-GMC_logo.svg.png',
--------  'Buick': 'https://www.carlogos.org/logo/Buick-logo-2002-640x550.png',
-------+  'Buick': 'https://logos-world.net/wp-content/uploads/2021/03/Buick-Logo.png',
-------   'Tesla': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tesla_logo.png/200px-Tesla_logo.png',
--------  'Geely': 'https://www.carlogos.org/logo/Geely-logo-2019-640x550.png',
--------  'Chery': 'https://www.carlogos.org/logo/Chery-logo-2013-640x550.png',
--------  'Haval': 'https://www.carlogos.org/logo/Haval-logo-640x167.png',
--------  'Changan': 'https://www.carlogos.org/logo/Changan-logo-640x550.png',
--------  'BYD': 'https://www.carlogos.org/logo/BYD-logo-2007-640x550.png',
--------  'Exeed': 'https://www.carlogos.org/logo/Exeed-logo-640x385.png',
--------  'OMODA': 'https://www.carlogos.org/logo/Omoda-logo-640x99.png',
--------  'Jetour': 'https://www.carlogos.org/logo/Jetour-logo-640x164.png',
-------+  'Geely': 'https://logos-world.net/wp-content/uploads/2021/09/Geely-Logo.png',
-------+  'Chery': 'https://logos-world.net/wp-content/uploads/2021/09/Chery-Logo.png',
-------+  'Haval': 'https://logos-world.net/wp-content/uploads/2021/09/Haval-Logo.png',
-------+  'Changan': 'https://logos-world.net/wp-content/uploads/2022/01/Changan-Logo.png',
-------+  'BYD': 'https://logos-world.net/wp-content/uploads/2021/09/BYD-Logo.png',
-------+  'Exeed': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Exeed_logo.svg/200px-Exeed_logo.svg.png',
-------+  'OMODA': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Omoda_logo.svg/200px-Omoda_logo.svg.png',
-------+  'Jetour': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Jetour_logo.svg/200px-Jetour_logo.svg.png',
-------   'Suzuki': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/200px-Suzuki_logo_2.svg.png',
--------  'Daihatsu': 'https://www.carlogos.org/logo/Daihatsu-logo-1998-640x550.png',
--------  'УАЗ': 'https://www.carlogos.org/logo/UAZ-logo-640x550.png',
--------  'ГАЗ': 'https://www.carlogos.org/logo/GAZ-logo-640x199.png',
-------+  'Daihatsu': 'https://logos-world.net/wp-content/uploads/2021/09/Daihatsu-Logo.png',
-------+  'УАЗ': 'https://logos-world.net/wp-content/uploads/2021/09/UAZ-Logo.png',
-------+  'ГАЗ': 'https://logos-world.net/wp-content/uploads/2021/09/GAZ-Logo.png',
-------   'Ferrari': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ferrari-Logo.svg/200px-Ferrari-Logo.svg.png',
--------  'Lamborghini': 'https://www.carlogos.org/logo/Lamborghini-logo-1998-640x550.png',
--------  'Maserati': 'https://www.carlogos.org/logo/Maserati-logo-640x550.png',
--------  'Bentley': 'https://www.carlogos.org/logo/Bentley-logo-640x550.png',
--------  'Rolls-Royce': 'https://www.carlogos.org/logo/Rolls-Royce-logo-2020-640x550.png',
--------  'Aston Martin': 'https://www.carlogos.org/logo/Aston-Martin-logo-2021-640x550.png',
--------  'McLaren': 'https://www.carlogos.org/logo/McLaren-logo-2002-640x550.png',
--------  'Lotus': 'https://www.carlogos.org/logo/Lotus-logo-2019-640x550.png',
-------+  'Lamborghini': 'https://logos-world.net/wp-content/uploads/2020/04/Lamborghini-Logo.png',
-------+  'Maserati': 'https://logos-world.net/wp-content/uploads/2020/04/Maserati-Logo.png',
-------+  'Bentley': 'https://logos-world.net/wp-content/uploads/2020/04/Bentley-Logo.png',
-------+  'Rolls-Royce': 'https://logos-world.net/wp-content/uploads/2020/04/Rolls-Royce-Logo.png',
-------+  'Aston Martin': 'https://logos-world.net/wp-content/uploads/2020/04/Aston-Martin-Logo.png',
-------+  'McLaren': 'https://logos-world.net/wp-content/uploads/2020/05/McLaren-Logo.png',
-------+  'Lotus': 'https://logos-world.net/wp-content/uploads/2021/04/Lotus-Logo.png',
------- };
------- 
------- const getBrandLogo = (brandName: string): string => {
+-----@@ -1,248 +0,0 @@
 ------diff --git a/model.patch b/model.patch
-------index face145..5f559c2 100644
+------index 71fc529..e69de29 100644
 --------- a/model.patch
 ------+++ b/model.patch
-------@@ -1,129 +0,0 @@
+------@@ -1,243 +0,0 @@
+-------diff --git a/frontend/app/add-car/detail.tsx b/frontend/app/add-car/detail.tsx
+-------index 5b4909b..6196ade 100644
+---------- a/frontend/app/add-car/detail.tsx
+-------+++ b/frontend/app/add-car/detail.tsx
+-------@@ -4335,60 +4335,60 @@ const BRAND_LOGOS: { [key: string]: string } = {
+-------   'Volkswagen': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/200px-Volkswagen_logo_2019.svg.png',
+-------   'Toyota': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/200px-Toyota.svg.png',
+-------   'Hyundai': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png',
+--------  'Kia': 'https://www.carlogos.org/logo/Kia-logo-640x321.png',
+-------+  'Kia': 'https://logos-world.net/wp-content/uploads/2021/03/Kia-Logo.png',
+-------   'Nissan': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Nissan_2020_logo.svg/200px-Nissan_2020_logo.svg.png',
+-------   'Honda': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png',
+--------  'Lexus': 'https://www.carlogos.org/logo/Lexus-logo-1988-640x266.png',
+-------+  'Lexus': 'https://logos-world.net/wp-content/uploads/2020/04/Lexus-Logo.png',
+-------   'Ford': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/200px-Ford_logo_flat.svg.png',
+--------  'Chevrolet': 'https://www.carlogos.org/logo/Chevrolet-logo-640x281.png',
+--------  'Mazda': 'https://www.carlogos.org/logo/Mazda-logo-1997-640x550.png',
+--------  'Subaru': 'https://www.carlogos.org/logo/Subaru-logo-2003-640x236.png',
+-------+  'Chevrolet': 'https://logos-world.net/wp-content/uploads/2021/03/Chevrolet-Logo.png',
+-------+  'Mazda': 'https://logos-world.net/wp-content/uploads/2020/05/Mazda-Logo.png',
+-------+  'Subaru': 'https://logos-world.net/wp-content/uploads/2020/04/Subaru-Logo.png',
+-------   'Mitsubishi': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Mitsubishi_logo.svg/200px-Mitsubishi_logo.svg.png',
+--------  'Porsche': 'https://www.carlogos.org/logo/Porsche-logo-2008-640x550.png',
+--------  'Land Rover': 'https://www.carlogos.org/logo/Land-Rover-logo-2011-640x335.png',
+--------  'Jeep': 'https://www.carlogos.org/logo/Jeep-logo-green-640x124.png',
+--------  'Volvo': 'https://www.carlogos.org/logo/Volvo-logo-2014-640x550.png',
+--------  'Peugeot': 'https://www.carlogos.org/logo/Peugeot-logo-2010-640x451.png',
+-------+  'Porsche': 'https://logos-world.net/wp-content/uploads/2020/04/Porsche-Logo.png',
+-------+  'Land Rover': 'https://logos-world.net/wp-content/uploads/2020/05/Land-Rover-Logo.png',
+-------+  'Jeep': 'https://logos-world.net/wp-content/uploads/2021/11/Jeep-Logo.png',
+-------+  'Volvo': 'https://logos-world.net/wp-content/uploads/2020/04/Volvo-Logo.png',
+-------+  'Peugeot': 'https://logos-world.net/wp-content/uploads/2020/05/Peugeot-Logo.png',
+-------   'Renault': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2009_logo.svg/200px-Renault_2009_logo.svg.png',
+--------  'Skoda': 'https://www.carlogos.org/logo/Skoda-logo-2016-640x550.png',
+--------  'Infiniti': 'https://www.carlogos.org/logo/Infiniti-logo-1989-640x550.png',
+--------  'Acura': 'https://www.carlogos.org/logo/Acura-logo-1990-640x550.png',
+--------  'Cadillac': 'https://www.carlogos.org/logo/Cadillac-logo-2014-640x550.png',
+--------  'Genesis': 'https://www.carlogos.org/logo/Genesis-logo-640x161.png',
+--------  'Opel': 'https://www.carlogos.org/logo/Opel-logo-2017-640x550.png',
+--------  'Lada': 'https://www.carlogos.org/logo/Lada-logo-640x436.png',
+--------  'Jaguar': 'https://www.carlogos.org/logo/Jaguar-logo-2012-640x287.png',
+--------  'Alfa Romeo': 'https://www.carlogos.org/logo/Alfa-Romeo-logo-2015-640x550.png',
+--------  'Fiat': 'https://www.carlogos.org/logo/Fiat-logo-2006-640x550.png',
+-------+  'Skoda': 'https://logos-world.net/wp-content/uploads/2020/05/Skoda-Logo.png',
+-------+  'Infiniti': 'https://logos-world.net/wp-content/uploads/2020/04/Infiniti-Logo.png',
+-------+  'Acura': 'https://logos-world.net/wp-content/uploads/2020/04/Acura-Logo.png',
+-------+  'Cadillac': 'https://logos-world.net/wp-content/uploads/2021/03/Cadillac-Logo.png',
+-------+  'Genesis': 'https://logos-world.net/wp-content/uploads/2021/04/Genesis-Logo.png',
+-------+  'Opel': 'https://logos-world.net/wp-content/uploads/2021/03/Opel-Logo.png',
+-------+  'Lada': 'https://logos-world.net/wp-content/uploads/2021/09/Lada-Logo.png',
+-------+  'Jaguar': 'https://logos-world.net/wp-content/uploads/2020/04/Jaguar-Logo.png',
+-------+  'Alfa Romeo': 'https://logos-world.net/wp-content/uploads/2020/04/Alfa-Romeo-Logo.png',
+-------+  'Fiat': 'https://logos-world.net/wp-content/uploads/2021/03/Fiat-Logo.png',
+-------   'Citroën': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Citroen_2016_logo.svg/200px-Citroen_2016_logo.svg.png',
+--------  'SEAT': 'https://www.carlogos.org/logo/SEAT-logo-2012-640x550.png',
+--------  'MINI': 'https://www.carlogos.org/logo/Mini-logo-2018-640x550.png',
+--------  'Dodge': 'https://www.carlogos.org/logo/Dodge-logo-2011-640x550.png',
+--------  'Chrysler': 'https://www.carlogos.org/logo/Chrysler-logo-2010-640x550.png',
+--------  'Lincoln': 'https://www.carlogos.org/logo/Lincoln-logo-2019-640x550.png',
+-------+  'SEAT': 'https://logos-world.net/wp-content/uploads/2021/03/SEAT-Logo.png',
+-------+  'MINI': 'https://logos-world.net/wp-content/uploads/2021/04/Mini-Logo.png',
+-------+  'Dodge': 'https://logos-world.net/wp-content/uploads/2020/04/Dodge-Logo.png',
+-------+  'Chrysler': 'https://logos-world.net/wp-content/uploads/2020/04/Chrysler-Logo.png',
+-------+  'Lincoln': 'https://logos-world.net/wp-content/uploads/2021/04/Lincoln-Logo.png',
+-------   'GMC': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/GMC_logo.svg/200px-GMC_logo.svg.png',
+--------  'Buick': 'https://www.carlogos.org/logo/Buick-logo-2002-640x550.png',
+-------+  'Buick': 'https://logos-world.net/wp-content/uploads/2021/03/Buick-Logo.png',
+-------   'Tesla': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tesla_logo.png/200px-Tesla_logo.png',
+--------  'Geely': 'https://www.carlogos.org/logo/Geely-logo-2019-640x550.png',
+--------  'Chery': 'https://www.carlogos.org/logo/Chery-logo-2013-640x550.png',
+--------  'Haval': 'https://www.carlogos.org/logo/Haval-logo-640x167.png',
+--------  'Changan': 'https://www.carlogos.org/logo/Changan-logo-640x550.png',
+--------  'BYD': 'https://www.carlogos.org/logo/BYD-logo-2007-640x550.png',
+--------  'Exeed': 'https://www.carlogos.org/logo/Exeed-logo-640x385.png',
+--------  'OMODA': 'https://www.carlogos.org/logo/Omoda-logo-640x99.png',
+--------  'Jetour': 'https://www.carlogos.org/logo/Jetour-logo-640x164.png',
+-------+  'Geely': 'https://logos-world.net/wp-content/uploads/2021/09/Geely-Logo.png',
+-------+  'Chery': 'https://logos-world.net/wp-content/uploads/2021/09/Chery-Logo.png',
+-------+  'Haval': 'https://logos-world.net/wp-content/uploads/2021/09/Haval-Logo.png',
+-------+  'Changan': 'https://logos-world.net/wp-content/uploads/2022/01/Changan-Logo.png',
+-------+  'BYD': 'https://logos-world.net/wp-content/uploads/2021/09/BYD-Logo.png',
+-------+  'Exeed': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Exeed_logo.svg/200px-Exeed_logo.svg.png',
+-------+  'OMODA': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Omoda_logo.svg/200px-Omoda_logo.svg.png',
+-------+  'Jetour': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Jetour_logo.svg/200px-Jetour_logo.svg.png',
+-------   'Suzuki': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/200px-Suzuki_logo_2.svg.png',
+--------  'Daihatsu': 'https://www.carlogos.org/logo/Daihatsu-logo-1998-640x550.png',
+--------  'УАЗ': 'https://www.carlogos.org/logo/UAZ-logo-640x550.png',
+--------  'ГАЗ': 'https://www.carlogos.org/logo/GAZ-logo-640x199.png',
+-------+  'Daihatsu': 'https://logos-world.net/wp-content/uploads/2021/09/Daihatsu-Logo.png',
+-------+  'УАЗ': 'https://logos-world.net/wp-content/uploads/2021/09/UAZ-Logo.png',
+-------+  'ГАЗ': 'https://logos-world.net/wp-content/uploads/2021/09/GAZ-Logo.png',
+-------   'Ferrari': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ferrari-Logo.svg/200px-Ferrari-Logo.svg.png',
+--------  'Lamborghini': 'https://www.carlogos.org/logo/Lamborghini-logo-1998-640x550.png',
+--------  'Maserati': 'https://www.carlogos.org/logo/Maserati-logo-640x550.png',
+--------  'Bentley': 'https://www.carlogos.org/logo/Bentley-logo-640x550.png',
+--------  'Rolls-Royce': 'https://www.carlogos.org/logo/Rolls-Royce-logo-2020-640x550.png',
+--------  'Aston Martin': 'https://www.carlogos.org/logo/Aston-Martin-logo-2021-640x550.png',
+--------  'McLaren': 'https://www.carlogos.org/logo/McLaren-logo-2002-640x550.png',
+--------  'Lotus': 'https://www.carlogos.org/logo/Lotus-logo-2019-640x550.png',
+-------+  'Lamborghini': 'https://logos-world.net/wp-content/uploads/2020/04/Lamborghini-Logo.png',
+-------+  'Maserati': 'https://logos-world.net/wp-content/uploads/2020/04/Maserati-Logo.png',
+-------+  'Bentley': 'https://logos-world.net/wp-content/uploads/2020/04/Bentley-Logo.png',
+-------+  'Rolls-Royce': 'https://logos-world.net/wp-content/uploads/2020/04/Rolls-Royce-Logo.png',
+-------+  'Aston Martin': 'https://logos-world.net/wp-content/uploads/2020/04/Aston-Martin-Logo.png',
+-------+  'McLaren': 'https://logos-world.net/wp-content/uploads/2020/05/McLaren-Logo.png',
+-------+  'Lotus': 'https://logos-world.net/wp-content/uploads/2021/04/Lotus-Logo.png',
+------- };
+------- 
+------- const getBrandLogo = (brandName: string): string => {
 -------diff --git a/model.patch b/model.patch
--------index 86e56d8..e69de29 100644
+-------index face145..5f559c2 100644
 ---------- a/model.patch
 -------+++ b/model.patch
--------@@ -1,124 +0,0 @@
---------diff --git a/frontend/services/api.ts b/frontend/services/api.ts
---------index b89a0c7..d53614f 100644
------------ a/frontend/services/api.ts
---------+++ b/frontend/services/api.ts
---------@@ -49,6 +49,10 @@ export const carAPI = {
---------     const response = await api.delete(`/cars/${id}`);
---------     return response.data;
---------   },
---------+  getUserCars: async (userId: string, limit = 50, skip = 0) => {
---------+    const response = await api.get(`/cars/user/${encodeURIComponent(userId)}?limit=${limit}&skip=${skip}`);
---------+    return response.data;
---------+  },
---------   search: async (filters: SearchFilters, limit = 50, skip = 0) => {
---------     const response = await api.post(`/cars/search?limit=${limit}&skip=${skip}`, filters);
---------     return response.data;
+-------@@ -1,129 +0,0 @@
 --------diff --git a/model.patch b/model.patch
---------index 3ac5e26..e69de29 100644
+--------index 86e56d8..e69de29 100644
 ----------- a/model.patch
 --------+++ b/model.patch
---------@@ -1,104 +0,0 @@
+--------@@ -1,124 +0,0 @@
+---------diff --git a/frontend/services/api.ts b/frontend/services/api.ts
+---------index b89a0c7..d53614f 100644
+------------ a/frontend/services/api.ts
+---------+++ b/frontend/services/api.ts
+---------@@ -49,6 +49,10 @@ export const carAPI = {
+---------     const response = await api.delete(`/cars/${id}`);
+---------     return response.data;
+---------   },
+---------+  getUserCars: async (userId: string, limit = 50, skip = 0) => {
+---------+    const response = await api.get(`/cars/user/${encodeURIComponent(userId)}?limit=${limit}&skip=${skip}`);
+---------+    return response.data;
+---------+  },
+---------   search: async (filters: SearchFilters, limit = 50, skip = 0) => {
+---------     const response = await api.post(`/cars/search?limit=${limit}&skip=${skip}`, filters);
+---------     return response.data;
 ---------diff --git a/model.patch b/model.patch
----------index fe7b47a..e69de29 100644
+---------index 3ac5e26..e69de29 100644
 ------------ a/model.patch
 ---------+++ b/model.patch
----------@@ -1,99 +0,0 @@
+---------@@ -1,104 +0,0 @@
 ----------diff --git a/model.patch b/model.patch
-----------index 444e985..e69de29 100644
+----------index fe7b47a..e69de29 100644
 ------------- a/model.patch
 ----------+++ b/model.patch
-----------@@ -1,94 +0,0 @@
------------diff --git a/test_result.md b/test_result.md
------------index 187cba4..b749bd4 100644
--------------- a/test_result.md
------------+++ b/test_result.md
------------@@ -100,4 +100,86 @@
------------ 
------------ #====================================================================================================
------------ # Testing Data - Main Agent and testing sub agent both should log testing data below this section
-------------#====================================================================================================
------------\ No newline at end of file
------------+#====================================================================================================
------------+
------------+user_problem_statement: "Протестировать backend API для SafedAuto приложения - проверить все endpoint'ы включая пользователей, автомобили, избранное, мои объявления и админ функции"
------------+
------------+backend:
------------+  - task: "User Management API"
------------+    implemented: true
------------+    working: true
------------+    file: "/app/backend/server.py"
------------+    stuck_count: 0
------------+    priority: "high"
------------+    needs_retesting: false
------------+    status_history:
------------+      - working: true
------------+        agent: "testing"
------------+        comment: "All user endpoints working correctly: POST /api/users (create/get user), GET /api/users/{phone} (get user), PUT /api/users/{phone} (update user). Phone number encoding handled properly. Minor display issue in test output but functionality is correct."
------------+
------------+  - task: "Car Listing API"
------------+    implemented: true
------------+    working: true
------------+    file: "/app/backend/server.py"
------------+    stuck_count: 0
------------+    priority: "high"
------------+    needs_retesting: false
------------+    status_history:
------------+      - working: true
------------+        agent: "testing"
------------+        comment: "All car endpoints working correctly: POST /api/cars (create listing), GET /api/cars (get listings), GET /api/cars/{id} (get by ID), POST /api/cars/search (search with filters). Car data with Tajikistan-specific fields (region: dushanbe, TJS currency) handled properly. Base64 photos supported."
------------+
------------+  - task: "Favorites API"
------------+    implemented: true
------------+    working: true
------------+    file: "/app/backend/server.py"
------------+    stuck_count: 0
------------+    priority: "high"
------------+    needs_retesting: false
------------+    status_history:
------------+      - working: true
------------+        agent: "testing"
------------+        comment: "All favorites endpoints working correctly: POST /api/favorites/{phone}/{car_id} (add to favorites), GET /api/favorites/{phone} (get favorites), DELETE /api/favorites/{phone}/{car_id} (remove from favorites). Phone number URL encoding handled properly."
------------+
------------+  - task: "My Listings API"
------------+    implemented: true
------------+    working: true
------------+    file: "/app/backend/server.py"
------------+    stuck_count: 0
------------+    priority: "high"
------------+    needs_retesting: false
------------+    status_history:
------------+      - working: true
------------+        agent: "testing"
------------+        comment: "My listings endpoint working correctly: GET /api/my-listings/{phone} returns user's car listings. Phone number URL encoding handled properly."
------------+
------------+  - task: "Admin API"
------------+    implemented: true
------------+    working: true
------------+    file: "/app/backend/server.py"
------------+    stuck_count: 0
------------+    priority: "high"
------------+    needs_retesting: false
------------+    status_history:
------------+      - working: true
------------+        agent: "testing"
------------+        comment: "All admin endpoints working correctly: GET /api/admin/cars/pending (get pending cars), PUT /api/admin/cars/{id}/approve (approve car), PUT /api/admin/cars/{id}/reject (reject car), GET /api/admin/stats (get statistics). Car status transitions working properly."
------------+
------------+frontend:
------------+  # No frontend testing performed as per instructions
------------+
------------+metadata:
------------+  created_by: "testing_agent"
------------+  version: "1.0"
------------+  test_sequence: 1
------------+  run_ui: false
------------+
------------+test_plan:
------------+  current_focus: []
------------+  stuck_tasks: []
------------+  test_all: false
------------+  test_priority: "high_first"
------------+
------------+agent_communication:
------------+  - agent: "testing"
------------+    message: "Completed comprehensive backend API testing for SafedAuto application. All 16 test scenarios passed successfully. Created backend_test.py with realistic Tajikistan data. All endpoints working correctly including user management, car listings, favorites, my listings, and admin functions. API properly handles phone number URL encoding, base64 images, and Tajikistan-specific data (dushanbe region, TJS currency). One minor display issue in test output for user creation but functionality is correct. Backend API is fully functional and ready for production use."
------------\ No newline at end of file
+----------@@ -1,99 +0,0 @@
+-----------diff --git a/model.patch b/model.patch
+-----------index 444e985..e69de29 100644
+-------------- a/model.patch
+-----------+++ b/model.patch
+-----------@@ -1,94 +0,0 @@
+------------diff --git a/test_result.md b/test_result.md
+------------index 187cba4..b749bd4 100644
+--------------- a/test_result.md
+------------+++ b/test_result.md
+------------@@ -100,4 +100,86 @@
+------------ 
+------------ #====================================================================================================
+------------ # Testing Data - Main Agent and testing sub agent both should log testing data below this section
+-------------#====================================================================================================
+------------\ No newline at end of file
+------------+#====================================================================================================
+------------+
+------------+user_problem_statement: "Протестировать backend API для SafedAuto приложения - проверить все endpoint'ы включая пользователей, автомобили, избранное, мои объявления и админ функции"
+------------+
+------------+backend:
+------------+  - task: "User Management API"
+------------+    implemented: true
+------------+    working: true
+------------+    file: "/app/backend/server.py"
+------------+    stuck_count: 0
+------------+    priority: "high"
+------------+    needs_retesting: false
+------------+    status_history:
+------------+      - working: true
+------------+        agent: "testing"
+------------+        comment: "All user endpoints working correctly: POST /api/users (create/get user), GET /api/users/{phone} (get user), PUT /api/users/{phone} (update user). Phone number encoding handled properly. Minor display issue in test output but functionality is correct."
+------------+
+------------+  - task: "Car Listing API"
+------------+    implemented: true
+------------+    working: true
+------------+    file: "/app/backend/server.py"
+------------+    stuck_count: 0
+------------+    priority: "high"
+------------+    needs_retesting: false
+------------+    status_history:
+------------+      - working: true
+------------+        agent: "testing"
+------------+        comment: "All car endpoints working correctly: POST /api/cars (create listing), GET /api/cars (get listings), GET /api/cars/{id} (get by ID), POST /api/cars/search (search with filters). Car data with Tajikistan-specific fields (region: dushanbe, TJS currency) handled properly. Base64 photos supported."
+------------+
+------------+  - task: "Favorites API"
+------------+    implemented: true
+------------+    working: true
+------------+    file: "/app/backend/server.py"
+------------+    stuck_count: 0
+------------+    priority: "high"
+------------+    needs_retesting: false
+------------+    status_history:
+------------+      - working: true
+------------+        agent: "testing"
+------------+        comment: "All favorites endpoints working correctly: POST /api/favorites/{phone}/{car_id} (add to favorites), GET /api/favorites/{phone} (get favorites), DELETE /api/favorites/{phone}/{car_id} (remove from favorites). Phone number URL encoding handled properly."
+------------+
+------------+  - task: "My Listings API"
+------------+    implemented: true
+------------+    working: true
+------------+    file: "/app/backend/server.py"
+------------+    stuck_count: 0
+------------+    priority: "high"
+------------+    needs_retesting: false
+------------+    status_history:
+------------+      - working: true
+------------+        agent: "testing"
+------------+        comment: "My listings endpoint working correctly: GET /api/my-listings/{phone} returns user's car listings. Phone number URL encoding handled properly."
+------------+
+------------+  - task: "Admin API"
+------------+    implemented: true
+------------+    working: true
+------------+    file: "/app/backend/server.py"
+------------+    stuck_count: 0
+------------+    priority: "high"
+------------+    needs_retesting: false
+------------+    status_history:
+------------+      - working: true
+------------+        agent: "testing"
+------------+        comment: "All admin endpoints working correctly: GET /api/admin/cars/pending (get pending cars), PUT /api/admin/cars/{id}/approve (approve car), PUT /api/admin/cars/{id}/reject (reject car), GET /api/admin/stats (get statistics). Car status transitions working properly."
+------------+
+------------+frontend:
+------------+  # No frontend testing performed as per instructions
+------------+
+------------+metadata:
+------------+  created_by: "testing_agent"
+------------+  version: "1.0"
+------------+  test_sequence: 1
+------------+  run_ui: false
+------------+
+------------+test_plan:
+------------+  current_focus: []
+------------+  stuck_tasks: []
+------------+  test_all: false
+------------+  test_priority: "high_first"
+------------+
+------------+agent_communication:
+------------+  - agent: "testing"
+------------+    message: "Completed comprehensive backend API testing for SafedAuto application. All 16 test scenarios passed successfully. Created backend_test.py with realistic Tajikistan data. All endpoints working correctly including user management, car listings, favorites, my listings, and admin functions. API properly handles phone number URL encoding, base64 images, and Tajikistan-specific data (dushanbe region, TJS currency). One minor display issue in test output for user creation but functionality is correct. Backend API is fully functional and ready for production use."
+------------\ No newline at end of file
