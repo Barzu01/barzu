@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CarListing, SearchFilters, User } from '../types';
 
-const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 const API_BASE = `${API_URL}/api`;
 
 const api = axios.create({
