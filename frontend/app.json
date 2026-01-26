@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "safedauto",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.safedauto.app",
@@ -36,6 +36,9 @@
     },
     "plugins": [
       "expo-router",
+      "expo-font",
+      "expo-video",
+      "expo-web-browser",
       [
         "expo-image-picker",
         {
@@ -60,6 +63,11 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "safedauto"
+      }
     }
   }
 }
