@@ -18,7 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carmarket-38.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carsale-platform-1.preview.emergentagent.com';
 
 export default function LoginScreen() {
   const [phone, setPhone] = useState('');

@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import Constants from 'expo-constants';
 
-const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carmarket-38.preview.emergentagent.com';
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://carsale-platform-1.preview.emergentagent.com';
 
 interface SupportMessage {
   _id: string;
