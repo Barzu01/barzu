@@ -2113,13 +2113,18 @@ async def get_user_chats(user_id: str):
     
     chats = await db.chat_messages.aggregate(pipeline).to_list(100)
     
-    # Get user names
+    # Batch fetch all users in a single query to avoid N+1
+    user_ids = [chat["_id"] for chat in chats]
+    users = await db.users.find({"phone": {"$in": user_ids}}).to_list(len(user_ids))
+    user_map = {u["phone"]: u for u in users}
+    
     result = []
     for chat in chats:
-        other_user = await find_user_by_phone(chat["_id"])
+        other_user = user_map.get(chat["_id"])
         result.append({
             "otherUserId": chat["_id"],
             "otherUserName": other_user.get("name", "Пользователь") if other_user else "Пользователь",
+            "otherUserAvatar": other_user.get("avatar", "") if other_user else "",
             "lastMessage": chat["lastMessage"],
             "lastMessageTime": chat["lastMessageTime"].isoformat() if chat["lastMessageTime"] else None,
             "unreadCount": chat["unreadCount"]
