@@ -1542,13 +1542,25 @@ async def get_recently_viewed(user_id: str, limit: int = 20):
     """Get recently viewed cars for a user"""
     viewed_items = await db.recently_viewed.find({"userId": user_id}).sort("viewedAt", -1).limit(limit).to_list(limit)
     
-    cars = []
+    # Batch fetch all cars in a single query to avoid N+1
+    car_ids = []
     for item in viewed_items:
-        car = await db.cars.find_one({"_id": ObjectId(item["carId"]), "status": "approved"})
-        if car:
-            cars.append(serialize_doc(car))
+        try:
+            car_ids.append(ObjectId(item["carId"]))
+        except:
+            pass
     
-    return cars
+    cars_data = await db.cars.find({"_id": {"$in": car_ids}, "status": "approved"}).to_list(len(car_ids))
+    car_map = {str(car["_id"]): car for car in cars_data}
+    
+    # Maintain original order from recently viewed
+    result = []
+    for item in viewed_items:
+        car_id = item["carId"]
+        if car_id in car_map:
+            result.append(serialize_doc(car_map[car_id]))
+    
+    return result
 
 
 # ===== PROMOTION =====
@@ -1911,13 +1923,19 @@ async def get_followers(user_id: str, limit: int = 50, skip: int = 0):
     """Get followers of a user"""
     follows = await db.user_follows.find({"followingId": user_id}).skip(skip).limit(limit).to_list(limit)
     
+    # Batch fetch all users in a single query to avoid N+1
+    follower_ids = [follow["followerId"] for follow in follows]
+    users = await db.users.find({"phone": {"$in": follower_ids}}).to_list(len(follower_ids))
+    user_map = {u["phone"]: u for u in users}
+    
     followers = []
     for follow in follows:
-        user = await db.users.find_one({"phone": follow["followerId"]})
-        if user:
+        if follow["followerId"] in user_map:
+            user = user_map[follow["followerId"]]
             followers.append({
                 "phone": user["phone"],
                 "name": user.get("name", "Пользователь"),
+                "avatar": user.get("avatar", ""),
                 "followedAt": follow["createdAt"]
             })
     
@@ -1929,13 +1947,19 @@ async def get_following(user_id: str, limit: int = 50, skip: int = 0):
     """Get users that this user follows"""
     follows = await db.user_follows.find({"followerId": user_id}).skip(skip).limit(limit).to_list(limit)
     
+    # Batch fetch all users in a single query to avoid N+1
+    following_ids = [follow["followingId"] for follow in follows]
+    users = await db.users.find({"phone": {"$in": following_ids}}).to_list(len(following_ids))
+    user_map = {u["phone"]: u for u in users}
+    
     following = []
     for follow in follows:
-        user = await db.users.find_one({"phone": follow["followingId"]})
-        if user:
+        if follow["followingId"] in user_map:
+            user = user_map[follow["followingId"]]
             following.append({
                 "phone": user["phone"],
                 "name": user.get("name", "Пользователь"),
+                "avatar": user.get("avatar", ""),
                 "followedAt": follow["createdAt"]
             })
     
