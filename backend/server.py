@@ -826,7 +826,7 @@ async def verify_sms_code(phone: str, code: str):
             "phone": phone,
             "name": "",
             "avatar": "",
-            "isAdmin": phone == "+992919895434",  # Администратор
+            "isAdmin": phone == os.environ.get('ADMIN_PHONE', ''),  # Администратор
             "createdAt": datetime.utcnow()
         }
         await db.users.insert_one(new_user)
@@ -1034,7 +1034,7 @@ async def verify_telegram_code(phone: str, code: str):
             "phone": phone,
             "name": "",
             "avatar": "",
-            "isAdmin": phone == "+992111222333",
+            "isAdmin": phone == os.environ.get('ADMIN_PHONE', ''),
             "createdAt": datetime.utcnow()
         }
         await db.users.insert_one(new_user)
@@ -1073,7 +1073,7 @@ class SupportMessage(BaseModel):
     createdAt: datetime = Field(default_factory=datetime.utcnow)
 
 # Номер телефона службы поддержки (админ)
-SUPPORT_PHONE = "+992111222333"
+SUPPORT_PHONE = os.environ.get('SUPPORT_PHONE', '')
 
 @api_router.post("/support/messages")
 async def send_support_message(
