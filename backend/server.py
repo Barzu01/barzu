@@ -1190,16 +1190,26 @@ async def get_user_chats(user_id: str):
         "participants": user_id
     }).sort("lastMessageAt", -1).to_list(100)
     
+    # Batch fetch all other users to avoid N+1 queries
+    other_user_ids = []
+    for chat in chats:
+        other_id = [p for p in chat['participants'] if p != user_id]
+        if other_id:
+            other_user_ids.append(other_id[0])
+    
+    # Single query to fetch all users
+    users = await db.users.find({"phone": {"$in": other_user_ids}}).to_list(len(other_user_ids))
+    user_map = {u['phone']: u for u in users}
+    
     result = []
     for chat in chats:
         chat_data = serialize_doc(chat)
-        # Get other participant info
+        # Get other participant info from cached map
         other_user_id = [p for p in chat['participants'] if p != user_id][0] if len(chat['participants']) > 1 else None
-        if other_user_id:
-            other_user = await db.users.find_one({"phone": other_user_id})
-            if other_user:
-                chat_data['otherUserName'] = other_user.get('name', 'Пользователь')
-                chat_data['otherUserPhone'] = other_user.get('phone')
+        if other_user_id and other_user_id in user_map:
+            other_user = user_map[other_user_id]
+            chat_data['otherUserName'] = other_user.get('name', 'Пользователь')
+            chat_data['otherUserPhone'] = other_user.get('phone')
         
         # Get unread count
         unread_count = await db.chat_messages.count_documents({
